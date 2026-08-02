@@ -1,0 +1,199 @@
+product_lines:
+  - product_name: Industrial Vacuum Cleaning Systems
+    enabled: true
+    country: [India]
+    regions: [West India, North India, South India, East India]
+    target_industries:
+      - Laser Equipment Manufacturers
+      - Laser Marking Machine Manufacturers
+      - Laser Cutting Machine Manufacturers
+      - Laser Welding Machine Manufacturers
+      - Jewellery Manufacturers
+      - Electronics Manufacturing Services
+      - PCB Manufacturers
+      - Automotive Manufacturers
+      - Metal Fabrication Companies
+      - Welding & Fabrication Companies
+      - Pharmaceutical Manufacturers
+      - Medical Device Manufacturers
+      - Textile Manufacturers
+      - Aerospace Manufacturers
+      - Food Processing Plants
+    exclude_industries:
+      - Vacuum Equipment Suppliers
+      - Dust Collector Manufacturers
+      - Fume Extraction Manufacturers
+    company_keywords:
+      - manufacturing
+      - fabrication
+      - laser
+      - electronics
+      - pcb
+      - automotive
+      - pharma
+      - medical device
+      - textile
+      - aerospace
+      - food processing
+    exclude_keywords:
+      - supplier
+      - distributor
+      - dealer
+    apollo_filters:
+      person_seniorities: [manager, director, vp, head, owner]
+      person_departments: [operations, procurement, maintenance, safety, engineering]
+      organization_status: [active]
+    employee_min: 20
+    employee_max: 5000
+    company_size: [small, medium, large]
+    preferred_company_types: [manufacturing, industrial]
+    target_titles:
+      - Plant Head
+      - Production Head
+      - Factory Manager
+      - Maintenance Manager
+      - EHS Manager
+      - Safety Manager
+      - Purchase Manager
+      - Procurement Manager
+      - Operations Manager
+    preferred_titles:
+      - Plant Head
+      - Factory Manager
+      - Procurement Manager
+    decision_level: [decision maker, influencer]
+    lead_score_rules:
+      industry_match: 30
+      keyword_match: 20
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 15
+      import_threshold: 60
+      manual_review_threshold: 35
+    search_frequency: Daily
+    priority: 1
+
+  - product_name: Warehouse & Storage Solutions
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - 3PL Logistics Companies
+      - Warehousing Companies
+      - Cold Storage Companies
+      - E-commerce Fulfillment Centers
+      - Automotive Warehouses
+      - Pharmaceutical Distribution Companies
+      - FMCG Distribution Companies
+      - Retail Distribution Centers
+      - Manufacturing Plants
+      - Industrial Warehouses
+    exclude_industries:
+      - Warehouse Equipment Suppliers
+      - Racking Manufacturers
+    company_keywords:
+      - logistics
+      - warehousing
+      - fulfillment
+      - cold storage
+      - distribution
+      - warehouse
+      - supply chain
+    exclude_keywords:
+      - supplier
+      - manufacturer
+    apollo_filters:
+      person_seniorities: [manager, director, vp, head, owner]
+      person_departments: [operations, supply chain, procurement, projects]
+      organization_status: [active]
+    employee_min: 25
+    employee_max: 10000
+    company_size: [small, medium, large]
+    preferred_company_types: [logistics, warehouse, distribution]
+    target_titles:
+      - Warehouse Manager
+      - Supply Chain Manager
+      - Procurement Manager
+      - Purchase Manager
+      - Projects Manager
+      - Operations Manager
+      - Factory Manager
+      - Plant Head
+    preferred_titles:
+      - Warehouse Manager
+      - Supply Chain Manager
+      - Operations Manager
+    decision_level: [decision maker, influencer]
+    lead_score_rules:
+      industry_match: 30
+      keyword_match: 20
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 15
+      import_threshold: 60
+      manual_review_threshold: 35
+    search_frequency: Weekly
+    priority: 2
+
+  - product_name: GFRP Rebar
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - EPC Contractors
+      - Infrastructure Contractors
+      - Highway Contractors
+      - Bridge Construction Companies
+      - Metro Rail Contractors
+      - Tunnel Construction Companies
+      - Industrial Construction Companies
+      - Commercial Builders
+      - Government Contractors
+      - Water Treatment Infrastructure Companies
+    exclude_industries:
+      - Rebar Manufacturers
+      - Construction Material Suppliers
+    company_keywords:
+      - epc
+      - infrastructure
+      - contractor
+      - highway
+      - bridge
+      - metro rail
+      - tunnel
+      - construction
+      - water treatment
+    exclude_keywords:
+      - supplier
+      - manufacturer
+    apollo_filters:
+      person_seniorities: [manager, director, vp, head, owner]
+      person_departments: [projects, procurement, engineering, construction]
+      organization_status: [active]
+    employee_min: 50
+    employee_max: 20000
+    company_size: [medium, large, enterprise]
+    preferred_company_types: [construction, infrastructure, epc]
+    target_titles:
+      - Project Manager
+      - Procurement Manager
+      - Purchase Manager
+      - Structural Engineer
+      - Civil Engineer
+      - Construction Manager
+      - Engineering Manager
+    preferred_titles:
+      - Project Manager
+      - Procurement Manager
+      - Construction Manager
+    decision_level: [decision maker, influencer]
+    lead_score_rules:
+      industry_match: 30
+      keyword_match: 20
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 15
+      import_threshold: 60
+      manual_review_threshold: 35
+    search_frequency: Monthly
+    priority: 3
