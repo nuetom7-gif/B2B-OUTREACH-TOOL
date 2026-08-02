@@ -110,6 +110,7 @@ def render_metrics_row(metrics: list[tuple[str, Any]]) -> None:
 
 def render_dashboard() -> None:
     stats = fetch_json("/dashboard/stats", {})
+    discovery = fetch_json("/discovery/summary", {})
     if not stats:
         return
     today_leads_total = sum(int(value.get("current", 0)) for value in stats.get("today_leads", {}).values())
@@ -169,6 +170,61 @@ def render_dashboard() -> None:
         chart_cols[1].line_chart(email_series.set_index("date"))
     if not reply_series.empty:
         chart_cols[2].line_chart(reply_series.set_index("date"))
+
+    qualification_metrics = discovery.get("qualification_metrics", {}) if isinstance(discovery, dict) else {}
+    if qualification_metrics:
+        st.subheader("Discovery Qualification Intelligence")
+        render_metrics_row(
+            [
+                ("Avg Score", qualification_metrics.get("average_score", 0.0)),
+                ("Evaluated", discovery.get("staging_count", 0)),
+                ("Manual Review", discovery.get("manual_review_count", 0)),
+                ("Recent Runs", len(discovery.get("runs", []))),
+            ]
+        )
+
+        cols = st.columns(2)
+        cols[0].subheader("Failure Reasons")
+        cols[0].dataframe(pd.DataFrame(qualification_metrics.get("most_common_failure_reasons", [])), use_container_width=True, hide_index=True)
+        cols[1].subheader("Bonuses / Penalties")
+        cols[1].write("Bonuses")
+        cols[1].dataframe(pd.DataFrame(qualification_metrics.get("most_common_bonuses", [])), use_container_width=True, hide_index=True)
+        cols[1].write("Penalties")
+        cols[1].dataframe(pd.DataFrame(qualification_metrics.get("most_common_penalties", [])), use_container_width=True, hide_index=True)
+
+        cols = st.columns(2)
+        cols[0].subheader("Matched Industries / Keywords")
+        cols[0].write("Industries")
+        cols[0].dataframe(pd.DataFrame(qualification_metrics.get("most_matched_industries", [])), use_container_width=True, hide_index=True)
+        cols[0].write("Keywords")
+        cols[0].dataframe(pd.DataFrame(qualification_metrics.get("most_matched_keywords", [])), use_container_width=True, hide_index=True)
+        cols[1].subheader("Clusters / Decision Makers")
+        cols[1].write("Clusters")
+        cols[1].dataframe(pd.DataFrame(qualification_metrics.get("top_manufacturing_clusters", [])), use_container_width=True, hide_index=True)
+        cols[1].write("Decision Makers")
+        cols[1].dataframe(pd.DataFrame(qualification_metrics.get("top_decision_maker_titles", [])), use_container_width=True, hide_index=True)
+
+        st.subheader("Average Score by ICP / Product Line")
+        avg_frame = pd.DataFrame(
+            [
+                {
+                    "scope": "ICP",
+                    "name": name,
+                    "average_score": score,
+                }
+                for name, score in (qualification_metrics.get("average_score_per_icp", {}) or {}).items()
+            ]
+            + [
+                {
+                    "scope": "Product Line",
+                    "name": name,
+                    "average_score": score,
+                }
+                for name, score in (qualification_metrics.get("average_score_per_product_line", {}) or {}).items()
+            ]
+        )
+        if not avg_frame.empty:
+            st.dataframe(avg_frame, use_container_width=True, hide_index=True)
 
 
 def render_discovery() -> None:
@@ -273,6 +329,60 @@ def render_discovery() -> None:
     st.subheader("Recent Jobs")
     jobs = fetch_json("/discovery/jobs", [])
     st.dataframe(pd.DataFrame(jobs), use_container_width=True, hide_index=True)
+
+    st.subheader("Discovery Staging")
+    staging = fetch_json("/discovery/staging", [])
+    staging_frame = pd.DataFrame(staging)
+    if staging_frame.empty:
+        st.info("No staged companies yet.")
+        return
+
+    display_columns = [
+        column
+        for column in [
+            "id",
+            "company_name",
+            "person_name",
+            "final_status",
+            "qualification_status",
+            "score",
+            "qualification_threshold",
+            "manual_review_threshold",
+            "confidence",
+            "sync_status",
+            "qualification_evaluated_at",
+        ]
+        if column in staging_frame.columns
+    ]
+    st.dataframe(staging_frame[display_columns], use_container_width=True, hide_index=True)
+
+    selected_staging_id = st.selectbox(
+        "Inspect staged company",
+        staging_frame["id"].tolist(),
+        format_func=lambda value: next(
+            (
+                f"#{row['id']} - {row.get('company_name') or row.get('person_name') or 'Unknown'}"
+                for row in staging
+                if int(row["id"]) == int(value)
+            ),
+            f"Record {value}",
+        ),
+    )
+    selected_staging = next((row for row in staging if int(row["id"]) == int(selected_staging_id)), None)
+    if selected_staging:
+        st.json(
+            {
+                "final_status": selected_staging.get("final_status"),
+                "qualification_status": selected_staging.get("qualification_status"),
+                "score": selected_staging.get("score"),
+                "thresholds": {
+                    "qualification": selected_staging.get("qualification_threshold"),
+                    "manual_review": selected_staging.get("manual_review_threshold"),
+                },
+                "evaluated_at": selected_staging.get("qualification_evaluated_at"),
+                "qualification_result": selected_staging.get("qualification_result", {}),
+            }
+        )
 
 
 def render_lead_review() -> None:

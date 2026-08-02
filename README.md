@@ -294,6 +294,13 @@ The discovery flow is Apollo-only and runs through the new scheduler-backed disc
 Lead scoring is implemented in Phase 2A and is used during discovery qualification and CRM import. It is not a future Phase 2 item anymore.
 Apollo remains the only enabled provider in the current Provider Manager setup; the manager exists so future licensed providers can be added without changing the qualification, dedupe, or CRM import layers.
 
+Qualification is now fully explainable and persisted for review:
+- every discovered company keeps a stored qualification result, including rule-by-rule PASS/FAIL breakdowns
+- discovery staging now preserves qualified, manual review, rejected, and imported outcomes
+- run summaries include evaluated count, imported/manual review/rejected counts, average score, and top failure reasons
+- scoring values and thresholds are configurable in `backend/app/config/icp.yml`
+- the Discovery Staging UI shows the stored qualification summary for each record
+
 High-level pipeline:
 - Scheduler
 - Discovery engine

@@ -326,6 +326,13 @@ class DiscoveryRunRead(BaseModel):
     quota_remaining: int | None = None
     errors: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
+    qualification_summary: dict[str, Any] = Field(default_factory=dict)
+    qualification_top_failure_reasons: list[dict[str, Any]] = Field(default_factory=list)
+    qualification_average_score: float = 0.0
+    qualification_evaluated_count: int = 0
+    qualification_imported_count: int = 0
+    qualification_manual_review_count: int = 0
+    qualification_rejected_count: int = 0
 
 
 class DiscoveryStagingRead(BaseModel):
@@ -352,7 +359,12 @@ class DiscoveryStagingRead(BaseModel):
     person_linkedin_url: str | None = None
     person_seniority: str | None = None
     qualification_status: str
+    final_status: str
     score: int
+    qualification_threshold: int | None = None
+    manual_review_threshold: int | None = None
+    qualification_evaluated_at: datetime | None = None
+    qualification_result: dict[str, Any] = Field(default_factory=dict)
     confidence: str
     needs_manual_review: bool
     sync_status: str

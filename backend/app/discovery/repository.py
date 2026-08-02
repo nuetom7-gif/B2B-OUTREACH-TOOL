@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 import json
+from collections import Counter, defaultdict
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -91,6 +92,7 @@ def stage_organization(
         company_size=organization.company_size,
         raw_payload_json=_encode(organization.source_metadata),
         qualification_status="staged",
+        final_status="staged",
         confidence="unknown",
         sync_status="staged",
         apollo_last_updated=organization.last_updated,
@@ -129,6 +131,7 @@ def stage_person(
         person_seniority=person.seniority,
         raw_payload_json=_encode(person.source_metadata),
         qualification_status="staged",
+        final_status="staged",
         confidence="unknown",
         sync_status="staged",
         apollo_last_updated=organization.last_updated,
@@ -196,9 +199,88 @@ def latest_run_for_product(db: Session, product_name: str) -> DiscoveryRun | Non
 def discovery_summary(db: Session) -> dict:
     runs = list_runs(db, limit=100)
     manual_review = list_staging_records(db, manual_review_only=True)
+    latest_run = runs[0] if runs else None
+    staging_records = list_staging_records(db)
+    failure_counter: Counter[str] = Counter()
+    bonus_counter: Counter[str] = Counter()
+    penalty_counter: Counter[str] = Counter()
+    industry_counter: Counter[str] = Counter()
+    keyword_counter: Counter[str] = Counter()
+    cluster_counter: Counter[str] = Counter()
+    decision_counter: Counter[str] = Counter()
+    product_scores: defaultdict[str, list[float]] = defaultdict(list)
+    icp_scores: defaultdict[str, list[float]] = defaultdict(list)
+    status_counter: Counter[str] = Counter()
+    total_scores: list[float] = []
+
+    for record in staging_records:
+        payload = {}
+        try:
+            payload = json.loads(record.qualification_result_json or "{}")
+        except json.JSONDecodeError:
+            payload = {}
+        if not payload:
+            continue
+        score = float(payload.get("final_score", record.score or 0))
+        total_scores.append(score)
+        status = str(payload.get("final_status") or record.final_status or record.qualification_status or "unknown")
+        status_counter[status] += 1
+        product_scores[record.product_name].append(score)
+        icp_scores[record.product_name].append(score)
+        for rule in payload.get("rule_results", []):
+            if isinstance(rule, dict) and float(rule.get("points_awarded", 0) or 0) <= 0:
+                failure_counter[str(rule.get("rule_name") or "Unknown Rule")] += 1
+        for item in payload.get("applied_bonuses", []):
+            if not isinstance(item, dict):
+                continue
+            label = str(item.get("label") or "Bonus")
+            bonus_counter[label] += 1
+            category = str(item.get("category") or "")
+            matched_value = item.get("matched_value")
+            if category == "industry" and matched_value:
+                industry_counter[str(matched_value)] += 1
+            if category.startswith("keyword") and matched_value:
+                keyword_counter[str(matched_value)] += 1
+            if category == "cluster" and matched_value:
+                cluster_counter[str(matched_value)] += 1
+            if category == "decision_maker" and matched_value:
+                decision_counter[str(matched_value)] += 1
+        for item in payload.get("applied_penalties", []):
+            if not isinstance(item, dict):
+                continue
+            label = str(item.get("label") or "Penalty")
+            penalty_counter[label] += 1
+        if payload.get("matched_industry_name"):
+            industry_counter[str(payload["matched_industry_name"])] += 1
+        for keyword in payload.get("matched_keywords", []) or []:
+            keyword_counter[str(keyword)] += 1
+        if payload.get("matched_cluster"):
+            cluster_counter[str(payload["matched_cluster"])] += 1
+        if payload.get("matched_decision_maker_title"):
+            decision_counter[str(payload["matched_decision_maker_title"])] += 1
+
+    average_score = round(sum(total_scores) / len(total_scores), 2) if total_scores else 0.0
+
+    def _avg_map(values: defaultdict[str, list[float]]) -> dict[str, float]:
+        return {key: round(sum(scores) / len(scores), 2) for key, scores in values.items() if scores}
+
     return {
         "runs": runs,
         "manual_review_count": len(manual_review),
         "staging_count": db.scalar(select(func.count(DiscoveryStagingRecord.id))) or 0,
         "recent_manual_review": manual_review[:25],
+        "latest_qualification_summary": json.loads(latest_run.qualification_summary_json or "{}") if latest_run else {},
+        "qualification_metrics": {
+            "average_score": average_score,
+            "status_counts": dict(status_counter),
+            "most_common_failure_reasons": [{"label": label, "count": count} for label, count in failure_counter.most_common(10)],
+            "most_common_bonuses": [{"label": label, "count": count} for label, count in bonus_counter.most_common(10)],
+            "most_common_penalties": [{"label": label, "count": count} for label, count in penalty_counter.most_common(10)],
+            "most_matched_industries": [{"label": label, "count": count} for label, count in industry_counter.most_common(10)],
+            "most_matched_keywords": [{"label": label, "count": count} for label, count in keyword_counter.most_common(15)],
+            "top_manufacturing_clusters": [{"label": label, "count": count} for label, count in cluster_counter.most_common(10)],
+            "top_decision_maker_titles": [{"label": label, "count": count} for label, count in decision_counter.most_common(10)],
+            "average_score_per_icp": _avg_map(icp_scores),
+            "average_score_per_product_line": _avg_map(product_scores),
+        },
     }

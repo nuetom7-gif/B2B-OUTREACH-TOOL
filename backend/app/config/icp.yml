@@ -1,6 +1,6 @@
 product_lines:
   - product_name: Industrial Vacuum Cleaning Systems
-    enabled: true
+    enabled: false
     country: [India]
     regions: [West India, North India, South India, East India]
     target_industries:
@@ -43,7 +43,7 @@ product_lines:
       person_seniorities: [manager, director, vp, head, owner]
       person_departments: [operations, procurement, maintenance, safety, engineering]
       organization_status: [active]
-    employee_min: 20
+    employee_min: 15
     employee_max: 5000
     company_size: [small, medium, large]
     preferred_company_types: [manufacturing, industrial]
@@ -63,15 +63,1000 @@ product_lines:
       - Procurement Manager
     decision_level: [decision maker, influencer]
     lead_score_rules:
-      industry_match: 30
+      industry_match: 35
       keyword_match: 20
       company_size_fit: 10
-      decision_maker_found: 25
-      verified_contact_present: 15
-      import_threshold: 60
-      manual_review_threshold: 35
+      decision_maker_found: 30
+      verified_contact_present: 10
+      import_threshold: 65
+      manual_review_threshold: 40
+    qualification_rules:
+      country_match_points: 10
+      industry_match_points: 35
+      keyword_match_points: 20
+      employee_count_points: 10
+      decision_maker_points: 30
+      verified_contact_points: 10
+      qualification_threshold: 65
+      manual_review_threshold: 40
+      employee_minimum: 15
+      employee_maximum: 5000
+      broad_industry_terms:
+        - manufacturing
+        - industrial
+        - factory
+        - fabrication
+        - production
+        - engineering
+        - plant
+        - processing
     search_frequency: Daily
     priority: 1
+
+  - product_name: Laser Industry
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Laser Equipment Manufacturing
+      - Laser Marking Machine Manufacturing
+      - Laser Cutting Machine Manufacturing
+      - Laser Welding Machine Manufacturing
+    related_industries:
+      - Industrial Machinery
+      - Precision Engineering
+      - Mechanical Engineering
+      - Industrial Equipment
+      - CNC Machinery
+    broad_industries: &broad_industries
+      Manufacturing: 10
+      Factory: 8
+      Industrial: 8
+      Engineering: 8
+      Production: 8
+      Processing: 8
+    exclude_industries:
+      - Laser Equipment Supplier
+      - Laser Machine Dealer
+      - Laser Machine Distributor
+    company_keywords:
+      - laser
+      - laser marking
+      - laser cutting
+      - laser welding
+      - fiber laser
+      - co2 laser
+      - precision laser
+    manufacturing_keywords: &manufacturing_keywords
+      Manufacturing: 8
+      Factory: 8
+      Plant: 8
+      Production: 8
+      Engineering: 8
+      Industrial: 8
+      OEM: 8
+      Automation: 10
+    process_keywords: &process_keywords
+      Grinding: 8
+      Machining: 8
+      Smoke: 5
+      Dust: 5
+      Fume: 5
+      Soldering: 8
+      Welding: 8
+      Cutting: 8
+      Cleaning: 8
+    negative_keywords: &negative_keywords
+      Supplier: -12
+      Distributor: -12
+      Dealer: -12
+      Importer: -10
+      Trader: -10
+    apollo_filters: &apollo_filters
+      person_seniorities: [manager, director, vp, head, owner]
+      person_departments: [operations, procurement, maintenance, safety, engineering, production, quality]
+      organization_status: [active]
+    employee_min: 25
+    employee_max: 5000
+    company_size: &company_size [small, medium, large]
+    preferred_company_types: &preferred_company_types [manufacturing, industrial]
+    target_titles: &target_titles
+      - Plant Head
+      - Purchase Manager
+      - Procurement Manager
+      - Factory Manager
+      - Operations Manager
+      - Maintenance Manager
+      - Engineering Manager
+      - Production Manager
+    preferred_titles: &preferred_titles
+      - Plant Head
+      - Purchase Manager
+      - Procurement Manager
+      - Factory Manager
+    decision_level: &decision_level [decision maker, influencer]
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: &country_rules
+        allowed: [India]
+        points: 8
+      exact_industries:
+        Laser Equipment Manufacturing: 45
+        Laser Marking Machine Manufacturing: 45
+        Laser Cutting Machine Manufacturing: 45
+        Laser Welding Machine Manufacturing: 45
+      related_industries:
+        Industrial Machinery: 28
+        Precision Engineering: 26
+        Mechanical Engineering: 24
+        Industrial Equipment: 22
+        CNC Machinery: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Laser: 14
+          Laser Marking: 16
+          Laser Cutting: 16
+          Laser Welding: 16
+          Fiber Laser: 18
+          CO2 Laser: 18
+          Precision Laser: 14
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: &employee_range_scores
+        - label: 25-250
+          min: 25
+          max: 250
+          points: 30
+        - label: 251-1000
+          min: 251
+          max: 1000
+          points: 22
+        - label: 1001-5000
+          min: 1001
+          max: 5000
+          points: 14
+        - label: 10-24
+          min: 10
+          max: 24
+          points: 8
+        - label: 5000+
+          min: 5001
+          max:
+          points: 8
+      manufacturing_clusters: &manufacturing_clusters
+        Pune: 5
+        Mumbai: 4
+        Nashik: 5
+        Aurangabad: 5
+        Ahmedabad: 4
+        Vadodara: 4
+        Rajkot: 4
+        Surat: 4
+        Bengaluru: 4
+        Chennai: 4
+        Coimbatore: 5
+        Hosur: 5
+        Hyderabad: 4
+        Noida: 4
+        Greater Noida: 4
+        Ghaziabad: 4
+        Faridabad: 4
+        Gurugram: 4
+      thresholds: &thresholds
+        qualification: 70
+        manual_review: 45
+      verified_email_points: 3
+    search_frequency: Daily
+    priority: 1
+
+  - product_name: Electronics & EMS
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Electronics Manufacturing Services
+      - Electronics Assembly
+      - Contract Electronics Manufacturing
+      - Electronic Components Manufacturing
+    related_industries:
+      - Industrial Electronics
+      - Embedded Systems Manufacturing
+      - Contract Manufacturing
+      - Electrical Equipment Manufacturing
+      - SMT Assembly
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Electronics Distributor
+      - EMS Distributor
+      - Component Supplier
+    company_keywords:
+      - electronics
+      - EMS
+      - PCB assembly
+      - SMT
+      - contract manufacturing
+      - electronic components
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 8000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Electronics Manufacturing Services: 45
+        Electronics Assembly: 45
+        Contract Electronics Manufacturing: 45
+        Electronic Components Manufacturing: 42
+      related_industries:
+        Industrial Electronics: 28
+        Embedded Systems Manufacturing: 26
+        Contract Manufacturing: 20
+        Electrical Equipment Manufacturing: 22
+        SMT Assembly: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Electronics: 14
+          EMS: 16
+          SMT: 14
+          PCB Assembly: 16
+          Contract Manufacturing: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Daily
+    priority: 2
+
+  - product_name: PCB Manufacturing
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - PCB Manufacturing
+      - Printed Circuit Board Manufacturing
+      - PCB Assembly
+    related_industries:
+      - Electronics Manufacturing Services
+      - Electronics Assembly
+      - SMT Assembly
+      - Circuit Board Manufacturing
+      - Contract Electronics Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - PCB Distributor
+      - PCB Supplier
+      - Component Trader
+    company_keywords:
+      - PCB
+      - PCB assembly
+      - SMT
+      - circuit board
+      - electronics manufacturing
+      - solder mask
+      - gerber
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 8000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        PCB Manufacturing: 45
+        Printed Circuit Board Manufacturing: 45
+        PCB Assembly: 45
+      related_industries:
+        Electronics Manufacturing Services: 28
+        Electronics Assembly: 26
+        SMT Assembly: 24
+        Circuit Board Manufacturing: 26
+        Contract Electronics Manufacturing: 22
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          PCB: 16
+          PCB Assembly: 16
+          SMT: 14
+          Circuit Board: 14
+          Gerber: 10
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Daily
+    priority: 3
+
+  - product_name: Metal Fabrication
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Metal Fabrication
+      - Sheet Metal Fabrication
+      - Precision Metal Fabrication
+    related_industries:
+      - Industrial Fabrication
+      - Sheet Metal Works
+      - Machine Shops
+      - Metal Parts Manufacturing
+      - Steel Fabrication
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Metal Supplier
+      - Metal Trader
+      - Sheet Metal Distributor
+    company_keywords:
+      - fabrication
+      - sheet metal
+      - cnc
+      - welding
+      - cutting
+      - bending
+      - metal parts
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 10000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Metal Fabrication: 45
+        Sheet Metal Fabrication: 45
+        Precision Metal Fabrication: 45
+      related_industries:
+        Industrial Fabrication: 28
+        Sheet Metal Works: 26
+        Machine Shops: 24
+        Metal Parts Manufacturing: 26
+        Steel Fabrication: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Fabrication: 16
+          Sheet Metal: 16
+          CNC: 14
+          Welding: 14
+          Cutting: 14
+          Bending: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Daily
+    priority: 4
+
+  - product_name: Welding & Fabrication
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Welding & Fabrication
+      - Welding Fabrication
+      - Structural Fabrication
+    related_industries:
+      - Metal Fabrication
+      - Industrial Fabrication
+      - Steel Fabrication
+      - Machine Shops
+      - Sheet Metal Works
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Welding Equipment Supplier
+      - Fabrication Supplier
+      - Welding Distributor
+    company_keywords:
+      - welding
+      - fabrication
+      - mig
+      - tig
+      - arc welding
+      - grinding
+      - cutting
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 10000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Welding & Fabrication: 45
+        Welding Fabrication: 45
+        Structural Fabrication: 45
+      related_industries:
+        Metal Fabrication: 28
+        Industrial Fabrication: 28
+        Steel Fabrication: 26
+        Machine Shops: 22
+        Sheet Metal Works: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Welding: 16
+          Fabrication: 16
+          MIG: 14
+          TIG: 14
+          Arc Welding: 14
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Daily
+    priority: 5
+
+  - product_name: Jewellery Manufacturing
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Jewellery Manufacturing
+      - Jewellery Manufacturers
+      - Gold Jewellery Manufacturing
+    related_industries:
+      - Gem & Jewellery Manufacturing
+      - Ornament Manufacturing
+      - Precious Metal Manufacturing
+      - Goldsmithing
+      - Silver Jewellery Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Jewellery Distributor
+      - Jewellery Supplier
+      - Retail Jeweller
+    company_keywords:
+      - jewellery
+      - jewel
+      - gold
+      - silver
+      - ornament
+      - casting
+      - polishing
+      - finishing
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 10
+    employee_max: 2000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Jewellery Manufacturing: 45
+        Jewellery Manufacturers: 45
+        Gold Jewellery Manufacturing: 45
+      related_industries:
+        Gem & Jewellery Manufacturing: 28
+        Ornament Manufacturing: 24
+        Precious Metal Manufacturing: 26
+        Goldsmithing: 22
+        Silver Jewellery Manufacturing: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Jewellery: 16
+          Jewel: 14
+          Gold: 12
+          Silver: 12
+          Ornament: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Weekly
+    priority: 6
+
+  - product_name: Medical Devices
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Medical Device Manufacturing
+      - Medical Devices Manufacturing
+      - Healthcare Equipment Manufacturing
+    related_industries:
+      - Surgical Instrument Manufacturing
+      - Hospital Equipment Manufacturing
+      - Precision Instrument Manufacturing
+      - Pharma Equipment Manufacturing
+      - Diagnostic Equipment Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Medical Device Distributor
+      - Healthcare Equipment Supplier
+      - Surgical Distributor
+    company_keywords:
+      - medical device
+      - surgical
+      - healthcare
+      - instrument
+      - sterile
+      - precision
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 5000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Medical Device Manufacturing: 45
+        Medical Devices Manufacturing: 45
+        Healthcare Equipment Manufacturing: 45
+      related_industries:
+        Surgical Instrument Manufacturing: 28
+        Hospital Equipment Manufacturing: 26
+        Precision Instrument Manufacturing: 24
+        Pharma Equipment Manufacturing: 22
+        Diagnostic Equipment Manufacturing: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Medical Device: 16
+          Surgical: 14
+          Healthcare: 12
+          Instrument: 12
+          Sterile: 10
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Weekly
+    priority: 7
+
+  - product_name: Pharmaceutical Manufacturing
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Pharmaceutical Manufacturing
+      - Pharma Manufacturing
+      - Drug Manufacturing
+    related_industries:
+      - API Manufacturing
+      - Formulation Manufacturing
+      - Life Sciences Manufacturing
+      - Biotech Manufacturing
+      - Chemical Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Pharma Distributor
+      - Drug Distributor
+      - Pharmaceutical Supplier
+    company_keywords:
+      - pharma
+      - pharmaceutical
+      - api
+      - formulation
+      - tablet
+      - capsule
+      - sterile
+      - gmp
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 10000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Pharmaceutical Manufacturing: 45
+        Pharma Manufacturing: 45
+        Drug Manufacturing: 45
+      related_industries:
+        API Manufacturing: 28
+        Formulation Manufacturing: 26
+        Life Sciences Manufacturing: 24
+        Biotech Manufacturing: 22
+        Chemical Manufacturing: 20
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Pharma: 16
+          Pharmaceutical: 16
+          API: 14
+          Formulation: 14
+          GMP: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Weekly
+    priority: 8
+
+  - product_name: Food Processing
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Food Processing Plants
+      - Food Processing Manufacturing
+      - Beverage Manufacturing
+      - Packaged Food Manufacturing
+    related_industries:
+      - Dairy Processing
+      - Spices Processing
+      - FMCG Manufacturing
+      - Food Packaging
+      - Bakery Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Food Distributor
+      - Beverage Distributor
+      - Food Supplier
+    company_keywords:
+      - food processing
+      - beverage
+      - dairy
+      - bakery
+      - snack
+      - packaging
+      - hygiene
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 10000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Food Processing Plants: 45
+        Food Processing Manufacturing: 45
+        Beverage Manufacturing: 45
+        Packaged Food Manufacturing: 45
+      related_industries:
+        Dairy Processing: 28
+        Spices Processing: 26
+        FMCG Manufacturing: 24
+        Food Packaging: 22
+        Bakery Manufacturing: 24
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Food Processing: 16
+          Beverage: 14
+          Dairy: 14
+          Bakery: 12
+          Packaging: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Weekly
+    priority: 9
+
+  - product_name: Automotive Manufacturing
+    enabled: true
+    country: [India]
+    regions: [Pan India]
+    target_industries:
+      - Automotive Manufacturing
+      - Automobile Manufacturing
+      - Auto Component Manufacturing
+    related_industries:
+      - Vehicle Parts Manufacturing
+      - OEM Automotive
+      - Auto Ancillary
+      - Precision Automotive Components
+      - Industrial Component Manufacturing
+    broad_industries: *broad_industries
+    exclude_industries:
+      - Automotive Distributor
+      - Auto Parts Supplier
+      - Vehicle Dealer
+    company_keywords:
+      - automotive
+      - auto component
+      - oem
+      - tier 1
+      - tier 2
+      - vehicle
+      - assembly
+    manufacturing_keywords: *manufacturing_keywords
+    process_keywords: *process_keywords
+    negative_keywords: *negative_keywords
+    apollo_filters: *apollo_filters
+    employee_min: 25
+    employee_max: 15000
+    company_size: *company_size
+    preferred_company_types: *preferred_company_types
+    target_titles: *target_titles
+    preferred_titles: *preferred_titles
+    decision_level: *decision_level
+    lead_score_rules:
+      industry_match: 45
+      keyword_match: 18
+      company_size_fit: 10
+      decision_maker_found: 25
+      verified_contact_present: 3
+      import_threshold: 70
+      manual_review_threshold: 45
+    qualification_rules:
+      country_rules: *country_rules
+      exact_industries:
+        Automotive Manufacturing: 45
+        Automobile Manufacturing: 45
+        Auto Component Manufacturing: 45
+      related_industries:
+        Vehicle Parts Manufacturing: 28
+        OEM Automotive: 26
+        Auto Ancillary: 24
+        Precision Automotive Components: 22
+        Industrial Component Manufacturing: 20
+      broad_industries: *broad_industries
+      keywords:
+        product_keywords:
+          Automotive: 16
+          Auto Component: 16
+          OEM: 14
+          Tier 1: 12
+          Tier 2: 12
+          Vehicle: 12
+        manufacturing_keywords: *manufacturing_keywords
+        process_keywords: *process_keywords
+      negative_keywords: *negative_keywords
+      decision_maker_scores:
+        Plant Head: 35
+        Purchase Manager: 35
+        Procurement Manager: 35
+        Factory Manager: 25
+        Operations Manager: 20
+        Maintenance Manager: 20
+        Engineering Manager: 20
+        Production Manager: 25
+        HR: 0
+        Marketing: 0
+      employee_range_scores: *employee_range_scores
+      manufacturing_clusters: *manufacturing_clusters
+      thresholds: *thresholds
+      verified_email_points: 3
+    search_frequency: Weekly
+    priority: 10
 
   - product_name: Warehouse & Storage Solutions
     enabled: true
@@ -106,7 +1091,7 @@ product_lines:
       person_seniorities: [manager, director, vp, head, owner]
       person_departments: [operations, supply chain, procurement, projects]
       organization_status: [active]
-    employee_min: 25
+    employee_min: 20
     employee_max: 10000
     company_size: [small, medium, large]
     preferred_company_types: [logistics, warehouse, distribution]
@@ -125,13 +1110,32 @@ product_lines:
       - Operations Manager
     decision_level: [decision maker, influencer]
     lead_score_rules:
-      industry_match: 30
+      industry_match: 35
       keyword_match: 20
       company_size_fit: 10
-      decision_maker_found: 25
-      verified_contact_present: 15
-      import_threshold: 60
-      manual_review_threshold: 35
+      decision_maker_found: 30
+      verified_contact_present: 10
+      import_threshold: 65
+      manual_review_threshold: 40
+    qualification_rules:
+      country_match_points: 10
+      industry_match_points: 35
+      keyword_match_points: 20
+      employee_count_points: 10
+      decision_maker_points: 30
+      verified_contact_points: 10
+      qualification_threshold: 65
+      manual_review_threshold: 40
+      employee_minimum: 20
+      employee_maximum: 10000
+      broad_industry_terms:
+        - logistics
+        - warehousing
+        - fulfillment
+        - cold storage
+        - distribution
+        - warehouse
+        - supply chain
     search_frequency: Weekly
     priority: 2
 
@@ -170,7 +1174,7 @@ product_lines:
       person_seniorities: [manager, director, vp, head, owner]
       person_departments: [projects, procurement, engineering, construction]
       organization_status: [active]
-    employee_min: 50
+    employee_min: 35
     employee_max: 20000
     company_size: [medium, large, enterprise]
     preferred_company_types: [construction, infrastructure, epc]
@@ -188,12 +1192,33 @@ product_lines:
       - Construction Manager
     decision_level: [decision maker, influencer]
     lead_score_rules:
-      industry_match: 30
+      industry_match: 35
       keyword_match: 20
       company_size_fit: 10
-      decision_maker_found: 25
-      verified_contact_present: 15
-      import_threshold: 60
-      manual_review_threshold: 35
+      decision_maker_found: 30
+      verified_contact_present: 10
+      import_threshold: 65
+      manual_review_threshold: 40
+    qualification_rules:
+      country_match_points: 10
+      industry_match_points: 35
+      keyword_match_points: 20
+      employee_count_points: 10
+      decision_maker_points: 30
+      verified_contact_points: 10
+      qualification_threshold: 65
+      manual_review_threshold: 40
+      employee_minimum: 35
+      employee_maximum: 20000
+      broad_industry_terms:
+        - epc
+        - infrastructure
+        - contractor
+        - highway
+        - bridge
+        - metro rail
+        - tunnel
+        - construction
+        - water treatment
     search_frequency: Monthly
     priority: 3

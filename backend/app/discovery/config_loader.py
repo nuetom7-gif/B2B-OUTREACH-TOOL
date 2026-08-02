@@ -27,6 +27,12 @@ def _as_dict(value: Any) -> dict[str, Any]:
 
 
 def _parse_product_line(payload: dict[str, Any]) -> ICPProductLine:
+    lead_score_rules = {str(key): value for key, value in _as_dict(payload.get("lead_score_rules")).items()}
+    qualification_rules = {str(key): value for key, value in _as_dict(payload.get("qualification_rules")).items()}
+    if payload.get("qualification") is not None:
+        qualification_rules.update({str(key): value for key, value in _as_dict(payload.get("qualification")).items()})
+    if qualification_rules:
+        lead_score_rules = {**lead_score_rules, **qualification_rules}
     return ICPProductLine(
         product_name=str(payload["product_name"]).strip(),
         enabled=bool(payload.get("enabled", True)),
@@ -44,8 +50,9 @@ def _parse_product_line(payload: dict[str, Any]) -> ICPProductLine:
         target_titles=_as_list(payload.get("target_titles")),
         preferred_titles=_as_list(payload.get("preferred_titles")),
         decision_level=_as_list(payload.get("decision_level")),
-        lead_score_rules={str(key): value for key, value in _as_dict(payload.get("lead_score_rules")).items()},
+        lead_score_rules=lead_score_rules,
         search_frequency=str(payload.get("search_frequency", "Daily")).strip(),
+        qualification_rules=qualification_rules,
         priority=int(payload.get("priority", 0) or 0),
     )
 

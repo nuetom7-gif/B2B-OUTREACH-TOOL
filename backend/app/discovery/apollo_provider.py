@@ -27,7 +27,7 @@ class ApolloProvider(DiscoveryProvider):
             base_url=self.settings.apollo_base_url.rstrip("/"),
             timeout=30.0,
             headers={
-                "Authorization": f"Bearer {self.settings.apollo_api_key}",
+                "x-api-key": self.settings.apollo_api_key,
                 "Accept": "application/json",
                 "Content-Type": "application/json",
             },
@@ -120,9 +120,11 @@ class ApolloProvider(DiscoveryProvider):
             if isinstance(location, dict):
                 country = location.get("country") or location.get("country_name")
                 region = location.get("state") or location.get("region")
+                city = location.get("city") or location.get("locality") or location.get("metro_area") or location.get("town")
             else:
                 country = item.get("country")
                 region = item.get("region")
+                city = item.get("city")
             results.append(
                 DiscoveryCompanyCandidate(
                     source_provider=self.provider_name(),
@@ -134,6 +136,7 @@ class ApolloProvider(DiscoveryProvider):
                     employee_count=self._to_int(item.get("estimated_num_employees") or item.get("organization_num_employees") or item.get("employees")),
                     country=str(country).strip() if country else None,
                     region=str(region).strip() if region else None,
+                    city=str(city).strip() if city else None,
                     description=item.get("short_description") or item.get("description") or item.get("headline"),
                     last_updated=self._parse_dt(item.get("updated_at") or item.get("last_updated_at") or item.get("last_updated")),
                     confidence=item.get("confidence") or item.get("score_label"),

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import asdict
 import json
 
 from sqlalchemy.orm import Session
@@ -9,7 +10,7 @@ from app.discovery.apollo_provider import ApolloProviderError
 from app.discovery.config_loader import load_icp_config
 from app.discovery.provider import DiscoveryProvider
 from app.discovery.provider_manager import DiscoveryProviderManager, create_default_provider_manager
-from app.discovery.qualification import score_organization, score_person
+from app.discovery.qualification import score_organization, score_person, summarize_qualification_results
 from app.discovery.repository import (
     create_run,
     due_for_frequency,
@@ -87,6 +88,8 @@ class DiscoveryEngine:
         context = DiscoveryContext(product_line=icp, run_id=run.id)
         try:
             company_records: list[tuple[ProviderOrganization, object, list[ProviderPerson], list[object]]] = []
+            organization_scores = []
+            imported_company_count = 0
             org_page = 1
             per_page = 100
             max_companies = self.settings.apollo_max_companies_per_run
@@ -109,10 +112,47 @@ class DiscoveryEngine:
 
             for organization, org_record, people, person_records in company_records:
                 org_score = score_organization(icp, organization, people)
+                organization_scores.append(org_score)
                 org_record.score = int(org_score.score)
                 org_record.needs_manual_review = org_score.needs_manual_review
-                org_record.confidence = "high" if org_score.status == "qualified" else "medium" if org_score.status == "manual_review" else "low"
+                org_record.confidence = org_score.final_confidence.lower() if org_score.final_confidence else (
+                    "high" if org_score.status == "qualified" else "medium" if org_score.status == "manual_review" else "low"
+                )
                 org_record.qualification_status = org_score.status
+                org_record.final_status = org_score.status
+                org_record.qualification_threshold = int(org_score.qualification_threshold or 0)
+                org_record.manual_review_threshold = int(org_score.manual_review_threshold or 0)
+                org_record.qualification_evaluated_at = org_score.evaluation_timestamp
+                org_record.qualification_result_json = json.dumps(
+                    {
+                        "company": {
+                            "name": organization.name,
+                            "provider_name": organization.source_provider,
+                            "provider_record_id": organization.source_record_id,
+                            "apollo_organization_id": organization.provider_organization_id,
+                        },
+                        "run_id": run.id,
+                        "final_status": org_score.status,
+                        "final_score": org_score.score,
+                        "qualification_threshold": org_score.qualification_threshold,
+                        "manual_review_threshold": org_score.manual_review_threshold,
+                        "evaluation_timestamp": org_score.evaluation_timestamp,
+                        "overall_recommendation": org_score.overall_recommendation,
+                        "final_confidence": org_score.final_confidence,
+                        "matched_industry_level": org_score.matched_industry_level,
+                        "matched_industry_name": org_score.matched_industry_name,
+                        "matched_keywords": org_score.matched_keywords,
+                        "matched_keyword_groups": org_score.matched_keyword_groups,
+                        "matched_decision_maker": org_score.matched_decision_maker,
+                        "matched_decision_maker_title": org_score.matched_decision_maker_title,
+                        "matched_cluster": org_score.matched_cluster,
+                        "applied_bonuses": [asdict(item) for item in org_score.applied_bonuses],
+                        "applied_penalties": [asdict(item) for item in org_score.applied_penalties],
+                        "reasons": org_score.reasons,
+                        "rule_results": [asdict(rule_result) for rule_result in org_score.rule_results],
+                    },
+                    default=str,
+                )
                 org_record.sync_status = "manual_review" if org_score.status == "manual_review" else "rejected"
                 org_record.warning_message = "; ".join(org_score.reasons) if org_score.reasons else None
                 if org_score.status != "qualified":
@@ -152,7 +192,11 @@ class DiscoveryEngine:
                 org_record.crm_company_id = company.id
                 org_record.last_sync = now_utc()
                 org_record.sync_status = "imported" if created else "updated" if merged_fields else "skipped"
-                org_record.qualification_status = "qualified"
+                org_record.final_status = "imported"
+                qualification_payload = json.loads(org_record.qualification_result_json or "{}")
+                qualification_payload["final_status"] = "imported"
+                org_record.qualification_result_json = json.dumps(qualification_payload, default=str)
+                imported_company_count += 1
                 if created:
                     run.companies_imported += 1
                 elif merged_fields:
@@ -167,7 +211,9 @@ class DiscoveryEngine:
                     person_record.needs_manual_review = person_score.needs_manual_review or contact_score < int(
                         icp.lead_score_rules.get("import_threshold", 60)
                     )
-                    person_record.confidence = "high" if contact_score >= int(icp.lead_score_rules.get("import_threshold", 60)) else "medium" if contact_score >= int(icp.lead_score_rules.get("manual_review_threshold", 35)) else "low"
+                    person_record.confidence = person_score.final_confidence.lower() if person_score.final_confidence else (
+                        "high" if contact_score >= int(icp.lead_score_rules.get("import_threshold", 60)) else "medium" if contact_score >= int(icp.lead_score_rules.get("manual_review_threshold", 35)) else "low"
+                    )
                     person_record.qualification_status = (
                         "qualified"
                         if contact_score >= int(icp.lead_score_rules.get("import_threshold", 60)) and person_score.matched_decision_maker
@@ -175,8 +221,41 @@ class DiscoveryEngine:
                         if person_record.needs_manual_review
                         else "rejected"
                     )
+                    person_record.final_status = person_record.qualification_status
                     person_record.sync_status = "manual_review" if person_record.qualification_status == "manual_review" else "rejected"
                     person_record.warning_message = "; ".join(person_score.reasons) if person_score.reasons else None
+                    person_record.qualification_threshold = int(person_score.qualification_threshold or 0)
+                    person_record.manual_review_threshold = int(person_score.manual_review_threshold or 0)
+                    person_record.qualification_evaluated_at = person_score.evaluation_timestamp
+                    person_record.qualification_result_json = json.dumps(
+                        {
+                            "company": {
+                                "name": organization.name,
+                                "provider_name": organization.source_provider,
+                                "provider_record_id": organization.source_record_id,
+                                "apollo_organization_id": organization.provider_organization_id,
+                            },
+                            "person": {
+                                "name": person.name,
+                                "title": person.title,
+                                "provider_record_id": person.provider_person_id,
+                            },
+                            "final_status": person_score.status,
+                            "final_score": person_score.score,
+                            "qualification_threshold": person_score.qualification_threshold,
+                            "manual_review_threshold": person_score.manual_review_threshold,
+                            "evaluation_timestamp": person_score.evaluation_timestamp,
+                            "overall_recommendation": person_score.overall_recommendation,
+                            "final_confidence": person_score.final_confidence,
+                            "matched_decision_maker_title": person_score.matched_decision_maker_title,
+                            "matched_keywords": person_score.matched_keywords,
+                            "applied_bonuses": [asdict(item) for item in person_score.applied_bonuses],
+                            "applied_penalties": [asdict(item) for item in person_score.applied_penalties],
+                            "reasons": person_score.reasons,
+                            "rule_results": [asdict(rule_result) for rule_result in person_score.rule_results],
+                        },
+                        default=str,
+                    )
                     if person_record.qualification_status != "qualified":
                         run.contacts_skipped += 1
                         continue
@@ -232,6 +311,10 @@ class DiscoveryEngine:
                     person_record.crm_contact_id = contact.id
                     person_record.last_sync = now_utc()
                     person_record.sync_status = "imported" if created_contact else "updated" if merged_contact_fields else "skipped"
+                    person_record.final_status = "imported"
+                    person_payload = json.loads(person_record.qualification_result_json or "{}")
+                    person_payload["final_status"] = "imported"
+                    person_record.qualification_result_json = json.dumps(person_payload, default=str)
                     if created_contact:
                         run.contacts_imported += 1
                     elif merged_contact_fields:
@@ -239,8 +322,21 @@ class DiscoveryEngine:
                     else:
                         run.contacts_skipped += 1
 
-                self.db.flush()
-                self.db.commit()
+            summary = summarize_qualification_results(
+                organization_scores,
+                product_name=icp.product_name,
+                run_id=run.id,
+                imported_count=imported_company_count,
+            )
+            run.qualification_evaluated_count = summary["companies_evaluated"]
+            run.qualification_imported_count = summary["imported"]
+            run.qualification_manual_review_count = summary["manual_review"]
+            run.qualification_rejected_count = summary["rejected"]
+            run.qualification_average_score = summary["average_score"]
+            run.qualification_top_failure_reasons_json = json.dumps(summary["most_common_failure_reasons"], default=str)
+            run.qualification_summary_json = json.dumps(summary, default=str)
+            self.db.flush()
+            self.db.commit()
 
             finish_run(self.db, run, context=context, status="completed")
             self.db.commit()

@@ -38,6 +38,13 @@ def _serialize_run(run) -> DiscoveryRunRead:
         quota_remaining=run.quota_remaining,
         errors=json.loads(run.errors_json or "[]"),
         warnings=json.loads(run.warnings_json or "[]"),
+        qualification_summary=json.loads(run.qualification_summary_json or "{}"),
+        qualification_top_failure_reasons=json.loads(run.qualification_top_failure_reasons_json or "[]"),
+        qualification_average_score=run.qualification_average_score,
+        qualification_evaluated_count=run.qualification_evaluated_count,
+        qualification_imported_count=run.qualification_imported_count,
+        qualification_manual_review_count=run.qualification_manual_review_count,
+        qualification_rejected_count=run.qualification_rejected_count,
     )
 
 
@@ -64,7 +71,12 @@ def _serialize_stage(record) -> DiscoveryStagingRead:
         person_linkedin_url=record.person_linkedin_url,
         person_seniority=record.person_seniority,
         qualification_status=record.qualification_status,
+        final_status=record.final_status,
         score=record.score,
+        qualification_threshold=record.qualification_threshold,
+        manual_review_threshold=record.manual_review_threshold,
+        qualification_evaluated_at=record.qualification_evaluated_at,
+        qualification_result=json.loads(record.qualification_result_json or "{}"),
         confidence=record.confidence,
         needs_manual_review=record.needs_manual_review,
         sync_status=record.sync_status,
@@ -218,4 +230,6 @@ def get_summary(db: Session = Depends(get_db)):
         "staging_count": summary["staging_count"],
         "runs": [_serialize_run(run) for run in summary["runs"]],
         "recent_manual_review": [_serialize_stage(record) for record in summary["recent_manual_review"]],
+        "latest_qualification_summary": summary["latest_qualification_summary"],
+        "qualification_metrics": summary["qualification_metrics"],
     }

@@ -1,7 +1,7 @@
 """add automation tables
 
 Revision ID: 0004_add_automation_tables
-Revises: 0003_provider_agnostic_source_fields
+Revises: 0003_provider_fields
 Create Date: 2026-08-02
 """
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 revision = "0004_add_automation_tables"
-down_revision = "0003_provider_agnostic_source_fields"
+down_revision = "0003_provider_fields"
 branch_labels = None
 depends_on = None
 

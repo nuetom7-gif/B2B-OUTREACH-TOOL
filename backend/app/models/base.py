@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -212,6 +212,13 @@ class DiscoveryRun(Base, TimestampMixin):
     quota_remaining: Mapped[int | None] = mapped_column(Integer, nullable=True)
     errors_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
     warnings_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    qualification_summary_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    qualification_top_failure_reasons_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    qualification_average_score: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    qualification_evaluated_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    qualification_imported_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    qualification_manual_review_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    qualification_rejected_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     staging_records = relationship("DiscoveryStagingRecord", back_populates="run", cascade="all, delete-orphan")
 
@@ -241,7 +248,12 @@ class DiscoveryStagingRecord(Base, TimestampMixin):
     person_seniority: Mapped[str | None] = mapped_column(String(64), nullable=True)
     raw_payload_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
     qualification_status: Mapped[str] = mapped_column(String(32), default="staged", nullable=False)
+    final_status: Mapped[str] = mapped_column(String(32), default="staged", nullable=False)
     score: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    qualification_threshold: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    manual_review_threshold: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    qualification_evaluated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    qualification_result_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
     confidence: Mapped[str] = mapped_column(String(32), default="unknown", nullable=False)
     needs_manual_review: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     sync_status: Mapped[str] = mapped_column(String(32), default="staged", nullable=False)
