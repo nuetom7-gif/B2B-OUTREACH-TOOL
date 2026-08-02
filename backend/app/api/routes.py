@@ -9,22 +9,43 @@ from app.core.config import get_settings
 from app.db.session import get_db
 from app.models.base import Campaign, Company, CompanyProductFit, Contact, Mailbox, Message, Reply
 from app.schemas import (
+    BulkSendRequest,
     CampaignCreate,
     CampaignRead,
     CompanyCreate,
     CompanyRead,
+    DailyLeadTargetRead,
+    DailyLeadTargetUpdate,
     ContactCreate,
     ContactRead,
+    ContactUpdate,
     DashboardRead,
+    DashboardStatsRead,
+    DraftGenerateRequest,
+    DraftRead,
+    DraftUpdateRequest,
     FollowUpCreate,
     MailboxCreate,
     MailboxRead,
     MessageDraftCreate,
     MessageSendCreate,
     ReplyCreate,
+    WorkspaceSettingRead,
+    WorkspaceSettingUpdate,
 )
 from app.services.csv_service import pick_field, read_csv_upload, split_list
 from app.services.discovery_merge import find_contact_for_discovery
+from app.services.automation import (
+    create_draft,
+    dashboard_stats,
+    daily_target_snapshot,
+    list_drafts,
+    settings_snapshot,
+    send_bulk_messages,
+    upsert_daily_targets,
+    upsert_workspace_settings,
+    update_draft,
+)
 from app.services.outreach import (
     add_audit,
     company_contact_count,
@@ -145,6 +166,11 @@ def dashboard(db: Session = Depends(get_db)):
         product_breakdown=product_breakdown(db),
         recent_messages=recent_messages(db),
     )
+
+
+@router.get("/dashboard/stats", response_model=DashboardStatsRead)
+def dashboard_stats_endpoint(db: Session = Depends(get_db)):
+    return dashboard_stats(db)
 
 
 @router.get("/companies", response_model=list[CompanyRead])
@@ -330,6 +356,50 @@ def create_contact(
     return contact_to_read(contact)
 
 
+@router.put("/contacts/{contact_id}", response_model=ContactRead)
+def update_contact(
+    contact_id: int,
+    payload: ContactUpdate,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    contact = get_contact_or_404(db, contact_id)
+    if payload.company_id is not None:
+        company = get_company_or_404(db, payload.company_id)
+    elif payload.company_name:
+        company = db.execute(select(Company).where(Company.name == payload.company_name)).scalars().first()
+        if company is None:
+            company = Company(name=payload.company_name, industry="Unspecified", source="Manual", notes="")
+            db.add(company)
+            db.flush()
+    else:
+        company = contact.company
+    contact.name = payload.name
+    contact.title = payload.title
+    contact.company_id = company.id
+    contact.email = payload.email
+    contact.phone = payload.phone
+    contact.linkedin_url = payload.linkedin_url
+    contact.do_not_contact = payload.do_not_contact
+    add_audit(
+        db,
+        entity_type="contact",
+        entity_id=str(contact.id),
+        action="updated",
+        reason="Contact edited from lead review.",
+        metadata={
+            "name": payload.name,
+            "title": payload.title,
+            "company_id": company.id,
+            "do_not_contact": payload.do_not_contact,
+        },
+        contact_id=contact.id,
+    )
+    db.commit()
+    db.refresh(contact)
+    return contact_to_read(contact)
+
+
 @router.post("/contacts/import")
 async def import_contacts(
     file: UploadFile = File(...),
@@ -472,6 +542,36 @@ def list_mailboxes(db: Session = Depends(get_db)):
     ]
 
 
+@router.get("/daily-targets", response_model=list[DailyLeadTargetRead])
+def get_daily_targets(db: Session = Depends(get_db)):
+    return daily_target_snapshot(db)
+
+
+@router.put("/daily-targets", response_model=list[DailyLeadTargetRead])
+def update_daily_targets(
+    payload: list[DailyLeadTargetUpdate],
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    if payload:
+        upsert_daily_targets(db, payload)
+    return daily_target_snapshot(db)
+
+
+@router.get("/settings")
+def get_workspace_settings(db: Session = Depends(get_db)):
+    return settings_snapshot(db)
+
+
+@router.put("/settings")
+def update_workspace_settings(
+    payload: list[WorkspaceSettingUpdate],
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    return upsert_workspace_settings(db, payload)
+
+
 @router.post("/mailboxes", response_model=MailboxRead)
 def create_mailbox(
     payload: MailboxCreate,
@@ -526,6 +626,75 @@ def list_messages(db: Session = Depends(get_db)):
         }
         for message in messages
     ]
+
+
+@router.get("/drafts", response_model=list[DraftRead])
+def list_email_drafts(db: Session = Depends(get_db)):
+    return [DraftRead(**draft) for draft in list_drafts(db)]
+
+
+@router.post("/drafts/generate", response_model=DraftRead)
+def generate_email_draft(
+    payload: DraftGenerateRequest,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    contact = get_contact_or_404(db, payload.lead_id)
+    try:
+        draft = create_draft(db, payload=payload, contact=contact)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return DraftRead(
+        id=draft.id,
+        contact_id=draft.contact_id,
+        contact_name=draft.contact.name,
+        company_name=draft.contact.company.name,
+        campaign_id=draft.campaign_id,
+        campaign_name=draft.campaign.name if draft.campaign else None,
+        subject=draft.subject,
+        body=draft.body,
+        status=draft.status,
+        sequence_step=draft.sequence_step,
+        updated_at=draft.updated_at,
+    )
+
+
+@router.put("/drafts/{draft_id}", response_model=DraftRead)
+def save_email_draft(
+    draft_id: int,
+    payload: DraftUpdateRequest,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    try:
+        draft = update_draft(db, draft_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return DraftRead(
+        id=draft.id,
+        contact_id=draft.contact_id,
+        contact_name=draft.contact.name,
+        company_name=draft.contact.company.name,
+        campaign_id=draft.campaign_id,
+        campaign_name=draft.campaign.name if draft.campaign else None,
+        subject=draft.subject,
+        body=draft.body,
+        status=draft.status,
+        sequence_step=draft.sequence_step,
+        updated_at=draft.updated_at,
+    )
+
+
+@router.post("/messages/send-bulk")
+def send_bulk(
+    payload: BulkSendRequest,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    try:
+        return send_bulk_messages(db, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.post("/messages/draft")

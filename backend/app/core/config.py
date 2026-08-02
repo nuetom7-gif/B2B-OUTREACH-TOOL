@@ -33,10 +33,12 @@ class Settings(BaseSettings):
     discovery_enabled_providers: str = Field(default="apollo", alias="DISCOVERY_ENABLED_PROVIDERS")
     discovery_schedule_hour_utc: int = Field(default=2, alias="DISCOVERY_SCHEDULE_HOUR_UTC")
     discovery_schedule_minute_utc: int = Field(default=0, alias="DISCOVERY_SCHEDULE_MINUTE_UTC")
+    enable_automation_scheduler: bool = Field(default=False, alias="ENABLE_AUTOMATION_SCHEDULER")
 
     apollo_api_key: str = Field(default="", alias="APOLLO_API_KEY")
     hunter_api_key: str = Field(default="", alias="HUNTER_API_KEY")
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
+    openai_draft_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_DRAFT_MODEL")
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
 
     smtp_host: str = Field(default="", alias="SMTP_HOST")

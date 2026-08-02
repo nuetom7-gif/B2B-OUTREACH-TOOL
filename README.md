@@ -31,6 +31,13 @@ Phase 2A discovery is now implemented:
 - Duplicate merge using existing CRM rules
 - Discovery run tracking and metrics
 
+The current semi-automated workflow is now UI-first:
+- on-demand discovery jobs from Streamlit
+- background execution after a user click
+- lead review, draft editing, and bulk send from the UI
+- daily lead targets by product segment
+- workspace settings for batch size and SMTP defaults
+
 Phase 2B, Phase 3, and Phase 4 remain planned.
 
 ## Why This Stack
@@ -307,8 +314,21 @@ Useful discovery endpoints:
 - `GET /discovery/staging`
 - `GET /discovery/manual-review`
 - `GET /discovery/summary`
+- `POST /discovery/run` now accepts on-demand lead discovery inputs and queues a background job when those fields are provided
+- `GET /discovery/jobs`
+- `GET /discovery/jobs/{job_id}`
+- `POST /discovery/jobs/{job_id}/cancel`
+- `GET /dashboard/stats`
+- `GET /drafts`
+- `POST /drafts/generate`
+- `PUT /drafts/{id}`
+- `GET /daily-targets`
+- `PUT /daily-targets`
+- `GET /settings`
+- `PUT /settings`
+- `POST /messages/send-bulk`
 
-The Streamlit app now includes a Discovery tab for viewing runs and manual-review items and for triggering a discovery run manually.
+The Streamlit app now includes pages for Dashboard, Lead Discovery, Lead Review, Email Drafts, Send Emails, Analytics, and Settings.
 Run statuses are `running`, `completed`, and `failed`. Failed runs are shown in the discovery table and also called out with a visible warning in Streamlit.
 
 ## How To Use Phase 1

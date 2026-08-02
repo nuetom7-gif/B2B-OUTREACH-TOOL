@@ -22,6 +22,7 @@ class ApolloRateLimitError(ApolloProviderError):
 class ApolloProvider(DiscoveryProvider):
     def __init__(self) -> None:
         self.settings = get_settings()
+        self.api_calls_used = 0
         self._client = httpx.Client(
             base_url=self.settings.apollo_base_url.rstrip("/"),
             timeout=30.0,
@@ -62,6 +63,7 @@ class ApolloProvider(DiscoveryProvider):
                 if response.status_code in (401, 403):
                     raise ApolloProviderError(f"Apollo authentication or permission error: {response.text}")
                 response.raise_for_status()
+                self.api_calls_used += 1
                 payload = response.json()
                 if isinstance(payload, dict):
                     return payload

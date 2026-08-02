@@ -105,6 +105,33 @@ class Mailbox(Base, TimestampMixin):
     audit_events = relationship("AuditEvent", back_populates="mailbox")
 
 
+class WorkspaceSetting(Base, TimestampMixin):
+    __tablename__ = "workspace_settings"
+    __table_args__ = (UniqueConstraint("key", name="uq_workspace_settings_key"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    key: Mapped[str] = mapped_column(String(128), nullable=False)
+    value: Mapped[str] = mapped_column(Text, default="", nullable=False)
+
+
+class DailyLeadTarget(Base, TimestampMixin):
+    __tablename__ = "daily_lead_targets"
+    __table_args__ = (UniqueConstraint("product_segment", name="uq_daily_lead_targets_product_segment"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    product_segment: Mapped[str] = mapped_column(String(255), nullable=False)
+    target_leads_per_day: Mapped[int] = mapped_column(Integer, default=60, nullable=False)
+    companies_per_run: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
+    contacts_per_company: Mapped[int] = mapped_column(Integer, default=2, nullable=False)
+    max_emails_per_batch: Mapped[int] = mapped_column(Integer, default=60, nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    default_campaign_id: Mapped[int | None] = mapped_column(ForeignKey("campaigns.id", ondelete="SET NULL"), nullable=True)
+    default_mailbox_id: Mapped[int | None] = mapped_column(ForeignKey("mailboxes.id", ondelete="SET NULL"), nullable=True)
+
+    default_campaign = relationship("Campaign")
+    default_mailbox = relationship("Mailbox")
+
+
 class Message(Base, TimestampMixin):
     __tablename__ = "messages"
 
@@ -228,3 +255,51 @@ class DiscoveryStagingRecord(Base, TimestampMixin):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     run = relationship("DiscoveryRun", back_populates="staging_records")
+
+
+class DiscoveryJob(Base, TimestampMixin):
+    __tablename__ = "discovery_jobs"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    product_segment: Mapped[str] = mapped_column(String(255), nullable=False)
+    industry: Mapped[str] = mapped_column(String(255), nullable=False)
+    country: Mapped[str] = mapped_column(String(128), nullable=False)
+    state: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    keywords: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    company_limit: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
+    contacts_per_company: Mapped[int] = mapped_column(Integer, default=2, nullable=False)
+    max_leads: Mapped[int] = mapped_column(Integer, default=60, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
+    current_step: Mapped[str] = mapped_column(String(255), default="queued", nullable=False)
+    progress_percent: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    companies_found: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    companies_processed: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    contacts_discovered: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    qualified_leads: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    imported_leads: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    skipped_leads: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    failed_leads: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    api_calls_used: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    quota_remaining: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    request_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    result_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancel_requested: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    logs = relationship("DiscoveryJobLog", back_populates="job", cascade="all, delete-orphan")
+
+
+class DiscoveryJobLog(Base):
+    __tablename__ = "discovery_job_logs"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("discovery_jobs.id", ondelete="CASCADE"), nullable=False)
+    level: Mapped[str] = mapped_column(String(32), default="info", nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    metadata_json: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
+
+    job = relationship("DiscoveryJob", back_populates="logs")

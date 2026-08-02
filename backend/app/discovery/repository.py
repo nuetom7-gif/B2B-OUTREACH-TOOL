@@ -12,7 +12,7 @@ from app.discovery.types import (
     DiscoveryContext,
     ICPProductLine,
 )
-from app.models.base import DiscoveryRun, DiscoveryStagingRecord
+from app.models.base import DiscoveryJob, DiscoveryRun, DiscoveryStagingRecord
 
 
 def now_utc() -> datetime:
@@ -157,9 +157,13 @@ def list_staging_records(db: Session, *, run_id: int | None = None, manual_revie
 
 def todays_api_calls_used(db: Session) -> int:
     start = now_utc().replace(hour=0, minute=0, second=0, microsecond=0)
-    return db.scalar(
+    run_calls = db.scalar(
         select(func.coalesce(func.sum(DiscoveryRun.api_calls_used), 0)).where(DiscoveryRun.started_at >= start)
     ) or 0
+    job_calls = db.scalar(
+        select(func.coalesce(func.sum(DiscoveryJob.api_calls_used), 0)).where(DiscoveryJob.started_at >= start)
+    ) or 0
+    return run_calls + job_calls
 
 
 def due_for_frequency(last_started_at: datetime | None, search_frequency: str) -> bool:

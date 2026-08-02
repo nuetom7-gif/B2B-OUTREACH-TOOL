@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.discovery_routes import router as discovery_router
 from app.api.routes import router
 from app.core.config import get_settings
+from app.db.session import engine
+from app.models.base import Base
 from app.jobs.scheduler import start_scheduler, stop_scheduler
 
 settings = get_settings()
@@ -13,6 +15,7 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
     start_scheduler()
     yield
     stop_scheduler()

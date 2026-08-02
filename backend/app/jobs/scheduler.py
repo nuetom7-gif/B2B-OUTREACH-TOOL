@@ -22,6 +22,8 @@ def _run_discovery_job():
 def start_scheduler():
     if scheduler is None:
         return None
+    if not settings.enable_automation_scheduler:
+        return None
     if scheduler.running:
         return scheduler
     scheduler.add_job(
