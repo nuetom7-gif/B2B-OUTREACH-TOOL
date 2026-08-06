@@ -330,6 +330,87 @@ def render_discovery() -> None:
     jobs = fetch_json("/discovery/jobs", [])
     st.dataframe(pd.DataFrame(jobs), use_container_width=True, hide_index=True)
 
+    st.subheader("Discovery Run Reasons")
+    runs = fetch_json("/discovery/runs", [])
+    runs_frame = pd.DataFrame(runs)
+    if runs_frame.empty:
+        st.info("No discovery runs yet.")
+    else:
+        run_options = runs_frame.sort_values(by="started_at", ascending=False)["id"].tolist() if "started_at" in runs_frame.columns else runs_frame["id"].tolist()
+        selected_run_id = st.selectbox(
+            "Select discovery run",
+            run_options,
+            format_func=lambda value: next(
+                (
+                    f"#{row['id']} - {row.get('product_name', 'Unknown')} ({row.get('status', 'unknown')})"
+                    for row in runs
+                    if int(row["id"]) == int(value)
+                ),
+                f"Run {value}",
+            ),
+        )
+        reason_summary = fetch_json(f"/discovery/runs/{selected_run_id}/reasons", {})
+        render_metrics_row(
+            [
+                ("Candidates", reason_summary.get("total_candidates_found", 0)),
+                ("Imported", reason_summary.get("imported_count", 0)),
+                ("Rejected Categories", len(reason_summary.get("reason_counts", []))),
+                ("Success Categories", len(reason_summary.get("success_counts", []))),
+            ]
+        )
+
+        reason_cols = st.columns(2)
+        reason_frame = pd.DataFrame(reason_summary.get("reason_counts", []))
+        success_frame = pd.DataFrame(reason_summary.get("success_counts", []))
+        status_frame = pd.DataFrame(reason_summary.get("final_status_counts", []))
+        if not reason_frame.empty:
+            reason_cols[0].subheader("Rejection Reasons")
+            reason_cols[0].dataframe(reason_frame, use_container_width=True, hide_index=True)
+        if not success_frame.empty:
+            reason_cols[1].subheader("Success Reasons")
+            reason_cols[1].dataframe(success_frame, use_container_width=True, hide_index=True)
+        if not status_frame.empty:
+            st.write("Final status counts")
+            st.dataframe(status_frame, use_container_width=True, hide_index=True)
+
+        available_categories = []
+        available_categories.extend(
+            [str(row.get("reason_category")) for row in reason_summary.get("reason_counts", []) if row.get("reason_category")]
+        )
+        available_categories.extend(
+            [str(row.get("reason_category")) for row in reason_summary.get("success_counts", []) if row.get("reason_category")]
+        )
+        if available_categories:
+            selected_reason_category = st.selectbox("Inspect reason category", available_categories)
+            reason_records = fetch_json(
+                f"/discovery/runs/{selected_run_id}/records?reason_category={selected_reason_category}",
+                [],
+            )
+            reason_records_frame = pd.DataFrame(reason_records)
+            if reason_records_frame.empty:
+                st.info("No records found for the selected category.")
+            else:
+                display_cols = [
+                    column
+                    for column in [
+                        "id",
+                        "company_name",
+                        "person_name",
+                        "person_title",
+                        "final_status",
+                        "qualification_status",
+                        "decision_stage",
+                        "reason_category",
+                        "score",
+                        "qualification_threshold",
+                        "manual_review_threshold",
+                        "reason_details",
+                        "qualification_evaluated_at",
+                    ]
+                    if column in reason_records_frame.columns
+                ]
+                st.dataframe(reason_records_frame[display_cols], use_container_width=True, hide_index=True)
+
     st.subheader("Discovery Staging")
     staging = fetch_json("/discovery/staging", [])
     staging_frame = pd.DataFrame(staging)
@@ -348,9 +429,12 @@ def render_discovery() -> None:
             "score",
             "qualification_threshold",
             "manual_review_threshold",
+            "decision_stage",
+            "reason_category",
             "confidence",
             "sync_status",
             "qualification_evaluated_at",
+            "reason_details",
         ]
         if column in staging_frame.columns
     ]
@@ -379,6 +463,9 @@ def render_discovery() -> None:
                     "qualification": selected_staging.get("qualification_threshold"),
                     "manual_review": selected_staging.get("manual_review_threshold"),
                 },
+                "decision_stage": selected_staging.get("decision_stage"),
+                "reason_category": selected_staging.get("reason_category"),
+                "reason_details": selected_staging.get("reason_details", {}),
                 "evaluated_at": selected_staging.get("qualification_evaluated_at"),
                 "qualification_result": selected_staging.get("qualification_result", {}),
             }

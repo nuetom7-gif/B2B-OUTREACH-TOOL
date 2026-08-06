@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 import json
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -14,6 +15,7 @@ from app.discovery.qualification import score_organization, score_person, summar
 from app.discovery.repository import (
     create_run,
     due_for_frequency,
+    discovery_run_reasons,
     finish_run,
     latest_run_for_product,
     now_utc,
@@ -31,6 +33,163 @@ from app.services.discovery_merge import (
 
 class DiscoveryQuotaExceeded(RuntimeError):
     pass
+
+
+def _json_payload(value: Any) -> str:
+    return json.dumps(value, default=str)
+
+
+def _qualification_payload(
+    *,
+    run_id: int,
+    organization,
+    person=None,
+    score_result,
+    reason_category: str,
+    decision_stage: str,
+    reason_details: dict[str, Any],
+    final_status: str | None = None,
+) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "company": {
+            "name": organization.name,
+            "provider_name": organization.source_provider,
+            "provider_record_id": organization.source_record_id,
+            "apollo_organization_id": organization.provider_organization_id,
+        },
+        "run_id": run_id,
+        "final_status": final_status or score_result.status,
+        "final_score": score_result.score,
+        "qualification_threshold": score_result.qualification_threshold,
+        "manual_review_threshold": score_result.manual_review_threshold,
+        "evaluation_timestamp": score_result.evaluation_timestamp,
+        "overall_recommendation": score_result.overall_recommendation,
+        "final_confidence": score_result.final_confidence,
+        "matched_industry_level": score_result.matched_industry_level,
+        "matched_industry_name": score_result.matched_industry_name,
+        "matched_keywords": score_result.matched_keywords,
+        "matched_keyword_groups": score_result.matched_keyword_groups,
+        "matched_decision_maker": score_result.matched_decision_maker,
+        "matched_decision_maker_title": score_result.matched_decision_maker_title,
+        "matched_cluster": score_result.matched_cluster,
+        "applied_bonuses": [asdict(item) for item in score_result.applied_bonuses],
+        "applied_penalties": [asdict(item) for item in score_result.applied_penalties],
+        "reasons": score_result.reasons,
+        "rule_results": [asdict(rule_result) for rule_result in score_result.rule_results],
+        "reason_category": reason_category,
+        "decision_stage": decision_stage,
+        "reason_details": reason_details,
+    }
+    if person is not None:
+        payload["person"] = {
+            "name": person.name,
+            "title": person.title,
+            "provider_record_id": person.provider_person_id,
+        }
+    return payload
+
+
+def _store_outcome(
+    record,
+    *,
+    run_id: int,
+    organization,
+    score_result,
+    reason_category: str,
+    decision_stage: str,
+    reason_details: dict[str, Any],
+    person=None,
+    final_status: str | None = None,
+    sync_status: str | None = None,
+    qualification_status: str | None = None,
+) -> None:
+    resolved_final_status = final_status or score_result.status
+    record.qualification_status = qualification_status or score_result.status
+    record.final_status = resolved_final_status
+    record.decision_stage = decision_stage
+    record.reason_category = reason_category
+    record.reason_details_json = _json_payload(reason_details)
+    if sync_status is not None:
+        record.sync_status = sync_status
+    record.qualification_result_json = _json_payload(
+        _qualification_payload(
+            run_id=run_id,
+            organization=organization,
+            person=person,
+            score_result=score_result,
+            reason_category=reason_category,
+            decision_stage=decision_stage,
+            reason_details=reason_details,
+            final_status=resolved_final_status,
+        )
+    )
+
+
+def _organization_reason_category(organization, org_score) -> tuple[str, dict[str, Any]]:
+    rule_map = {rule.rule_name: rule for rule in org_score.rule_results}
+    reason_details: dict[str, Any] = {
+        "score": org_score.score,
+        "qualification_threshold": org_score.qualification_threshold,
+        "manual_review_threshold": org_score.manual_review_threshold,
+        "reasons": org_score.reasons,
+        "matched_industry_level": org_score.matched_industry_level,
+        "matched_industry_name": org_score.matched_industry_name,
+        "matched_keywords": org_score.matched_keywords,
+        "matched_decision_maker_title": org_score.matched_decision_maker_title,
+        "matched_cluster": org_score.matched_cluster,
+    }
+    if not organization.name or not organization.source_record_id:
+        reason_details["missing_fields"] = [field for field, value in {"name": organization.name, "source_record_id": organization.source_record_id}.items() if not value]
+        return "provider_error", reason_details
+    if org_score.status == "qualified":
+        return "imported", reason_details
+    if rule_map.get("Industry Match") and rule_map["Industry Match"].points_awarded <= 0 and not org_score.matched_keywords:
+        return "industry_mismatch", reason_details
+    if rule_map.get("Employee Count") and rule_map["Employee Count"].points_awarded <= 0 and organization.employee_count is not None:
+        reason_details["employee_count"] = organization.employee_count
+        reason_details["qualification_threshold"] = org_score.qualification_threshold
+        return "size_mismatch", reason_details
+    if org_score.score < (org_score.qualification_threshold or 0):
+        reason_details["score"] = org_score.score
+        reason_details["threshold"] = org_score.qualification_threshold
+        return "score_below_threshold", reason_details
+    if org_score.status == "manual_review":
+        return "score_below_threshold", reason_details
+    return "provider_error", reason_details
+
+
+def _person_reason_category(person, person_score, *, blocked_contact=None, qualification_threshold: float | None = None) -> tuple[str, dict[str, Any]]:
+    rule_map = {rule.rule_name: rule for rule in person_score.rule_results}
+    reason_details: dict[str, Any] = {
+        "score": person_score.score,
+        "qualification_threshold": qualification_threshold or person_score.qualification_threshold,
+        "manual_review_threshold": person_score.manual_review_threshold,
+        "reasons": person_score.reasons,
+        "matched_decision_maker_title": person_score.matched_decision_maker_title,
+        "matched_keywords": person_score.matched_keywords,
+        "email_status": person.email_status,
+        "person_title": person.title,
+    }
+    if blocked_contact is not None:
+        reason_details["blocked_contact_id"] = blocked_contact.id
+        reason_details["blocked_contact_name"] = blocked_contact.name
+        return "duplicate_suppressed", reason_details
+    if not person.name or not person.title:
+        reason_details["missing_fields"] = [field for field, value in {"name": person.name, "title": person.title}.items() if not value]
+        return "provider_error", reason_details
+    if not person_score.matched_decision_maker_title:
+        return "no_matching_title", reason_details
+    if not person.email_status or person.email_status.lower() != "verified":
+        if rule_map.get("Verified Email") and rule_map["Verified Email"].points_awarded <= 0:
+            return "no_verified_email", reason_details
+    if person_score.status == "qualified":
+        return "imported", reason_details
+    if person_score.score < (qualification_threshold or person_score.qualification_threshold or 0):
+        reason_details["threshold"] = qualification_threshold or person_score.qualification_threshold
+        return "score_below_threshold", reason_details
+    if person_score.status == "manual_review":
+        return "score_below_threshold", reason_details
+    return "provider_error", reason_details
 
 
 class DiscoveryEngine:
@@ -119,43 +278,24 @@ class DiscoveryEngine:
                     "high" if org_score.status == "qualified" else "medium" if org_score.status == "manual_review" else "low"
                 )
                 org_record.qualification_status = org_score.status
-                org_record.final_status = org_score.status
                 org_record.qualification_threshold = int(org_score.qualification_threshold or 0)
                 org_record.manual_review_threshold = int(org_score.manual_review_threshold or 0)
                 org_record.qualification_evaluated_at = org_score.evaluation_timestamp
-                org_record.qualification_result_json = json.dumps(
-                    {
-                        "company": {
-                            "name": organization.name,
-                            "provider_name": organization.source_provider,
-                            "provider_record_id": organization.source_record_id,
-                            "apollo_organization_id": organization.provider_organization_id,
-                        },
-                        "run_id": run.id,
-                        "final_status": org_score.status,
-                        "final_score": org_score.score,
-                        "qualification_threshold": org_score.qualification_threshold,
-                        "manual_review_threshold": org_score.manual_review_threshold,
-                        "evaluation_timestamp": org_score.evaluation_timestamp,
-                        "overall_recommendation": org_score.overall_recommendation,
-                        "final_confidence": org_score.final_confidence,
-                        "matched_industry_level": org_score.matched_industry_level,
-                        "matched_industry_name": org_score.matched_industry_name,
-                        "matched_keywords": org_score.matched_keywords,
-                        "matched_keyword_groups": org_score.matched_keyword_groups,
-                        "matched_decision_maker": org_score.matched_decision_maker,
-                        "matched_decision_maker_title": org_score.matched_decision_maker_title,
-                        "matched_cluster": org_score.matched_cluster,
-                        "applied_bonuses": [asdict(item) for item in org_score.applied_bonuses],
-                        "applied_penalties": [asdict(item) for item in org_score.applied_penalties],
-                        "reasons": org_score.reasons,
-                        "rule_results": [asdict(rule_result) for rule_result in org_score.rule_results],
-                    },
-                    default=str,
-                )
-                org_record.sync_status = "manual_review" if org_score.status == "manual_review" else "rejected"
+                reason_category, reason_details = _organization_reason_category(organization, org_score)
                 org_record.warning_message = "; ".join(org_score.reasons) if org_score.reasons else None
                 if org_score.status != "qualified":
+                    _store_outcome(
+                        org_record,
+                        run_id=run.id,
+                        organization=organization,
+                        score_result=org_score,
+                        reason_category=reason_category,
+                        decision_stage="qualification",
+                        reason_details=reason_details,
+                        final_status=org_score.status,
+                        sync_status="manual_review" if org_score.status == "manual_review" else "rejected",
+                        qualification_status=org_score.status,
+                    )
                     run.companies_skipped += 1
                     if org_score.needs_manual_review:
                         run.warnings_json = json.dumps((json.loads(run.warnings_json) if run.warnings_json else []) + [organization.name])
@@ -191,11 +331,25 @@ class DiscoveryEngine:
                 company.needs_manual_review = False
                 org_record.crm_company_id = company.id
                 org_record.last_sync = now_utc()
-                org_record.sync_status = "imported" if created else "updated" if merged_fields else "skipped"
-                org_record.final_status = "imported"
-                qualification_payload = json.loads(org_record.qualification_result_json or "{}")
-                qualification_payload["final_status"] = "imported"
-                org_record.qualification_result_json = json.dumps(qualification_payload, default=str)
+                import_reason_category = "duplicate_merged" if merged_fields else "imported"
+                import_reason_details = {
+                    "created": created,
+                    "merged_fields": merged_fields,
+                    "company_id": company.id,
+                    "company_name": company.name,
+                }
+                _store_outcome(
+                    org_record,
+                    run_id=run.id,
+                    organization=organization,
+                    score_result=org_score,
+                    reason_category=import_reason_category,
+                    decision_stage="import",
+                    reason_details=import_reason_details,
+                    final_status="imported",
+                    sync_status="imported" if created else "updated" if merged_fields else "skipped",
+                    qualification_status=org_score.status,
+                )
                 imported_company_count += 1
                 if created:
                     run.companies_imported += 1
@@ -221,42 +375,29 @@ class DiscoveryEngine:
                         if person_record.needs_manual_review
                         else "rejected"
                     )
-                    person_record.final_status = person_record.qualification_status
-                    person_record.sync_status = "manual_review" if person_record.qualification_status == "manual_review" else "rejected"
                     person_record.warning_message = "; ".join(person_score.reasons) if person_score.reasons else None
                     person_record.qualification_threshold = int(person_score.qualification_threshold or 0)
                     person_record.manual_review_threshold = int(person_score.manual_review_threshold or 0)
                     person_record.qualification_evaluated_at = person_score.evaluation_timestamp
-                    person_record.qualification_result_json = json.dumps(
-                        {
-                            "company": {
-                                "name": organization.name,
-                                "provider_name": organization.source_provider,
-                                "provider_record_id": organization.source_record_id,
-                                "apollo_organization_id": organization.provider_organization_id,
-                            },
-                            "person": {
-                                "name": person.name,
-                                "title": person.title,
-                                "provider_record_id": person.provider_person_id,
-                            },
-                            "final_status": person_score.status,
-                            "final_score": person_score.score,
-                            "qualification_threshold": person_score.qualification_threshold,
-                            "manual_review_threshold": person_score.manual_review_threshold,
-                            "evaluation_timestamp": person_score.evaluation_timestamp,
-                            "overall_recommendation": person_score.overall_recommendation,
-                            "final_confidence": person_score.final_confidence,
-                            "matched_decision_maker_title": person_score.matched_decision_maker_title,
-                            "matched_keywords": person_score.matched_keywords,
-                            "applied_bonuses": [asdict(item) for item in person_score.applied_bonuses],
-                            "applied_penalties": [asdict(item) for item in person_score.applied_penalties],
-                            "reasons": person_score.reasons,
-                            "rule_results": [asdict(rule_result) for rule_result in person_score.rule_results],
-                        },
-                        default=str,
-                    )
                     if person_record.qualification_status != "qualified":
+                        reason_category, reason_details = _person_reason_category(
+                            person,
+                            person_score,
+                            qualification_threshold=int(icp.lead_score_rules.get("import_threshold", 60)),
+                        )
+                        _store_outcome(
+                            person_record,
+                            run_id=run.id,
+                            organization=organization,
+                            person=person,
+                            score_result=person_score,
+                            reason_category=reason_category,
+                            decision_stage="qualification",
+                            reason_details=reason_details,
+                            final_status=person_record.qualification_status,
+                            sync_status="manual_review" if person_record.qualification_status == "manual_review" else "rejected",
+                            qualification_status=person_record.qualification_status,
+                        )
                         run.contacts_skipped += 1
                         continue
                     blocked_contact = find_blocked_contact_for_discovery(
@@ -272,8 +413,20 @@ class DiscoveryEngine:
                         title=person.title,
                     )
                     if blocked_contact:
-                        person_record.qualification_status = "rejected"
-                        person_record.sync_status = "rejected"
+                        reason_category, reason_details = _person_reason_category(person, person_score, blocked_contact=blocked_contact)
+                        _store_outcome(
+                            person_record,
+                            run_id=run.id,
+                            organization=organization,
+                            person=person,
+                            score_result=person_score,
+                            reason_category=reason_category,
+                            decision_stage="duplicate_check",
+                            reason_details=reason_details,
+                            final_status="rejected",
+                            sync_status="rejected",
+                            qualification_status="rejected",
+                        )
                         person_record.needs_manual_review = False
                         person_record.warning_message = "Existing do-not-contact contact blocked discovery import."
                         run.contacts_skipped += 1
@@ -310,11 +463,27 @@ class DiscoveryEngine:
                     contact.lead_score = max(contact.lead_score, contact_score)
                     person_record.crm_contact_id = contact.id
                     person_record.last_sync = now_utc()
-                    person_record.sync_status = "imported" if created_contact else "updated" if merged_contact_fields else "skipped"
-                    person_record.final_status = "imported"
-                    person_payload = json.loads(person_record.qualification_result_json or "{}")
-                    person_payload["final_status"] = "imported"
-                    person_record.qualification_result_json = json.dumps(person_payload, default=str)
+                    import_reason_category = "duplicate_merged" if merged_contact_fields else "imported"
+                    import_reason_details = {
+                        "created": created_contact,
+                        "merged_fields": merged_contact_fields,
+                        "contact_id": contact.id,
+                        "contact_name": contact.name,
+                        "verification_status": contact.verification_status,
+                    }
+                    _store_outcome(
+                        person_record,
+                        run_id=run.id,
+                        organization=organization,
+                        person=person,
+                        score_result=person_score,
+                        reason_category=import_reason_category,
+                        decision_stage="import",
+                        reason_details=import_reason_details,
+                        final_status="imported",
+                        sync_status="imported" if created_contact else "updated" if merged_contact_fields else "skipped",
+                        qualification_status=person_record.qualification_status,
+                    )
                     if created_contact:
                         run.contacts_imported += 1
                     elif merged_contact_fields:
@@ -335,6 +504,7 @@ class DiscoveryEngine:
             run.qualification_average_score = summary["average_score"]
             run.qualification_top_failure_reasons_json = json.dumps(summary["most_common_failure_reasons"], default=str)
             run.qualification_summary_json = json.dumps(summary, default=str)
+            run.reason_breakdown_json = json.dumps(discovery_run_reasons(self.db, run.id), default=str)
             self.db.flush()
             self.db.commit()
 
@@ -357,6 +527,7 @@ class DiscoveryEngine:
             }
         except (DiscoveryQuotaExceeded, ApolloProviderError, Exception) as exc:
             context.errors.append(str(exc))
+            run.reason_breakdown_json = json.dumps(discovery_run_reasons(self.db, run.id), default=str)
             finish_run(self.db, run, context=context, status="failed")
             self.db.commit()
             return {
@@ -389,6 +560,8 @@ class DiscoveryEngine:
             for person in results:
                 if len(people) >= self.settings.apollo_max_contacts_per_company:
                     break
+                record = stage_person(self.db, run, icp, organization, person)
+                run.contacts_found += 1
                 blocked_contact = find_blocked_contact_for_discovery(
                     self.db,
                     company_name=organization.name,
@@ -402,16 +575,53 @@ class DiscoveryEngine:
                     title=person.title,
                 )
                 if blocked_contact:
+                    reason_details = {
+                        "blocked_contact_id": blocked_contact.id,
+                        "blocked_contact_name": blocked_contact.name,
+                        "blocked_contact_do_not_contact": True,
+                        "company_name": organization.name,
+                        "person_name": person.name,
+                        "person_title": person.title,
+                    }
+                    record.score = 0
+                    record.needs_manual_review = False
+                    record.qualification_status = "rejected"
+                    record.final_status = "rejected"
+                    record.decision_stage = "duplicate_check"
+                    record.reason_category = "duplicate_suppressed"
+                    record.reason_details_json = _json_payload(reason_details)
+                    record.qualification_result_json = _json_payload(
+                        {
+                            "company": {
+                                "name": organization.name,
+                                "provider_name": organization.source_provider,
+                                "provider_record_id": organization.source_record_id,
+                                "apollo_organization_id": organization.provider_organization_id,
+                            },
+                            "person": {
+                                "name": person.name,
+                                "title": person.title,
+                                "provider_record_id": person.provider_person_id,
+                            },
+                            "final_status": "rejected",
+                            "final_score": 0,
+                            "reason_category": "duplicate_suppressed",
+                            "decision_stage": "duplicate_check",
+                            "reason_details": reason_details,
+                            "reasons": ["Existing do-not-contact contact blocked discovery import."],
+                            "rule_results": [],
+                        }
+                    )
+                    record.sync_status = "rejected"
+                    record.warning_message = "Existing do-not-contact contact blocked discovery import."
                     run.contacts_skipped += 1
                     run.warnings_json = json.dumps(
                         (json.loads(run.warnings_json) if run.warnings_json else [])
-                        + [f"Blocked do-not-contact contact before staging: {blocked_contact.name} ({blocked_contact.id})"]
+                        + [f"Blocked do-not-contact contact: {blocked_contact.name} ({blocked_contact.id})"]
                     )
                     continue
-                record = stage_person(self.db, run, icp, organization, person)
                 records.append(record)
                 people.append(person)
-                run.contacts_found += 1
             if len(results) < per_page:
                 break
             page += 1

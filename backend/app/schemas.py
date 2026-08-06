@@ -328,11 +328,23 @@ class DiscoveryRunRead(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     qualification_summary: dict[str, Any] = Field(default_factory=dict)
     qualification_top_failure_reasons: list[dict[str, Any]] = Field(default_factory=list)
+    reason_breakdown: dict[str, Any] = Field(default_factory=dict)
     qualification_average_score: float = 0.0
     qualification_evaluated_count: int = 0
     qualification_imported_count: int = 0
     qualification_manual_review_count: int = 0
     qualification_rejected_count: int = 0
+
+
+class DiscoveryRunReasonsRead(BaseModel):
+    run_id: int
+    product_name: str
+    status: str
+    total_candidates_found: int
+    imported_count: int
+    reason_counts: list[dict[str, Any]] = Field(default_factory=list)
+    success_counts: list[dict[str, Any]] = Field(default_factory=list)
+    final_status_counts: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class DiscoveryStagingRead(BaseModel):
@@ -360,6 +372,9 @@ class DiscoveryStagingRead(BaseModel):
     person_seniority: str | None = None
     qualification_status: str
     final_status: str
+    decision_stage: str
+    reason_category: str
+    reason_details: dict[str, Any] = Field(default_factory=dict)
     score: int
     qualification_threshold: int | None = None
     manual_review_threshold: int | None = None

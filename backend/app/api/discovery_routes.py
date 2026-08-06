@@ -9,8 +9,15 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.discovery.config_loader import load_icp_config
 from app.discovery.engine import run_discovery_cycle
-from app.discovery.repository import discovery_summary, get_run, list_runs, list_staging_records
-from app.schemas import DiscoveryJobCreate, DiscoveryJobRead, DiscoveryRunRead, DiscoveryRunRequest, DiscoveryStagingRead
+from app.discovery.repository import discovery_run_reasons, discovery_summary, get_run, list_runs, list_staging_records, list_staging_records_for_reason
+from app.schemas import (
+    DiscoveryJobCreate,
+    DiscoveryJobRead,
+    DiscoveryRunRead,
+    DiscoveryRunReasonsRead,
+    DiscoveryRunRequest,
+    DiscoveryStagingRead,
+)
 from app.api.routes import require_write_api_key
 from app.services.discovery_jobs import create_discovery_job, get_job, job_detail, list_jobs, request_cancel, submit_discovery_job
 
@@ -45,6 +52,7 @@ def _serialize_run(run) -> DiscoveryRunRead:
         qualification_imported_count=run.qualification_imported_count,
         qualification_manual_review_count=run.qualification_manual_review_count,
         qualification_rejected_count=run.qualification_rejected_count,
+        reason_breakdown=json.loads(run.reason_breakdown_json or "{}"),
     )
 
 
@@ -72,6 +80,9 @@ def _serialize_stage(record) -> DiscoveryStagingRead:
         person_seniority=record.person_seniority,
         qualification_status=record.qualification_status,
         final_status=record.final_status,
+        decision_stage=record.decision_stage,
+        reason_category=record.reason_category,
+        reason_details=json.loads(record.reason_details_json or "{}"),
         score=record.score,
         qualification_threshold=record.qualification_threshold,
         manual_review_threshold=record.manual_review_threshold,
@@ -210,6 +221,23 @@ def discovery_run_detail(run_id: int, db: Session = Depends(get_db)):
     if not run:
         raise HTTPException(status_code=404, detail="Discovery run not found")
     return _serialize_run(run)
+
+
+@router.get("/runs/{run_id}/reasons", response_model=DiscoveryRunReasonsRead)
+def discovery_run_reasons_detail(run_id: int, db: Session = Depends(get_db)):
+    try:
+        return discovery_run_reasons(db, run_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/runs/{run_id}/records", response_model=list[DiscoveryStagingRead])
+def discovery_run_reason_records(
+    run_id: int,
+    reason_category: str | None = None,
+    db: Session = Depends(get_db),
+):
+    return [_serialize_stage(record) for record in list_staging_records_for_reason(db, run_id=run_id, reason_category=reason_category)]
 
 
 @router.get("/staging", response_model=list[DiscoveryStagingRead])

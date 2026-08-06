@@ -158,6 +158,19 @@ def list_staging_records(db: Session, *, run_id: int | None = None, manual_revie
     return db.execute(stmt).scalars().all()
 
 
+def list_staging_records_for_reason(
+    db: Session,
+    *,
+    run_id: int,
+    reason_category: str | None = None,
+) -> list[DiscoveryStagingRecord]:
+    stmt = select(DiscoveryStagingRecord).where(DiscoveryStagingRecord.run_id == run_id)
+    if reason_category:
+        stmt = stmt.where(DiscoveryStagingRecord.reason_category == reason_category)
+    stmt = stmt.order_by(DiscoveryStagingRecord.created_at.desc())
+    return db.execute(stmt).scalars().all()
+
+
 def todays_api_calls_used(db: Session) -> int:
     start = now_utc().replace(hour=0, minute=0, second=0, microsecond=0)
     run_calls = db.scalar(
@@ -283,4 +296,36 @@ def discovery_summary(db: Session) -> dict:
             "average_score_per_icp": _avg_map(icp_scores),
             "average_score_per_product_line": _avg_map(product_scores),
         },
+    }
+
+
+def discovery_run_reasons(db: Session, run_id: int) -> dict:
+    run = get_run(db, run_id)
+    if run is None:
+        raise ValueError("Discovery run not found")
+
+    records = list_staging_records_for_reason(db, run_id=run_id)
+    total_candidates_found = len(records)
+    imported_count = sum(1 for record in records if record.final_status == "imported")
+    final_status_counts: Counter[str] = Counter()
+    reason_counts: Counter[str] = Counter()
+    imported_reason_counts: Counter[str] = Counter()
+
+    for record in records:
+        final_status_counts[str(record.final_status or "unknown")] += 1
+        category = str(record.reason_category or "unknown")
+        if record.final_status == "imported":
+            imported_reason_counts[category] += 1
+        else:
+            reason_counts[category] += 1
+
+    return {
+        "run_id": run_id,
+        "product_name": run.product_name,
+        "status": run.status,
+        "total_candidates_found": total_candidates_found,
+        "imported_count": imported_count,
+        "reason_counts": [{"reason_category": category, "count": count} for category, count in reason_counts.most_common()],
+        "success_counts": [{"reason_category": category, "count": count} for category, count in imported_reason_counts.most_common()],
+        "final_status_counts": [{"final_status": status, "count": count} for status, count in final_status_counts.most_common()],
     }
