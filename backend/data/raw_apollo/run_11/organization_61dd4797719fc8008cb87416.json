@@ -1,0 +1,80 @@
+{
+  "breadcrumbs": [
+    {
+      "label": "Contains Keywords",
+      "signal_field_name": "q_keywords",
+      "value": "laser cutting",
+      "display_name": "laser cutting"
+    },
+    {
+      "label": "# Employees",
+      "signal_field_name": "organization_num_employees_ranges",
+      "value": "10,10000",
+      "display_name": "10-10000"
+    },
+    {
+      "label": "Company Locations",
+      "signal_field_name": "organization_locations",
+      "value": "India",
+      "display_name": "India"
+    },
+    {
+      "label": "Company Keywords Contain ANY Of",
+      "signal_field_name": "q_organization_keyword_tags",
+      "value": "Laser Equipment Manufacturers",
+      "display_name": "Laser Equipment Manufacturers"
+    }
+  ],
+  "partial_results_only": false,
+  "has_join": false,
+  "disable_eu_prospecting": false,
+  "partial_results_limit": 10000,
+  "pagination": {
+    "page": 1,
+    "per_page": 100,
+    "total_entries": 1,
+    "total_pages": 1
+  },
+  "accounts": [],
+  "organizations": [
+    {
+      "id": "61dd4797719fc8008cb87416",
+      "name": "MultiTech Solutions",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mts-industrial-equipments",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "76186129",
+      "founded_year": 2014,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/671539484989920001b21612/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "naics_codes": [
+        "333922",
+        "333993"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": 0.3333333333333333
+    }
+  ],
+  "model_ids": [
+    "61dd4797719fc8008cb87416"
+  ],
+  "num_fetch_result": null,
+  "derived_params": {}
+}

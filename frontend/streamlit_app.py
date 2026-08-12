@@ -182,6 +182,16 @@ def render_dashboard() -> None:
                 ("Recent Runs", len(discovery.get("runs", []))),
             ]
         )
+        funnel = qualification_metrics.get("company_funnel", {})
+        render_metrics_row(
+            [
+                ("Apollo Companies", funnel.get("apollo_companies_found", 0)),
+                ("Qualified", funnel.get("qualified", 0)),
+                ("Imported", funnel.get("imported", 0)),
+                ("No Contact", funnel.get("no_contact_found", 0)),
+                ("Fallback Contact", funnel.get("fallback_contact_used", 0)),
+            ]
+        )
 
         cols = st.columns(2)
         cols[0].subheader("Failure Reasons")
@@ -229,66 +239,73 @@ def render_dashboard() -> None:
 
 def render_discovery() -> None:
     st.subheader("Lead Discovery")
-    targets = fetch_json("/daily-targets", [])
-    target_map = {row["product_segment"]: row for row in targets}
+    profiles = fetch_json("/discovery/search-profiles", [])
+    if not profiles:
+        st.warning("No enabled discovery search profiles are configured.")
+        return
+    products = sorted({row["product_name"] for row in profiles})
+
+    def reset_target_segment() -> None:
+        st.session_state["discovery_target_segment"] = "Select a target segment"
+        st.session_state["discovery_target_product"] = st.session_state["discovery_product_line"]
+
+    if st.session_state.get("discovery_product_line") not in products:
+        st.session_state["discovery_product_line"] = products[0]
+    selected_product = st.session_state["discovery_product_line"]
+    product_profiles = [row for row in profiles if row["product_name"] == selected_product]
+    segment_options = ["Select a target segment"] + [row["profile_name"] for row in product_profiles]
+
+    # These controls stay outside the form so changing the product immediately
+    # reruns Streamlit and rebuilds the dependent segment options.
+    st.selectbox(
+        "Business Division",
+        products,
+        key="discovery_product_line",
+        on_change=reset_target_segment,
+    )
+    selected_product = st.session_state["discovery_product_line"]
+    product_profiles = [row for row in profiles if row["product_name"] == selected_product]
+    segment_options = ["Select a target segment"] + [row["profile_name"] for row in product_profiles]
+    if (
+        st.session_state.get("discovery_target_product") != selected_product
+        or st.session_state.get("discovery_target_segment") not in segment_options
+    ):
+        st.session_state["discovery_target_segment"] = "Select a target segment"
+        st.session_state["discovery_target_product"] = selected_product
+    profile_name = st.selectbox("Target Segment", segment_options, key="discovery_target_segment")
 
     with st.form("discovery_form"):
-        product_segment = st.selectbox("Product Segment", PRODUCT_SEGMENTS)
-        industry = st.selectbox(
-            "Industry",
-            [
-                "Industrial Manufacturers",
-                "Warehouse Operators",
-                "Infrastructure Contractors",
-                "Custom Industry",
-            ],
-        )
-        if industry == "Custom Industry":
-            industry = st.text_input("Custom Industry", value="")
-        country = st.text_input("Country", value="India")
+        profile = next((row for row in product_profiles if row["profile_name"] == profile_name), None)
+        countries = (profile or {}).get("countries") or ["India"]
+        country = st.selectbox("Country", countries, index=0)
         state = st.text_input("State (optional)", value="")
-        keywords = st.text_area("Keywords", value="")
-        company_limit = st.number_input(
-            "Companies per Run",
-            min_value=1,
-            max_value=100,
-            value=int(target_map.get(product_segment, {}).get("companies_per_run", 30)),
-        )
-        contacts_per_company = st.number_input(
-            "Contacts per Company",
-            min_value=1,
-            max_value=10,
-            value=int(target_map.get(product_segment, {}).get("contacts_per_company", 2)),
-        )
-        max_leads = st.number_input(
-            "Maximum Leads",
-            min_value=1,
-            max_value=200,
-            value=int(target_map.get(product_segment, {}).get("target_leads_per_day", 60)),
-        )
-        submitted = st.form_submit_button("Find Leads")
+        with st.expander("Advanced Filters (optional)"):
+            use_employee_range = st.checkbox("Override employee range", value=False)
+            employee_min = st.number_input("Minimum employees", min_value=0, value=int((profile or {}).get("employee_min") or 0)) if use_employee_range else None
+            employee_max = st.number_input("Maximum employees", min_value=0, value=int((profile or {}).get("employee_max") or 0)) if use_employee_range else None
+        submitted = st.form_submit_button("Run Discovery")
     if submitted:
-        if not industry:
-            st.error("Please choose an industry.")
+        if profile is None:
+            st.error("Choose a Target Segment for the selected Product Line before running discovery.")
             return
         try:
             result = api_post(
                 "/discovery/run",
                 json={
-                    "product_segment": product_segment,
-                    "industry": industry,
+                    "profile_name": profile_name,
                     "country": country,
                     "state": state or None,
-                    "keywords": keywords,
-                    "company_limit": int(company_limit),
-                    "contacts_per_company": int(contacts_per_company),
-                    "max_leads": int(max_leads),
+                    "employee_min": int(employee_min) if employee_min is not None else None,
+                    "employee_max": int(employee_max) if employee_max is not None else None,
                 },
             )
-            job = result["job"]
-            st.session_state["active_discovery_job_id"] = job["id"]
-            st.success(f"Discovery job {job['id']} queued.")
-            st.rerun()
+            if result.get("job"):
+                job = result["job"]
+                st.session_state["active_discovery_job_id"] = job["id"]
+                st.success(f"Discovery job {job['id']} queued.")
+            else:
+                st.success(f"Discovery completed: {result.get('companies_imported', 0)} company import(s).")
+                st.json(result)
         except Exception as exc:
             st.error(f"Unable to start discovery: {exc}")
 
@@ -373,7 +390,14 @@ def render_discovery() -> None:
             st.write("Final status counts")
             st.dataframe(status_frame, use_container_width=True, hide_index=True)
 
-        available_categories = []
+        # Keep important review categories visible even when a run has no
+        # records in one of them yet.
+        available_categories = [
+            "missing_company_identifier",
+            "industry_mismatch",
+            "score_below_threshold",
+            "low_discovery_confidence",
+        ]
         available_categories.extend(
             [str(row.get("reason_category")) for row in reason_summary.get("reason_counts", []) if row.get("reason_category")]
         )
@@ -381,7 +405,10 @@ def render_discovery() -> None:
             [str(row.get("reason_category")) for row in reason_summary.get("success_counts", []) if row.get("reason_category")]
         )
         if available_categories:
-            selected_reason_category = st.selectbox("Inspect reason category", available_categories)
+            selected_reason_category = st.selectbox(
+                "Inspect reason category",
+                list(dict.fromkeys(available_categories)),
+            )
             reason_records = fetch_json(
                 f"/discovery/runs/{selected_run_id}/records?reason_category={selected_reason_category}",
                 [],
@@ -454,22 +481,39 @@ def render_discovery() -> None:
     )
     selected_staging = next((row for row in staging if int(row["id"]) == int(selected_staging_id)), None)
     if selected_staging:
-        st.json(
-            {
-                "final_status": selected_staging.get("final_status"),
-                "qualification_status": selected_staging.get("qualification_status"),
-                "score": selected_staging.get("score"),
-                "thresholds": {
-                    "qualification": selected_staging.get("qualification_threshold"),
-                    "manual_review": selected_staging.get("manual_review_threshold"),
-                },
-                "decision_stage": selected_staging.get("decision_stage"),
-                "reason_category": selected_staging.get("reason_category"),
-                "reason_details": selected_staging.get("reason_details", {}),
-                "evaluated_at": selected_staging.get("qualification_evaluated_at"),
-                "qualification_result": selected_staging.get("qualification_result", {}),
-            }
-        )
+        summary_tab, raw_tab = st.tabs(["Qualification", "Raw Apollo Data"])
+        with summary_tab:
+            st.json(
+                {
+                    "final_status": selected_staging.get("final_status"),
+                    "qualification_status": selected_staging.get("qualification_status"),
+                    "score": selected_staging.get("score"),
+                    "thresholds": {
+                        "qualification": selected_staging.get("qualification_threshold"),
+                        "manual_review": selected_staging.get("manual_review_threshold"),
+                    },
+                    "decision_stage": selected_staging.get("decision_stage"),
+                    "reason_category": selected_staging.get("reason_category"),
+                    "reason_details": selected_staging.get("reason_details", {}),
+                    "evaluated_at": selected_staging.get("qualification_evaluated_at"),
+                    "qualification_result": selected_staging.get("qualification_result", {}),
+                }
+            )
+        with raw_tab:
+            st.subheader("Raw Organization JSON")
+            st.json(selected_staging.get("raw_organization", {}))
+            st.subheader("Organization Field Mapping")
+            st.json(selected_staging.get("organization_mapping", {}))
+            st.subheader("People Request JSON")
+            st.json(selected_staging.get("people_request", {}))
+            st.subheader("Raw People JSON")
+            st.json(selected_staging.get("raw_people_response", {}))
+            st.subheader("Normalized Company")
+            st.json(selected_staging.get("normalized_company", {}))
+            st.subheader("Normalized Contacts")
+            st.json(selected_staging.get("normalized_contacts", []))
+            st.subheader("Qualification Input")
+            st.json(selected_staging.get("qualification_input", {}))
 
 
 def render_lead_review() -> None:

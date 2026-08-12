@@ -8,6 +8,9 @@ import httpx
 
 from app.core.config import get_settings
 from app.discovery.provider import DiscoveryProvider
+from app.discovery.search_builder import build_icp_search_request
+from app.discovery.search_strategy import SearchStrategy, build_provider_request
+from app.discovery.diagnostics import extract_organization_fields, people_field_mapping, unused_organization_fields
 from app.discovery.types import DiscoveryCompanyCandidate, DiscoveryContactCandidate, ICPProductLine
 
 
@@ -33,6 +36,8 @@ class ApolloProvider(DiscoveryProvider):
             },
         )
         self._last_call_monotonic = 0.0
+        self.last_people_diagnostic: dict | None = None
+        self.last_enrichment_diagnostic: dict | None = None
 
     def provider_name(self) -> str:
         return "apollo"
@@ -74,33 +79,40 @@ class ApolloProvider(DiscoveryProvider):
                 time.sleep(2**attempt)
         raise ApolloProviderError("Apollo request failed unexpectedly")
 
-    def _employee_ranges(self, icp: ICPProductLine) -> list[str]:
-        if icp.employee_min <= 0 and icp.employee_max <= 0:
-            return []
-        return [f"{max(1, icp.employee_min)},{max(icp.employee_min, icp.employee_max)}"]
-
-    def _common_org_params(self, icp: ICPProductLine, *, page: int, per_page: int) -> dict[str, Any]:
+    def _common_org_params(self, icp: ICPProductLine, *, page: int, per_page: int, strategy: SearchStrategy | None = None) -> dict[str, Any]:
+        search = build_provider_request(icp, strategy) if strategy else build_icp_search_request(icp)
         params: dict[str, Any] = {
             "page": page,
             "per_page": per_page,
         }
-        if icp.country:
-            params["organization_locations[]"] = icp.country
-        ranges = self._employee_ranges(icp)
-        if ranges:
-            params["organization_num_employees_ranges[]"] = ranges
-        keyword_tags = list(dict.fromkeys(icp.target_industries + icp.company_keywords))
+        if search.countries or search.states:
+            params["organization_locations[]"] = search.countries + search.states
+        if search.employee_ranges:
+            params["organization_num_employees_ranges[]"] = search.employee_ranges
+        # Apollo's documented company-keyword filter is the API equivalent of
+        # the AI panel's "Company Keywords Contain ANY Of" chips. Industry
+        # labels are kept in the ICP for qualification and diagnostics; they
+        # must not be sent here as keyword tags.
+        keyword_tags = list(
+            dict.fromkeys(
+                search.product_keywords
+                + search.manufacturing_keywords
+                + search.application_keywords
+            )
+        )
         if keyword_tags:
             params["q_organization_keyword_tags[]"] = keyword_tags
-        if icp.exclude_keywords:
-            params["q_organization_name"] = None
+        if search.negative_keywords:
+            params["excluded_organization_keyword_tags[]"] = search.negative_keywords
+        params.update({key: value for key, value in search.provider_filters.items() if key.startswith("organization_")})
         return params
 
-    def search_organizations(self, icp: ICPProductLine, *, page: int, per_page: int) -> list[DiscoveryCompanyCandidate]:
+    def search_organizations(self, icp: ICPProductLine, *, page: int, per_page: int, strategy: SearchStrategy | None = None) -> list[DiscoveryCompanyCandidate]:
+        request_params = self._common_org_params(icp, page=page, per_page=per_page, strategy=strategy)
         payload = self._request(
             "POST",
             "/mixed_companies/search",
-            params=self._common_org_params(icp, page=page, per_page=per_page),
+            params=request_params,
         )
         items = payload.get("organizations") or payload.get("companies") or payload.get("accounts") or payload.get("results") or []
         results: list[DiscoveryCompanyCandidate] = []
@@ -116,33 +128,56 @@ class ApolloProvider(DiscoveryProvider):
             ).strip()
             if not organization_id:
                 continue
+            extracted, mapping = extract_organization_fields(item)
             location = item.get("organization_location") or item.get("location") or {}
             if isinstance(location, dict):
-                country = location.get("country") or location.get("country_name")
-                region = location.get("state") or location.get("region")
-                city = location.get("city") or location.get("locality") or location.get("metro_area") or location.get("town")
+                country = location.get("country") or location.get("country_name") or extracted["Country"]
+                region = location.get("state") or location.get("region") or extracted["Region"]
+                city = location.get("city") or location.get("locality") or location.get("metro_area") or location.get("town") or extracted["City"]
             else:
-                country = item.get("country")
-                region = item.get("region")
-                city = item.get("city")
-            results.append(
-                DiscoveryCompanyCandidate(
+                country, region, city = extracted["Country"], extracted["Region"], extracted["City"]
+            domain = str(extracted["Website"] or "").replace("https://", "").replace("http://", "").replace("www.", "").strip() or None
+            industry = str(extracted["Industry"] or "").strip() or None
+            candidate = DiscoveryCompanyCandidate(
                     source_provider=self.provider_name(),
                     source_record_id=organization_id,
-                    name=str(item.get("name") or item.get("organization_name") or item.get("company_name") or "").strip(),
-                    domain=(item.get("primary_domain") or item.get("domain") or item.get("website_url") or "").replace("https://", "").replace("http://", "").replace("www.", "").strip() or None,
-                    industry=item.get("industry"),
+                    name=str(extracted["Company Name"] or "").strip(),
+                    domain=domain,
+                    industry=industry,
                     company_size=str(item.get("company_size") or item.get("size") or item.get("organization_size") or "").strip() or None,
-                    employee_count=self._to_int(item.get("estimated_num_employees") or item.get("organization_num_employees") or item.get("employees")),
+                    employee_count=self._to_int(extracted["Employee Count"]),
                     country=str(country).strip() if country else None,
                     region=str(region).strip() if region else None,
                     city=str(city).strip() if city else None,
-                    description=item.get("short_description") or item.get("description") or item.get("headline"),
+                    description=str(extracted["Description"] or "").strip() or None,
                     last_updated=self._parse_dt(item.get("updated_at") or item.get("last_updated_at") or item.get("last_updated")),
                     confidence=item.get("confidence") or item.get("score_label"),
                     source_metadata=item,
                 )
-            )
+            normalized = {
+                "name": candidate.name,
+                "domain": candidate.domain,
+                "industry": candidate.industry,
+                "employee_count": candidate.employee_count,
+                "country": candidate.country,
+                "region": candidate.region,
+                "city": candidate.city,
+                "description": candidate.description,
+                "linkedin_url": extracted["LinkedIn"],
+                "revenue": extracted["Revenue"],
+                "technologies": extracted["Technologies"],
+            }
+            if self.settings.discovery_diagnostic_mode:
+                candidate.source_metadata = {
+                    "apollo_raw_record": item,
+                    "apollo_raw_response": payload,
+                "apollo_request": {"method": "POST", "path": "/mixed_companies/search", "params": request_params},
+                    "search_strategy": strategy.to_metadata() if strategy else None,
+                    "field_mapping": mapping,
+                    "unused_apollo_fields": unused_organization_fields(item, mapping),
+                    "normalized_company": normalized,
+                }
+            results.append(candidate)
         return results
 
     def search_people(
@@ -152,20 +187,32 @@ class ApolloProvider(DiscoveryProvider):
         *,
         page: int,
         per_page: int,
+        title_filters: list[str] | None = None,
     ) -> list[DiscoveryContactCandidate]:
+        search = build_icp_search_request(icp)
         params: dict[str, Any] = {
             "page": page,
             "per_page": per_page,
-            "person_titles[]": icp.target_titles,
             "person_seniorities[]": icp.apollo_filters.get("person_seniorities", []),
             "q_organization_domains_list[]": [organization.domain] if organization.domain else [],
             "organization_ids[]": [organization.provider_organization_id],
-            "organization_num_employees_ranges[]": self._employee_ranges(icp),
-            "organization_locations[]": icp.country,
+            "organization_num_employees_ranges[]": search.employee_ranges,
+            "organization_locations[]": search.countries + search.states,
         }
-        if icp.company_keywords:
-            params["q_keywords"] = " ".join(icp.company_keywords[:5])
-        payload = self._request("POST", "/mixed_people/api_search", params={k: v for k, v in params.items() if v})
+        effective_titles = title_filters if title_filters is not None else icp.target_titles
+        if effective_titles:
+            params["person_titles[]"] = effective_titles
+        request_params = {k: v for k, v in params.items() if v}
+        payload = self._request("POST", "/mixed_people/api_search", params=request_params)
+        self.last_people_diagnostic = (
+            {
+                "request": {"method": "POST", "path": "/mixed_people/api_search", "params": request_params},
+                "response": payload,
+                "contacts_returned": 0,
+            }
+            if self.settings.discovery_diagnostic_mode
+            else None
+        )
         items = payload.get("people") or payload.get("contacts") or payload.get("results") or []
         results: list[DiscoveryContactCandidate] = []
         for item in items:
@@ -174,8 +221,7 @@ class ApolloProvider(DiscoveryProvider):
             person_id = str(item.get("id") or item.get("person_id") or item.get("apollo_id") or "").strip()
             if not person_id:
                 continue
-            results.append(
-                DiscoveryContactCandidate(
+            candidate = DiscoveryContactCandidate(
                     source_provider=self.provider_name(),
                     source_record_id=person_id,
                     organization_source_record_id=str(item.get("organization_id") or organization.source_record_id),
@@ -191,8 +237,146 @@ class ApolloProvider(DiscoveryProvider):
                     confidence=item.get("confidence") or item.get("score_label"),
                     source_metadata=item,
                 )
-            )
+            normalized = {
+                "name": candidate.name,
+                "title": candidate.title,
+                "email": candidate.email,
+                "phone": candidate.phone,
+                "linkedin_url": candidate.linkedin_url,
+                "email_status": candidate.email_status,
+                "country": candidate.country,
+                "region": candidate.region,
+            }
+            if self.settings.discovery_diagnostic_mode:
+                candidate.source_metadata = {
+                    "apollo_raw_record": item,
+                    "apollo_raw_response": payload,
+                    "apollo_request": {"method": "POST", "path": "/mixed_people/api_search", "params": request_params},
+                    "field_mapping": people_field_mapping(item, normalized),
+                    "normalized_contact": normalized,
+                }
+            results.append(candidate)
+        if self.last_people_diagnostic is not None:
+            self.last_people_diagnostic["contacts_returned"] = len(results)
         return results
+
+    def enrich_person(self, contact: DiscoveryContactCandidate) -> DiscoveryContactCandidate | None:
+        request_params = {
+            "person_id": contact.provider_person_id,
+            "reveal_personal_emails": False,
+            "reveal_phone_number": False,
+        }
+        payload = self._request("POST", "/people/match", params=request_params)
+        self.last_enrichment_diagnostic = {
+            "request": {"method": "POST", "path": "/people/match", "params": request_params},
+            "response": payload,
+            "person_id": contact.provider_person_id,
+        }
+        item = payload.get("person") or payload.get("contact") or payload.get("result")
+        if not isinstance(item, dict):
+            contact.source_metadata["apollo_enrichment"] = self.last_enrichment_diagnostic
+            return None
+        name = str(item.get("name") or contact.name).strip()
+        title = str(item.get("title") or item.get("job_title") or contact.title).strip()
+        email = item.get("email") or item.get("work_email") or contact.email
+        phone = item.get("phone") or item.get("direct_phone") or item.get("mobile_phone") or contact.phone
+        email_status = str(
+            item.get("email_status") or item.get("contact_email_status") or contact.email_status or ""
+        ).strip() or None
+        return DiscoveryContactCandidate(
+            source_provider=contact.source_provider,
+            source_record_id=contact.source_record_id,
+            organization_source_record_id=contact.organization_source_record_id,
+            name=name,
+            title=title,
+            email=email,
+            phone=phone,
+            linkedin_url=item.get("linkedin_url") or contact.linkedin_url,
+            seniority=str(item.get("seniority") or contact.seniority or "").strip() or None,
+            email_status=email_status,
+            country=str(item.get("country") or contact.country or "").strip() or None,
+            region=str(item.get("region") or contact.region or "").strip() or None,
+            confidence=item.get("confidence") or contact.confidence,
+            contact_priority=contact.contact_priority,
+            contact_priority_rank=contact.contact_priority_rank,
+            recommended_primary_contact=contact.recommended_primary_contact,
+            contact_selection_reason=contact.contact_selection_reason,
+            fallback_contact_used=contact.fallback_contact_used,
+            source_metadata={
+                **contact.source_metadata,
+                "apollo_enrichment": self.last_enrichment_diagnostic,
+                "normalized_contact": {
+                    "name": name,
+                    "title": title,
+                    "email": email,
+                    "phone": phone,
+                    "linkedin_url": item.get("linkedin_url") or contact.linkedin_url,
+                    "email_status": email_status,
+                },
+            },
+        )
+
+    def enrich_organization(self, organization: DiscoveryCompanyCandidate) -> DiscoveryCompanyCandidate | None:
+        raw = organization.source_metadata.get("apollo_raw_record", organization.source_metadata)
+        if not isinstance(raw, dict):
+            raw = {}
+        request_params: dict[str, Any] = {"name": organization.name}
+        if organization.domain:
+            request_params["domain"] = organization.domain
+        linkedin_url = raw.get("linkedin_url") or raw.get("linkedin_url_normalized")
+        if linkedin_url:
+            request_params["linkedin_url"] = linkedin_url
+        # Apollo documents this endpoint as GET, despite older internal notes
+        # referring to it as POST /organizations/enrich.
+        payload = self._request("GET", "/organizations/enrich", params=request_params)
+        self.last_enrichment_diagnostic = {
+            "request": {"method": "GET", "path": "/organizations/enrich", "params": request_params},
+            "response": payload,
+            "organization_id": organization.provider_organization_id,
+        }
+        item = payload.get("organization") or payload.get("company") or payload.get("account")
+        if not isinstance(item, dict):
+            organization.source_metadata["apollo_organization_enrichment"] = self.last_enrichment_diagnostic
+            return None
+        extracted, mapping = extract_organization_fields(item)
+        location = item.get("organization_location") or item.get("location") or {}
+        if not isinstance(location, dict):
+            location = {}
+        enriched_raw = {**raw, **item}
+        metadata = {
+            **organization.source_metadata,
+            "apollo_raw_record": enriched_raw,
+            "apollo_organization_enrichment": self.last_enrichment_diagnostic,
+            "organization_enrichment_field_mapping": mapping,
+            "normalized_company": {
+                "name": extracted["Company Name"] or organization.name,
+                "domain": extracted["Website"] or organization.domain,
+                "industry": extracted["Industry"],
+                "employee_count": extracted["Employee Count"],
+                "country": extracted["Country"],
+                "region": extracted["Region"],
+                "city": extracted["City"],
+                "description": extracted["Description"],
+                "linkedin_url": extracted["LinkedIn"] or linkedin_url,
+            },
+        }
+        domain = str(extracted["Website"] or organization.domain or "").replace("https://", "").replace("http://", "").replace("www.", "").strip() or None
+        return DiscoveryCompanyCandidate(
+            source_provider=organization.source_provider,
+            source_record_id=organization.source_record_id,
+            name=str(extracted["Company Name"] or organization.name).strip(),
+            domain=domain,
+            industry=str(extracted["Industry"] or organization.industry or "").strip() or None,
+            company_size=organization.company_size,
+            employee_count=self._to_int(extracted["Employee Count"]) or organization.employee_count,
+            country=str(location.get("country") or extracted["Country"] or organization.country or "").strip() or None,
+            region=str(location.get("state") or location.get("region") or extracted["Region"] or organization.region or "").strip() or None,
+            city=str(location.get("city") or extracted["City"] or organization.city or "").strip() or None,
+            description=str(extracted["Description"] or organization.description or "").strip() or None,
+            last_updated=organization.last_updated,
+            confidence=organization.confidence,
+            source_metadata=metadata,
+        )
 
     @staticmethod
     def _to_int(value: Any) -> int | None:

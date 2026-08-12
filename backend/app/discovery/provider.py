@@ -22,5 +22,20 @@ class DiscoveryProvider(ABC):
         *,
         page: int,
         per_page: int,
+        title_filters: list[str] | None = None,
     ) -> list[DiscoveryContactCandidate]:
         raise NotImplementedError
+
+    def enrich_person(
+        self,
+        contact: DiscoveryContactCandidate,
+    ) -> DiscoveryContactCandidate | None:
+        """Return enriched data for one selected contact, when supported."""
+        return None
+
+    def enrich_organization(
+        self,
+        organization: DiscoveryCompanyCandidate,
+    ) -> DiscoveryCompanyCandidate | None:
+        """Return enriched data for one identified organization, when supported."""
+        return None

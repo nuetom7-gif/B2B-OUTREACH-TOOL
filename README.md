@@ -4,7 +4,8 @@ A manual-first B2B lead-generation and outreach tool for Yash Technology.
 
 This repo now has two parts:
 - `backend/`: Python FastAPI backend with SQLAlchemy, PostgreSQL, Alembic, and pandas
-- `frontend/`: Streamlit UI that talks only to the FastAPI backend over HTTP
+- `Frontend_1/`: official React frontend that talks only to the FastAPI backend over HTTP
+- `frontend/`: legacy Streamlit UI and operational utilities kept for reference
 
 ## Current Status
 
@@ -30,9 +31,16 @@ Phase 2A discovery is now implemented:
 - Rule-based qualification and scoring
 - Duplicate merge using existing CRM rules
 - Discovery run tracking and metrics
+- Tiered people search that prefers purchase/procurement contacts first, then plant/production/operations, then maintenance/EHS/quality, then leadership, with a fallback business-contact search if no ideal title is returned
+- Company import continues even when Apollo returns no ideal contact, and the company is tagged with contact discovery status for later enrichment
+- The best available contact is marked as `recommended_primary_contact = true`
+- Contacts discovered through Apollo keep provider-agnostic source metadata plus contact priority and selection reason fields
 
 The current semi-automated workflow is now UI-first:
-- on-demand discovery jobs from Streamlit
+- on-demand discovery jobs from the React frontend
+- guided micro-ICP discovery profiles for each product line
+- Apollo search requests built from separate exact, related, broad, product, manufacturing, process, and negative keyword categories
+- every relevant contact returned across the tiered searches is retained as an alternate; exactly one is marked as the recommended primary contact
 - background execution after a user click
 - lead review, draft editing, and bulk send from the UI
 - daily lead targets by product segment
@@ -45,7 +53,7 @@ Phase 2B, Phase 3, and Phase 4 remain planned.
 - Backend: Python 3.11+ with FastAPI, because you requested Python only for all server-side logic, APIs, and jobs
 - Database: PostgreSQL with SQLAlchemy and Alembic, because this is a proper shared CRM-style system and will grow beyond a single-file database
 - CSV handling: pandas, because imports and exports are a core workflow for this app
-- Frontend: Streamlit, because it is fast to ship and stays fully separate from the backend
+- Frontend: React in `Frontend_1/`, because the Lovable-generated app is now the official UI and stays fully separate from the backend
 - Scheduler: APScheduler, because Phase 4 is a single-server follow-up check use case and does not need the overhead of Celery yet
 
 ## How Data Enters The System
@@ -93,13 +101,14 @@ What you do not import automatically:
 - `backend/app/api/discovery_routes.py`: Phase 2A discovery endpoints
 - `backend/app/models/base.py`: SQLAlchemy ORM models
 - `backend/app/schemas.py`: Pydantic request and response models
-- `backend/app/discovery/`: Apollo provider, ICP loader, qualification, and discovery engine
+- `backend/app/discovery/`: provider manager, Apollo provider, micro-ICP loader, search builder, qualification, and discovery engine
 - `backend/app/services/outreach.py`: business logic for opt-out, throttling, audits, dashboard helpers
 - `backend/app/services/discovery_merge.py`: shared CRM merge helpers for discovery and imports
 - `backend/app/services/csv_service.py`: CSV parsing helpers
 - `backend/app/jobs/scheduler.py`: APScheduler discovery job registration
 - `backend/alembic/`: migration setup
-- `frontend/streamlit_app.py`: Streamlit frontend
+- `Frontend_1/`: official React frontend and shared UI library
+- `frontend/streamlit_app.py`: legacy Streamlit frontend retained for reference
 - `backend/.env`: local environment values
 - `backend/.env.example`: template for the environment file
 
@@ -249,7 +258,18 @@ Example:
 DATABASE_URL="postgresql+psycopg://postgres:root@localhost:5432/yash_outreach"
 ```
 
-Also set `WRITE_API_KEY` in `backend/.env`. The Streamlit frontend reads the same file and sends that key as `X-API-Key` on POST and DELETE requests.
+Set the same local write key in both backend and frontend environment files. FastAPI reads `backend/.env`; Vite reads `Frontend_1/.env.local`:
+
+```env
+# backend/.env
+WRITE_API_KEY="change-me-local-dev"
+
+# Frontend_1/.env.local
+VITE_API_BASE_URL="http://localhost:8000"
+VITE_WRITE_API_KEY="change-me-local-dev"
+```
+
+The React client sends `VITE_WRITE_API_KEY` as `X-API-Key` only for write requests. Keep `Frontend_1/.env.local` out of source control.
 Also set `APOLLO_API_KEY` and the discovery limits in `backend/.env` before using Phase 2A.
 
 Default discovery values shipped in the backend config:
@@ -278,14 +298,17 @@ uvicorn app.main:app --reload
 Backend default:
 - `http://localhost:8000`
 
-### 6. Start the Streamlit frontend
+### 6. Start the React frontend
 
 ```bash
-streamlit run frontend/streamlit_app.py
+cd Frontend_1
+npm run dev
 ```
 
 Frontend default:
-- `http://localhost:8501`
+  - the next available Vite port, for example `http://localhost:5173/`
+
+The React frontend uses the native Vite config loader on Windows so the app can start reliably in this workspace.
 
 ## Phase 2A Discovery
 
@@ -300,6 +323,7 @@ Qualification is now fully explainable and persisted for review:
 - run summaries include evaluated count, imported/manual review/rejected counts, average score, and top failure reasons
 - scoring values and thresholds are configurable in `backend/app/config/icp.yml`
 - the Discovery Staging UI shows the stored qualification summary for each record
+- stored discovery explainability now includes total contacts returned, selected primary contact, contact priority tier, why that contact was selected, and whether fallback contact search was required
 
 High-level pipeline:
 - Scheduler
@@ -315,8 +339,13 @@ High-level pipeline:
 
 Useful discovery endpoints:
 - `GET /discovery/icp`
+- `GET /discovery/search-profiles` returns the enabled guided micro-ICP choices for the UI
+- `GET /discovery/search-builder?profile_name=...` previews the provider search intent built from a profile and optional country/employee overrides
 - `POST /discovery/run`
 - `GET /discovery/runs`
+- `GET /discovery/staging?limit=50&offset=0` returns compact paginated staging records
+- `GET /discovery/manual-review?limit=50&offset=0` returns compact paginated manual-review records
+- `GET /discovery/staging/{record_id}` returns full raw Apollo and qualification diagnostics for one record
 - `GET /discovery/runs/{run_id}`
 - `GET /discovery/staging`
 - `GET /discovery/manual-review`
@@ -326,6 +355,38 @@ Useful discovery endpoints:
 - `GET /discovery/jobs/{job_id}`
 - `POST /discovery/jobs/{job_id}/cancel`
 - `GET /dashboard/stats`
+
+### Apollo Diagnostic Mode
+
+Apollo diagnostic mode is enabled by default with `DISCOVERY_DIAGNOSTIC_MODE=true`. It does not change qualification scoring or thresholds. For each staged organization, the system stores the complete raw Apollo organization response, the request and complete response for each people search, the number of contacts returned, field-by-field mapping evidence, the normalized company and contacts, and the exact qualification input snapshot captured immediately before scoring. Missing values include the attempted JSON paths, alternate paths found in the payload, and an explanation of why the normalized value is unknown.
+
+Run `alembic upgrade head` after pulling this diagnostic feature; migration `0008_discovery_diagnostics` adds the Text columns needed to preserve untruncated JSON. In the React Lead Discovery page, select a staging record and use the `Raw Apollo Data` tab to inspect Raw Organization JSON, Organization Field Mapping, People Request JSON, Raw People JSON, Normalized Company, Normalized Contacts, and Qualification Input. Set `DISCOVERY_DIAGNOSTIC_MODE=false` only when raw payload capture is intentionally not wanted.
+
+The React discovery form is intentionally guided: choose Product Line, Target Segment (micro-ICP), Country, and optional employee-range overrides. Apollo-specific industries, keywords, negative keywords, decision-maker titles, employee ranges, and qualification rules come from `backend/app/config/icp.yml`; users do not manually construct Apollo queries.
+
+### Focused Apollo Search Strategies
+
+The Discovery Search Strategy Planner creates multiple focused searches per Industry Pack. Each strategy uses one exact or related industry and one product keyword. Broad industries are retained for qualification only; application, manufacturing, and process keywords are not sent to Apollo as organization-search keywords. For example, a laser pack creates separate searches for laser manufacturer, laser manufacturing, laser systems, and laser equipment instead of one broad mixed query.
+
+The Query Optimizer removes duplicate or broad-only strategies, ranks configured product-keyword tiers, prefers exact industries over related industries, and keeps one product keyword per Apollo request. Industry Packs can configure `product_keyword_priorities` in `backend/app/config/icp.yml`; Tier 1 keywords run first, followed by Tier 2 and Tier 3.
+
+Discovery Confidence uses Apollo's returned `description`, `short_description`, `headline`, summary fields, website domain, and company name as post-search signals. Product, application, manufacturing, and process terms are evaluated after Apollo returns the organization; process terms are not sent as Apollo organization-search keywords. Clearly unrelated signals such as consulting, software, media, recruitment, or education reduce confidence. No website scraping is performed.
+
+Apollo organization results are merged by provider organization ID, domain, or normalized company name before People Search. A separate configurable Discovery Confidence check runs before People Search and qualification. Companies below the pack threshold are marked `filtered` with reason `low_discovery_confidence`. Per-strategy returned, merged, filtered, qualified, imported, and average-score metrics are stored in the existing discovery run reason JSON; no database schema change is required.
+
+This search refinement changes only strategy planning, query optimization, Apollo parameter construction, and post-search discovery-signal evaluation. It does not change CRM, qualification scoring rules, contact import, API contracts, the provider interface, dashboard behavior, or the database schema. Apollo remains the only active provider.
+
+The endpoint/request/response audit and field-mapping contract are documented in [`docs/APOLLO_DISCOVERY_AUDIT.md`](docs/APOLLO_DISCOVERY_AUDIT.md).
+
+When `DISCOVERY_DIAGNOSTIC_MODE=true`, every discovered Apollo organization response is also written as a separate untruncated JSON file under `backend/data/raw_apollo/run_<run_id>/organization_<apollo_id>.json`. These files contain the complete Apollo response envelope exactly as received for that organization search.
+
+Each micro-ICP has its own enabled flag, priority, target industries, related and broad industries, product/manufacturing/process keywords, negative keywords, locations, employee ranges, decision makers, qualification rules, Apollo filters, and search frequency. The scheduler iterates enabled profiles. The current enabled catalog covers laser/electronics/jewellery/pharma/food/automotive manufacturing, logistics/cold storage/e-commerce/manufacturing warehouses, and EPC/bridge/highway/metro/water-treatment infrastructure segments; additional profiles can be added without changing discovery code.
+
+This refactor requires no database migration: it reuses the existing discovery explainability, contact-priority, and provider-source columns. Apollo remains the only enabled provider.
+
+The ICP configuration is hierarchical: Business Division -> Industry Pack -> Apollo Search Configuration -> Qualification Rules -> Recommended Products. The seven configured divisions are Machine Tool Manufacturing, Industrial Vacuum Cleaning Systems, Warehouse & Storage Solutions, Fabrication & Metal Pallets, GFRP Rebar, Multi-Machine Manufacturing, and Cool Care Manufacturing. The configuration currently contains 69 Industry Packs.
+
+Each Industry Pack stores its enabled status, priority, countries/states, Apollo industries, related and broad industries, company/process keywords, negative keywords, employee range, manufacturing cluster preference, Tier 1-5 decision makers, qualification rules, product recommendations, email-template mapping, and discovery frequency. The loader flattens this hierarchy into the existing discovery model, so the pipeline and CRM integration remain unchanged.
 - `GET /drafts`
 - `POST /drafts/generate`
 - `PUT /drafts/{id}`
@@ -335,8 +396,8 @@ Useful discovery endpoints:
 - `PUT /settings`
 - `POST /messages/send-bulk`
 
-The Streamlit app now includes pages for Dashboard, Lead Discovery, Lead Review, Email Drafts, Send Emails, Analytics, and Settings.
-Run statuses are `running`, `completed`, and `failed`. Failed runs are shown in the discovery table and also called out with a visible warning in Streamlit.
+The React app now includes pages for Dashboard, Lead Discovery, Lead Review, Email Drafts, Send Emails, Analytics, and Settings.
+Run statuses are `running`, `completed`, and `failed`. Failed runs are shown in the discovery table and also called out with a visible warning in the React UI.
 
 ## How To Use Phase 1
 
@@ -371,6 +432,17 @@ Contacts CSV behavior:
 - The current dedupe rule uses work email when present, otherwise it falls back to the contact name plus title within the company
 
 Manual contact creation does not yet auto-dedupe; it will rely on the database and your review process.
+
+Discovery import behavior:
+- Apollo contacts are tagged with `source_provider = "apollo"` and `source = "apollo_auto"`
+- Tier 1 contacts are the highest-priority contacts
+- Tier 2 contacts are high priority
+- Tier 3 contacts are medium priority
+- Tier 4 contacts are small positive priority
+- Fallback business contacts are stored with `contact_priority = "low"`
+- If Apollo returns zero contacts for a qualifying company, the company still imports and is marked `No Contact Found`
+- If Apollo returns only fallback contacts, the company still imports and those contacts are kept instead of rejecting the company
+- If a bounced or do-not-contact record already exists, discovery does not re-stage or re-import it
 
 CSV columns accepted:
 - `name`
@@ -436,7 +508,9 @@ Backend base URL:
 Main endpoints:
 - `GET /health`
 - `GET /dashboard`
+- `GET /dashboard/stats`
 - `GET /companies`
+- `GET /companies/{company_id}`
 - `POST /companies`
 - `POST /companies/import`
 - `GET /contacts`
@@ -458,6 +532,18 @@ Main endpoints:
 - `GET /contacts/export/csv`
 
 Write endpoints require the `X-API-Key` header to match `WRITE_API_KEY` from `backend/.env`.
+Read endpoints are currently open for the localhost-first setup, so only POST, PUT, and DELETE requests require the shared write key.
+
+The React frontend is wired to these live backend routes directly; there is no mock-data fallback in the official UI.
+
+### Apollo query behavior
+
+The Apollo provider follows the same separation shown by Apollo's AI search panel:
+
+- Company keyword phrases such as `laser manufacturer`, `laser systems`, `laser marking`, and `laser cutting` are sent through Apollo's documented `q_organization_keyword_tags[]` filter.
+- People Search uses organization identifiers plus title and seniority filters; product phrases are not sent as person-profile keywords.
+- Apollo taxonomy labels such as `Machinery`, `Mechanical or Industrial Engineering`, `Industrial Automation`, `Electronic Manufacturing`, and `Semiconductors` remain structured ICP/qualification signals.
+- Invented segment names are never sent as organization keyword tags. Apollo's public Organization Search API does not document a name-based Industry parameter, so the provider does not pretend that these labels are API keyword filters.
 
 ## CSV Workflow
 
@@ -476,6 +562,7 @@ Recommended workflow:
 Planned later:
 - Verified email enrichment through Apollo or Hunter
 - Clear verification status in the UI
+- The current Apollo discovery flow already supports the tiered contact search and explainability fields above
 
 ## Phase 3 Plan
 
@@ -511,7 +598,7 @@ If the backend will not start:
 
 If the frontend cannot reach the backend:
 - Confirm FastAPI is running on port `8000`
-- Confirm Streamlit is using the correct `API_BASE_URL`
+- Confirm the React frontend is using the default `API_BASE_URL` or the `VITE_API_BASE_URL` override
 - Confirm CORS origins in `backend/.env`
 
 If CSV import looks wrong:
@@ -522,4 +609,4 @@ If CSV import looks wrong:
 ## Legacy Note
 
 The earlier Next.js prototype source has been removed from the repo.
-The current implementation is Python backend + Streamlit frontend.
+The current implementation is Python FastAPI backend + React frontend in `Frontend_1/`.

@@ -20,8 +20,14 @@ class Settings(BaseSettings):
         default="postgresql+psycopg://postgres:root@localhost:5432/yash_outreach",
         alias="DATABASE_URL",
     )
-    cors_origins: str = Field(default="http://localhost:8501,http://localhost:3000", alias="CORS_ORIGINS")
+    cors_origins: str = Field(
+        default="http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:3000,http://localhost:8501",
+        alias="CORS_ORIGINS",
+    )
     frontend_base_url: str = Field(default="http://localhost:8501", alias="FRONTEND_BASE_URL")
+    workspace_company_name: str = Field(default="Yash Technology", alias="WORKSPACE_COMPANY_NAME")
+    workspace_user_name: str = Field(default="Workspace user", alias="WORKSPACE_USER_NAME")
+    workspace_user_role: str = Field(default="Sales", alias="WORKSPACE_USER_ROLE")
     default_daily_send_limit: int = Field(default=30, alias="DEFAULT_DAILY_SEND_LIMIT")
     write_api_key: str = Field(default="", alias="WRITE_API_KEY")
     apollo_base_url: str = Field(default="https://api.apollo.io/api/v1", alias="APOLLO_BASE_URL")
@@ -34,6 +40,7 @@ class Settings(BaseSettings):
     discovery_schedule_hour_utc: int = Field(default=2, alias="DISCOVERY_SCHEDULE_HOUR_UTC")
     discovery_schedule_minute_utc: int = Field(default=0, alias="DISCOVERY_SCHEDULE_MINUTE_UTC")
     enable_automation_scheduler: bool = Field(default=False, alias="ENABLE_AUTOMATION_SCHEDULER")
+    discovery_diagnostic_mode: bool = Field(default=True, alias="DISCOVERY_DIAGNOSTIC_MODE")
 
     apollo_api_key: str = Field(default="", alias="APOLLO_API_KEY")
     hunter_api_key: str = Field(default="", alias="HUNTER_API_KEY")

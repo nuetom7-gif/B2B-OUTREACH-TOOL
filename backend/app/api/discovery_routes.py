@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import json
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.models.base import DiscoveryStagingRecord
 from app.discovery.config_loader import load_icp_config
-from app.discovery.engine import run_discovery_cycle
-from app.discovery.repository import discovery_run_reasons, discovery_summary, get_run, list_runs, list_staging_records, list_staging_records_for_reason
+from app.discovery.engine import DiscoveryEngine, run_discovery_cycle
+from app.discovery.repository import discovery_run_reasons, discovery_summary, get_run, list_runs, list_staging_records, list_staging_records_page
 from app.schemas import (
     DiscoveryJobCreate,
     DiscoveryJobRead,
@@ -17,6 +18,8 @@ from app.schemas import (
     DiscoveryRunReasonsRead,
     DiscoveryRunRequest,
     DiscoveryStagingRead,
+    DiscoveryStagingPageRead,
+    DiscoveryStagingSummaryRead,
 )
 from app.api.routes import require_write_api_key
 from app.services.discovery_jobs import create_discovery_job, get_job, job_detail, list_jobs, request_cancel, submit_discovery_job
@@ -57,6 +60,9 @@ def _serialize_run(run) -> DiscoveryRunRead:
 
 
 def _serialize_stage(record) -> DiscoveryStagingRead:
+    normalized_contacts = json.loads(record.normalized_contacts_json or "[]")
+    if not isinstance(normalized_contacts, list):
+        normalized_contacts = []
     return DiscoveryStagingRead(
         id=record.id,
         run_id=record.run_id,
@@ -78,6 +84,13 @@ def _serialize_stage(record) -> DiscoveryStagingRead:
         person_phone=record.person_phone,
         person_linkedin_url=record.person_linkedin_url,
         person_seniority=record.person_seniority,
+        raw_organization=json.loads(record.raw_organization_json or "{}"),
+        organization_mapping=json.loads(record.organization_mapping_json or "{}"),
+        people_request=json.loads(record.people_request_json or "{}"),
+        raw_people_response=json.loads(record.raw_people_response_json or "{}"),
+        normalized_company=json.loads(record.normalized_company_json or "{}"),
+        normalized_contacts=normalized_contacts,
+        qualification_input=json.loads(record.qualification_input_json or "{}"),
         qualification_status=record.qualification_status,
         final_status=record.final_status,
         decision_stage=record.decision_stage,
@@ -135,7 +148,55 @@ def _serialize_job(job) -> DiscoveryJobRead:
 
 @router.get("/icp")
 def get_icp_config():
-    return {"product_lines": [asdict(icp) for icp in load_icp_config()]}
+    profiles = load_icp_config()
+    return {
+        "product_lines": [asdict(icp) for icp in profiles],
+        "search_profiles": [
+            {
+                "profile_name": icp.search_profile_name,
+                "product_name": icp.product_name,
+                "business_division": icp.business_division or icp.product_name,
+                "target_segment": icp.target_segment or icp.search_profile_name,
+                "enabled": icp.enabled,
+                "countries": icp.locations or icp.country,
+                "states": icp.states,
+                "employee_min": icp.employee_min,
+                "employee_max": icp.employee_max,
+            }
+            for icp in profiles
+        ],
+    }
+
+
+@router.get("/search-profiles")
+def get_search_profiles():
+    profiles = load_icp_config()
+    return [
+        {
+            "profile_name": icp.search_profile_name,
+            "product_name": icp.product_name,
+            "business_division": icp.business_division or icp.product_name,
+            "target_segment": icp.target_segment or icp.search_profile_name,
+            "enabled": icp.enabled,
+            "countries": icp.locations or icp.country,
+            "states": icp.states,
+            "employee_min": icp.employee_min,
+            "employee_max": icp.employee_max,
+            "decision_makers": icp.target_titles,
+        }
+        for icp in profiles
+        if icp.enabled
+    ]
+
+
+@router.get("/search-builder")
+def get_search_builder(profile_name: str, country: str | None = None, state: str | None = None, employee_min: int | None = None, employee_max: int | None = None):
+    from app.discovery.search_builder import build_icp_search_request
+
+    profile = next((icp for icp in load_icp_config() if icp.search_profile_name.lower() == profile_name.lower()), None)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Discovery search profile not found")
+    return asdict(build_icp_search_request(profile, country=country, state=state, employee_min=employee_min, employee_max=employee_max))
 
 
 @router.post("/run")
@@ -144,6 +205,30 @@ def trigger_discovery(
     db: Session = Depends(get_db),
     _: None = Depends(require_write_api_key),
 ):
+    if payload.profile_name:
+        profile = next(
+            (icp for icp in load_icp_config() if icp.search_profile_name.lower() == payload.profile_name.strip().lower()),
+            None,
+        )
+        if profile is None or not profile.enabled:
+            raise HTTPException(status_code=400, detail="Enabled discovery search profile not found")
+        from app.core.config import get_settings
+
+        settings = get_settings()
+        job_request = DiscoveryJobCreate(
+            profile_name=profile.search_profile_name,
+            product_segment=profile.search_profile_name,
+            industry=profile.target_segment or profile.search_profile_name,
+            country=payload.country or (profile.country[0] if profile.country else "India"),
+            state=payload.state,
+            company_limit=settings.apollo_max_companies_per_run,
+            contacts_per_company=settings.apollo_max_contacts_per_company,
+            max_leads=settings.apollo_max_companies_per_run * settings.apollo_max_contacts_per_company,
+        )
+        job = create_discovery_job(db, payload=job_request)
+        submit_discovery_job(job.id, job_request)
+        return {"job": _serialize_job(job), "queued": True}
+
     custom_fields = {
         "product_segment",
         "industry",
@@ -231,23 +316,54 @@ def discovery_run_reasons_detail(run_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@router.get("/runs/{run_id}/records", response_model=list[DiscoveryStagingRead])
+@router.get("/runs/{run_id}/records", response_model=DiscoveryStagingPageRead)
 def discovery_run_reason_records(
     run_id: int,
     reason_category: str | None = None,
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
 ):
-    return [_serialize_stage(record) for record in list_staging_records_for_reason(db, run_id=run_id, reason_category=reason_category)]
+    items, total = list_staging_records_page(
+        db,
+        run_id=run_id,
+        reason_category=reason_category,
+        limit=limit,
+        offset=offset,
+    )
+    return {"items": [_serialize_stage_summary(item) for item in items], "total": total, "limit": limit, "offset": offset}
 
 
-@router.get("/staging", response_model=list[DiscoveryStagingRead])
-def discovery_staging(db: Session = Depends(get_db)):
-    return [_serialize_stage(record) for record in list_staging_records(db)]
+def _serialize_stage_summary(payload: dict) -> DiscoveryStagingSummaryRead:
+    return DiscoveryStagingSummaryRead.model_validate(payload)
 
 
-@router.get("/manual-review", response_model=list[DiscoveryStagingRead])
-def discovery_manual_review(db: Session = Depends(get_db)):
-    return [_serialize_stage(record) for record in list_staging_records(db, manual_review_only=True)]
+@router.get("/staging", response_model=DiscoveryStagingPageRead)
+def discovery_staging_page(
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
+    items, total = list_staging_records_page(db, limit=limit, offset=offset)
+    return {"items": [_serialize_stage_summary(item) for item in items], "total": total, "limit": limit, "offset": offset}
+
+
+@router.get("/staging/{record_id}", response_model=DiscoveryStagingRead)
+def discovery_staging_detail(record_id: int, db: Session = Depends(get_db)):
+    record = db.get(DiscoveryStagingRecord, record_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="Discovery staging record not found")
+    return _serialize_stage(record)
+
+
+@router.get("/manual-review", response_model=DiscoveryStagingPageRead)
+def discovery_manual_review(
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
+    items, total = list_staging_records_page(db, manual_review_only=True, limit=limit, offset=offset)
+    return {"items": [_serialize_stage_summary(item) for item in items], "total": total, "limit": limit, "offset": offset}
 
 
 @router.get("/summary")

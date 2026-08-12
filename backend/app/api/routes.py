@@ -32,6 +32,7 @@ from app.schemas import (
     ReplyCreate,
     WorkspaceSettingRead,
     WorkspaceSettingUpdate,
+    WorkspaceProfileRead,
 )
 from app.services.csv_service import pick_field, read_csv_upload, split_list
 from app.services.discovery_merge import find_contact_for_discovery
@@ -106,6 +107,9 @@ def company_to_read(company: Company, contact_count: int) -> CompanyRead:
         assigned_at=company.assigned_at,
         assignment_source=company.assignment_source,
         lead_score=company.lead_score,
+        discovery_contacts_returned=company.discovery_contacts_returned,
+        contact_status=company.contact_status,
+        fallback_contact_used=company.fallback_contact_used,
     )
 
 
@@ -130,6 +134,10 @@ def contact_to_read(contact: Contact, latest_message: Message | None = None) -> 
         verification_status=contact.verification_status,
         last_sync=contact.last_sync,
         lead_score=contact.lead_score,
+        contact_priority=contact.contact_priority,
+        recommended_primary_contact=contact.recommended_primary_contact,
+        fallback_contact_used=contact.fallback_contact_used,
+        contact_selection_reason=contact.contact_selection_reason,
     )
 
 
@@ -144,6 +152,15 @@ def require_write_api_key(x_api_key: str | None = Header(default=None, alias="X-
 @router.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@router.get("/workspace/profile", response_model=WorkspaceProfileRead)
+def workspace_profile():
+    return WorkspaceProfileRead(
+        company_name=settings.workspace_company_name,
+        user_name=settings.workspace_user_name,
+        user_role=settings.workspace_user_role,
+    )
 
 
 @router.get("/dashboard", response_model=DashboardRead)
@@ -177,6 +194,12 @@ def dashboard_stats_endpoint(db: Session = Depends(get_db)):
 def list_companies(db: Session = Depends(get_db)):
     companies = db.execute(select(Company).order_by(Company.created_at.desc())).scalars().all()
     return [company_to_read(company, company_contact_count(db, company.id)) for company in companies]
+
+
+@router.get("/companies/{company_id}", response_model=CompanyRead)
+def get_company(company_id: int, db: Session = Depends(get_db)):
+    company = get_company_or_404(db, company_id)
+    return company_to_read(company, company_contact_count(db, company.id))
 
 
 @router.post("/companies", response_model=CompanyRead)
@@ -296,6 +319,10 @@ def get_contact_detail(contact_id: int, db: Session = Depends(get_db)):
         "verification_status": contact.verification_status,
         "last_sync": contact.last_sync,
         "lead_score": contact.lead_score,
+        "contact_priority": contact.contact_priority,
+        "recommended_primary_contact": contact.recommended_primary_contact,
+        "fallback_contact_used": contact.fallback_contact_used,
+        "contact_selection_reason": contact.contact_selection_reason,
         "messages": [
             {
                 "id": message.id,

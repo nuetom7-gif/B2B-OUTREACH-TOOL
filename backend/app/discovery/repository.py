@@ -91,6 +91,9 @@ def stage_organization(
         employee_count=organization.employee_count,
         company_size=organization.company_size,
         raw_payload_json=_encode(organization.source_metadata),
+        raw_organization_json=_encode(organization.source_metadata.get("apollo_raw_response", organization.source_metadata)),
+        organization_mapping_json=_encode(organization.source_metadata.get("field_mapping", {})),
+        normalized_company_json=_encode(organization.source_metadata.get("normalized_company", {})),
         qualification_status="staged",
         final_status="staged",
         confidence="unknown",
@@ -130,6 +133,12 @@ def stage_person(
         person_linkedin_url=person.linkedin_url,
         person_seniority=person.seniority,
         raw_payload_json=_encode(person.source_metadata),
+        raw_organization_json=_encode(organization.source_metadata.get("apollo_raw_response", organization.source_metadata)),
+        organization_mapping_json=_encode(organization.source_metadata.get("field_mapping", {})),
+        people_request_json=_encode(person.source_metadata.get("apollo_request", {})),
+        raw_people_response_json=_encode(person.source_metadata.get("apollo_raw_response", {})),
+        normalized_company_json=_encode(organization.source_metadata.get("normalized_company", {})),
+        normalized_contacts_json=_encode([person.source_metadata.get("normalized_contact", {})]),
         qualification_status="staged",
         final_status="staged",
         confidence="unknown",
@@ -156,6 +165,64 @@ def list_staging_records(db: Session, *, run_id: int | None = None, manual_revie
     if manual_review_only:
         stmt = stmt.where(DiscoveryStagingRecord.needs_manual_review.is_(True))
     return db.execute(stmt).scalars().all()
+
+
+def list_staging_records_page(
+    db: Session,
+    *,
+    run_id: int | None = None,
+    manual_review_only: bool = False,
+    reason_category: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> tuple[list[dict], int]:
+    filters = []
+    if run_id is not None:
+        filters.append(DiscoveryStagingRecord.run_id == run_id)
+    if manual_review_only:
+        filters.append(DiscoveryStagingRecord.needs_manual_review.is_(True))
+    if reason_category:
+        filters.append(DiscoveryStagingRecord.reason_category == reason_category)
+
+    total = db.scalar(select(func.count(DiscoveryStagingRecord.id)).where(*filters)) or 0
+    columns = (
+        DiscoveryStagingRecord.id,
+        DiscoveryStagingRecord.run_id,
+        DiscoveryStagingRecord.product_name,
+        DiscoveryStagingRecord.provider_name,
+        DiscoveryStagingRecord.record_type,
+        DiscoveryStagingRecord.apollo_organization_id,
+        DiscoveryStagingRecord.apollo_person_id,
+        DiscoveryStagingRecord.company_name,
+        DiscoveryStagingRecord.company_domain,
+        DiscoveryStagingRecord.industry,
+        DiscoveryStagingRecord.country,
+        DiscoveryStagingRecord.region,
+        DiscoveryStagingRecord.employee_count,
+        DiscoveryStagingRecord.company_size,
+        DiscoveryStagingRecord.person_name,
+        DiscoveryStagingRecord.person_title,
+        DiscoveryStagingRecord.person_email,
+        DiscoveryStagingRecord.person_phone,
+        DiscoveryStagingRecord.person_linkedin_url,
+        DiscoveryStagingRecord.person_seniority,
+        DiscoveryStagingRecord.qualification_status,
+        DiscoveryStagingRecord.final_status,
+        DiscoveryStagingRecord.decision_stage,
+        DiscoveryStagingRecord.reason_category,
+        DiscoveryStagingRecord.score,
+        DiscoveryStagingRecord.confidence,
+        DiscoveryStagingRecord.needs_manual_review,
+        DiscoveryStagingRecord.sync_status,
+        DiscoveryStagingRecord.error_message,
+        DiscoveryStagingRecord.warning_message,
+        DiscoveryStagingRecord.crm_company_id,
+        DiscoveryStagingRecord.crm_contact_id,
+        DiscoveryStagingRecord.apollo_last_updated,
+        DiscoveryStagingRecord.last_sync,
+    )
+    stmt = select(*columns).where(*filters).order_by(DiscoveryStagingRecord.created_at.desc()).offset(offset).limit(limit)
+    return [dict(row) for row in db.execute(stmt).mappings().all()], int(total)
 
 
 def list_staging_records_for_reason(
@@ -225,6 +292,9 @@ def discovery_summary(db: Session) -> dict:
     icp_scores: defaultdict[str, list[float]] = defaultdict(list)
     status_counter: Counter[str] = Counter()
     total_scores: list[float] = []
+    company_status_counter: Counter[str] = Counter()
+    fallback_company_count = 0
+    no_contact_count = 0
 
     for record in staging_records:
         payload = {}
@@ -238,8 +308,15 @@ def discovery_summary(db: Session) -> dict:
         total_scores.append(score)
         status = str(payload.get("final_status") or record.final_status or record.qualification_status or "unknown")
         status_counter[status] += 1
+        profile_name = str(payload.get("icp_profile_name") or record.product_name)
         product_scores[record.product_name].append(score)
-        icp_scores[record.product_name].append(score)
+        icp_scores[profile_name].append(score)
+        if record.record_type == "organization":
+            company_status_counter[status] += 1
+            if payload.get("fallback_contact_used"):
+                fallback_company_count += 1
+            if payload.get("total_contacts_returned", 0) == 0:
+                no_contact_count += 1
         for rule in payload.get("rule_results", []):
             if isinstance(rule, dict) and float(rule.get("points_awarded", 0) or 0) <= 0:
                 failure_counter[str(rule.get("rule_name") or "Unknown Rule")] += 1
@@ -295,6 +372,15 @@ def discovery_summary(db: Session) -> dict:
             "top_decision_maker_titles": [{"label": label, "count": count} for label, count in decision_counter.most_common(10)],
             "average_score_per_icp": _avg_map(icp_scores),
             "average_score_per_product_line": _avg_map(product_scores),
+            "company_funnel": {
+                "apollo_companies_found": sum(company_status_counter.values()),
+                "qualified": company_status_counter.get("qualified", 0),
+                "imported": company_status_counter.get("imported", 0),
+                "manual_review": company_status_counter.get("manual_review", 0),
+                "rejected": company_status_counter.get("rejected", 0),
+                "no_contact_found": no_contact_count,
+                "fallback_contact_used": fallback_company_count,
+            },
         },
     }
 

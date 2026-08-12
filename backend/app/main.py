@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +12,7 @@ from app.models.base import Base
 from app.jobs.scheduler import start_scheduler, stop_scheduler
 
 settings = get_settings()
+logger = logging.getLogger("yash_outreach.api")
 
 
 @asynccontextmanager
@@ -30,6 +32,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_failed_requests(request, call_next):
+    try:
+        response = await call_next(request)
+    except Exception:
+        logger.exception("Unhandled backend error: %s %s", request.method, request.url.path)
+        raise
+    if response.status_code >= 400:
+        logger.warning("Backend request failed: %s %s -> %s", request.method, request.url.path, response.status_code)
+    return response
 
 app.include_router(router)
 app.include_router(discovery_router)

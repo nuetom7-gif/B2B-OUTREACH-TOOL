@@ -11,6 +11,24 @@ def _is_missing(value) -> bool:
     return value is None or value == ""
 
 
+def _company_field_needs_update(company: Company, attr: str, value) -> bool:
+    current = getattr(company, attr, None)
+    if attr == "discovery_contacts_returned":
+        return (current or 0) == 0 and value is not None and int(value) > 0
+    if attr == "contact_status":
+        return (current in (None, "", "No Contact Found")) and value and value != "No Contact Found"
+    if attr == "fallback_contact_used":
+        return current is False and bool(value)
+    return _is_missing(current) and not _is_missing(value)
+
+
+def _contact_field_needs_update(contact: Contact, attr: str, value) -> bool:
+    current = getattr(contact, attr, None)
+    if attr in {"recommended_primary_contact", "fallback_contact_used"}:
+        return current is False and bool(value)
+    return _is_missing(current) and not _is_missing(value)
+
+
 def find_company_for_discovery(
     db: Session,
     *,
@@ -50,12 +68,14 @@ def merge_company_fields(company: Company, source_company: dict) -> list[str]:
         "assignment_status": source_company.get("assignment_status"),
         "assigned_at": source_company.get("assigned_at"),
         "assignment_source": source_company.get("assignment_source"),
+        "discovery_contacts_returned": source_company.get("discovery_contacts_returned"),
+        "contact_status": source_company.get("contact_status"),
+        "fallback_contact_used": source_company.get("fallback_contact_used"),
     }
     for attr, value in field_map.items():
         if _is_missing(value):
             continue
-        current = getattr(company, attr, None)
-        if _is_missing(current):
+        if _company_field_needs_update(company, attr, value):
             setattr(company, attr, value)
             merged.append(attr)
     if source_company.get("source") and _is_missing(company.source):
@@ -93,6 +113,9 @@ def upsert_company_from_discovery(db: Session, *, company_payload: dict, source:
             assigned_at=company_payload.get("assigned_at"),
             assignment_source=company_payload.get("assignment_source"),
             lead_score=int(company_payload.get("lead_score") or 0),
+            discovery_contacts_returned=int(company_payload.get("discovery_contacts_returned") or 0),
+            contact_status=company_payload.get("contact_status") or "No Contact Found",
+            fallback_contact_used=bool(company_payload.get("fallback_contact_used", False)),
         )
         db.add(company)
         db.flush()
@@ -105,6 +128,19 @@ def upsert_company_from_discovery(db: Session, *, company_payload: dict, source:
         if _is_missing(company.source_record_id) and company_payload.get("source_record_id"):
             company.source_record_id = company_payload["source_record_id"]
             merged_fields.append("source_record_id")
+        if company_payload.get("discovery_contacts_returned") is not None and _company_field_needs_update(
+            company, "discovery_contacts_returned", company_payload.get("discovery_contacts_returned")
+        ):
+            company.discovery_contacts_returned = int(company_payload["discovery_contacts_returned"])
+            merged_fields.append("discovery_contacts_returned")
+        if company_payload.get("contact_status") and _company_field_needs_update(company, "contact_status", company_payload.get("contact_status")):
+            company.contact_status = company_payload["contact_status"]
+            merged_fields.append("contact_status")
+        if company_payload.get("fallback_contact_used") is not None and _company_field_needs_update(
+            company, "fallback_contact_used", company_payload.get("fallback_contact_used")
+        ):
+            company.fallback_contact_used = bool(company_payload["fallback_contact_used"])
+            merged_fields.append("fallback_contact_used")
         if not _is_missing(company.source) and source == "apollo_auto" and _is_missing(company_payload.get("source")):
             pass
 
@@ -217,12 +253,15 @@ def merge_contact_fields(contact: Contact, source_contact: dict) -> list[str]:
         "phone": source_contact.get("phone"),
         "linkedin_url": source_contact.get("linkedin_url"),
         "source": source_contact.get("source"),
+        "contact_priority": source_contact.get("contact_priority"),
+        "recommended_primary_contact": source_contact.get("recommended_primary_contact"),
+        "fallback_contact_used": source_contact.get("fallback_contact_used"),
+        "contact_selection_reason": source_contact.get("contact_selection_reason"),
     }
     for attr, value in field_map.items():
         if _is_missing(value):
             continue
-        current = getattr(contact, attr, None)
-        if _is_missing(current):
+        if _contact_field_needs_update(contact, attr, value):
             setattr(contact, attr, value)
             merged.append(attr)
     return merged
@@ -264,6 +303,10 @@ def upsert_contact_from_discovery(
             verification_status=contact_payload.get("verification_status") or "unknown",
             last_sync=contact_payload.get("last_sync"),
             lead_score=int(contact_payload.get("lead_score") or 0),
+            contact_priority=contact_payload.get("contact_priority"),
+            recommended_primary_contact=bool(contact_payload.get("recommended_primary_contact", False)),
+            fallback_contact_used=bool(contact_payload.get("fallback_contact_used", False)),
+            contact_selection_reason=contact_payload.get("contact_selection_reason"),
         )
         db.add(contact)
         db.flush()
@@ -276,6 +319,18 @@ def upsert_contact_from_discovery(
         if _is_missing(contact.source_record_id) and contact_payload.get("source_record_id"):
             contact.source_record_id = contact_payload["source_record_id"]
             merged_fields.append("source_record_id")
+        if _contact_field_needs_update(contact, "contact_priority", contact_payload.get("contact_priority")):
+            contact.contact_priority = contact_payload["contact_priority"]
+            merged_fields.append("contact_priority")
+        if not contact.recommended_primary_contact and contact_payload.get("recommended_primary_contact"):
+            contact.recommended_primary_contact = True
+            merged_fields.append("recommended_primary_contact")
+        if _is_missing(contact.contact_selection_reason) and contact_payload.get("contact_selection_reason"):
+            contact.contact_selection_reason = contact_payload["contact_selection_reason"]
+            merged_fields.append("contact_selection_reason")
+        if not contact.fallback_contact_used and contact_payload.get("fallback_contact_used"):
+            contact.fallback_contact_used = True
+            merged_fields.append("fallback_contact_used")
         if _is_missing(contact.source):
             contact.source = source
             merged_fields.append("source")

@@ -33,6 +33,9 @@ class CompanyRead(BaseModel):
     last_sync: datetime | None = None
     sync_status: str = "pending"
     needs_manual_review: bool = False
+    discovery_contacts_returned: int = 0
+    contact_status: str = "No Contact Found"
+    fallback_contact_used: bool = False
     owner_id: int | None = None
     assignment_status: str = "unassigned"
     assigned_at: datetime | None = None
@@ -81,6 +84,10 @@ class ContactRead(BaseModel):
     verification_status: str = "unknown"
     last_sync: datetime | None = None
     lead_score: int = 0
+    contact_priority: str | None = None
+    recommended_primary_contact: bool = False
+    fallback_contact_used: bool = False
+    contact_selection_reason: str | None = None
 
 
 class CampaignCreate(BaseModel):
@@ -167,7 +174,14 @@ class DashboardStatsRead(BaseModel):
     total_contacts: int
 
 
+class WorkspaceProfileRead(BaseModel):
+    company_name: str
+    user_name: str
+    user_role: str
+
+
 class DiscoveryJobCreate(BaseModel):
+    profile_name: str | None = None
     product_segment: str
     industry: str
     country: str
@@ -370,6 +384,13 @@ class DiscoveryStagingRead(BaseModel):
     person_phone: str | None = None
     person_linkedin_url: str | None = None
     person_seniority: str | None = None
+    raw_organization: dict[str, Any] = Field(default_factory=dict)
+    organization_mapping: dict[str, Any] = Field(default_factory=dict)
+    people_request: Any = Field(default_factory=dict)
+    raw_people_response: Any = Field(default_factory=dict)
+    normalized_company: dict[str, Any] = Field(default_factory=dict)
+    normalized_contacts: list[dict[str, Any]] = Field(default_factory=list)
+    qualification_input: dict[str, Any] = Field(default_factory=dict)
     qualification_status: str
     final_status: str
     decision_stage: str
@@ -391,6 +412,50 @@ class DiscoveryStagingRead(BaseModel):
     last_sync: datetime | None = None
 
 
+class DiscoveryStagingSummaryRead(BaseModel):
+    id: int
+    run_id: int
+    product_name: str
+    provider_name: str
+    record_type: str
+    apollo_organization_id: str | None = None
+    apollo_person_id: str | None = None
+    company_name: str | None = None
+    company_domain: str | None = None
+    industry: str | None = None
+    country: str | None = None
+    region: str | None = None
+    employee_count: int | None = None
+    company_size: str | None = None
+    person_name: str | None = None
+    person_title: str | None = None
+    person_email: str | None = None
+    person_phone: str | None = None
+    person_linkedin_url: str | None = None
+    person_seniority: str | None = None
+    qualification_status: str
+    final_status: str
+    decision_stage: str
+    reason_category: str
+    score: int
+    confidence: str
+    needs_manual_review: bool
+    sync_status: str
+    error_message: str | None = None
+    warning_message: str | None = None
+    crm_company_id: int | None = None
+    crm_contact_id: int | None = None
+    apollo_last_updated: datetime | None = None
+    last_sync: datetime | None = None
+
+
+class DiscoveryStagingPageRead(BaseModel):
+    items: list[DiscoveryStagingSummaryRead]
+    total: int
+    limit: int
+    offset: int
+
+
 class DiscoveryRunRequest(BaseModel):
     product_names: list[str] | None = None
     force: bool = False
@@ -402,3 +467,6 @@ class DiscoveryRunRequest(BaseModel):
     company_limit: int | None = None
     contacts_per_company: int | None = None
     max_leads: int | None = None
+    profile_name: str | None = None
+    employee_min: int | None = None
+    employee_max: int | None = None

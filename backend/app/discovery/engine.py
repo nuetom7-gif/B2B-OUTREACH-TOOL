@@ -8,9 +8,13 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.discovery.apollo_provider import ApolloProviderError
+from app.discovery.confidence import evaluate_discovery_confidence
+from app.discovery.diagnostics import save_raw_organization_json
 from app.discovery.config_loader import load_icp_config
 from app.discovery.provider import DiscoveryProvider
 from app.discovery.provider_manager import DiscoveryProviderManager, create_default_provider_manager
+from app.discovery.search_strategy import optimize_search_strategies, plan_search_strategies
+from app.discovery.contact_strategy import ContactDiscoveryBatch, discover_contacts_for_organization
 from app.discovery.qualification import score_organization, score_person, summarize_qualification_results
 from app.discovery.repository import (
     create_run,
@@ -39,6 +43,17 @@ def _json_payload(value: Any) -> str:
     return json.dumps(value, default=str)
 
 
+def _has_company_identifier(organization: ProviderOrganization) -> bool:
+    raw = organization.source_metadata or {}
+    if isinstance(raw.get("apollo_raw_record"), dict):
+        raw = raw["apollo_raw_record"]
+    return bool(
+        organization.domain
+        or raw.get("linkedin_url")
+        or raw.get("linkedin_url_normalized")
+    )
+
+
 def _qualification_payload(
     *,
     run_id: int,
@@ -58,6 +73,7 @@ def _qualification_payload(
             "apollo_organization_id": organization.provider_organization_id,
         },
         "run_id": run_id,
+        "icp_profile_name": organization.source_metadata.get("icp_profile_name") if organization.source_metadata else None,
         "final_status": final_status or score_result.status,
         "final_score": score_result.score,
         "qualification_threshold": score_result.qualification_threshold,
@@ -79,6 +95,12 @@ def _qualification_payload(
         "reason_category": reason_category,
         "decision_stage": decision_stage,
         "reason_details": reason_details,
+        "total_contacts_returned": getattr(score_result, "total_contacts_returned", 0),
+        "selected_contact_name": getattr(score_result, "selected_contact_name", None),
+        "selected_contact_title": getattr(score_result, "selected_contact_title", None),
+        "selected_contact_priority": getattr(score_result, "selected_contact_priority", None),
+        "selected_contact_reason": getattr(score_result, "selected_contact_reason", None),
+        "fallback_contact_used": getattr(score_result, "fallback_contact_used", False),
     }
     if person is not None:
         payload["person"] = {
@@ -246,31 +268,150 @@ class DiscoveryEngine:
         run = create_run(self.db, icp)
         context = DiscoveryContext(product_line=icp, run_id=run.id)
         try:
-            company_records: list[tuple[ProviderOrganization, object, list[ProviderPerson], list[object]]] = []
+            company_records: list[tuple[ProviderOrganization, object, ContactDiscoveryBatch, list[object]]] = []
             organization_scores = []
             imported_company_count = 0
-            org_page = 1
+            enrichment_attempted = 0
+            enrichment_succeeded = 0
+            enrichment_no_match = 0
+            organization_enrichment_attempted = 0
+            organization_enrichment_succeeded = 0
+            organization_enrichment_no_match = 0
+            strategy_metrics: dict[str, dict[str, Any]] = {}
             per_page = 100
             max_companies = self.settings.apollo_max_companies_per_run
-            while len(company_records) < max_companies:
-                self._ensure_quota(context)
-                organizations = self.provider_manager.search_organizations(icp, page=org_page, per_page=per_page)
-                self._increment_calls(context)
-                if not organizations:
-                    break
-                run.companies_found += len(organizations)
-                for organization in organizations:
-                    if len(company_records) >= max_companies:
+            seen_companies: set[str] = set()
+            for strategy in optimize_search_strategies(icp, plan_search_strategies(icp)):
+                strategy_metrics[strategy.name] = {
+                    "strategy_name": strategy.name,
+                    "industries_used": [strategy.industry] if strategy.industry else [],
+                    "keyword_used": strategy.product_keyword,
+                    "companies_returned": 0,
+                    "companies_merged": 0,
+                    "companies_filtered": 0,
+                    "companies_manual_review": 0,
+                    "companies_qualified": 0,
+                    "companies_imported": 0,
+                    "confidence_scores": [],
+                    "qualification_scores": [],
+                }
+                org_page = 1
+                while len(company_records) < max_companies:
+                    self._ensure_quota(context)
+                    organizations = self.provider_manager.search_organizations_for_strategy(
+                        icp, strategy, page=org_page, per_page=per_page
+                    )
+                    self._increment_calls(context)
+                    if not organizations:
                         break
-                    org_record = stage_organization(self.db, run, icp, organization)
-                    people, person_records = self._collect_people_for_org(icp, organization, run, context)
-                    company_records.append((organization, org_record, people, person_records))
-                if len(organizations) < per_page:
-                    break
-                org_page += 1
+                    strategy_metrics[strategy.name]["companies_returned"] += len(organizations)
+                    for organization in organizations:
+                        if len(company_records) >= max_companies:
+                            break
+                        dedupe_key = (
+                            organization.provider_organization_id
+                            or (organization.domain or "").lower()
+                            or organization.name.lower()
+                        )
+                        if dedupe_key in seen_companies:
+                            strategy_metrics[strategy.name]["companies_merged"] += 1
+                            continue
+                        seen_companies.add(dedupe_key)
+                        run.companies_found += 1
+                        organization.source_metadata.setdefault("icp_profile_name", icp.search_profile_name)
+                        organization.source_metadata["search_strategy"] = strategy.to_metadata()
+                        if _has_company_identifier(organization):
+                            organization_enrichment_attempted += 1
+                            self._ensure_quota(context)
+                            enriched_organization = self.provider_manager.enrich_organization(organization)
+                            self._increment_calls(context)
+                            if enriched_organization is None:
+                                organization_enrichment_no_match += 1
+                                organization.source_metadata["organization_enrichment_status"] = "no_match"
+                            else:
+                                organization_enrichment_succeeded += 1
+                                organization = enriched_organization
+                                organization.source_metadata["organization_enrichment_status"] = "enriched"
+                        raw_response = organization.source_metadata.get("apollo_raw_response")
+                        if self.settings.discovery_diagnostic_mode and isinstance(raw_response, dict):
+                            organization.source_metadata["raw_organization_file"] = save_raw_organization_json(
+                                run_id=run.id,
+                                organization_id=organization.provider_organization_id,
+                                payload=raw_response,
+                            )
+                        org_record = stage_organization(self.db, run, icp, organization)
+                        confidence_result = evaluate_discovery_confidence(icp, organization, strategy)
+                        strategy_metrics[strategy.name]["confidence_scores"].append(confidence_result["score"])
+                        org_record.reason_details_json = _json_payload({"discovery_confidence": confidence_result})
+                        org_record.warning_message = "; ".join(confidence_result["reasons"])
+                        if not _has_company_identifier(organization):
+                            strategy_metrics[strategy.name]["companies_manual_review"] += 1
+                            org_record.qualification_status = "manual_review"
+                            org_record.final_status = "manual_review"
+                            org_record.decision_stage = "discovery_confidence"
+                            org_record.reason_category = "missing_company_identifier"
+                            org_record.sync_status = "manual_review"
+                            org_record.needs_manual_review = True
+                            org_record.warning_message = (
+                                "Apollo returned no company domain or LinkedIn URL; manual identifier review is required."
+                            )
+                            company_records.append(
+                                (organization, org_record, ContactDiscoveryBatch(organization=organization), [])
+                            )
+                            continue
+                        if confidence_result["confidence_band"] == "Low Relevance":
+                            strategy_metrics[strategy.name]["companies_filtered"] += 1
+                            org_record.qualification_status = "filtered"
+                            org_record.final_status = "filtered"
+                            org_record.decision_stage = "discovery_confidence"
+                            org_record.reason_category = "low_discovery_confidence"
+                            org_record.sync_status = "rejected"
+                            company_records.append((organization, org_record, ContactDiscoveryBatch(organization=organization), []))
+                            continue
+                        contact_batch, person_records = self._collect_people_for_org(icp, organization, run, context)
+                        primary = contact_batch.primary_contact
+                        if primary is not None and (
+                            primary.recommended_primary_contact
+                            or primary.contact_priority in {"tier_1", "tier_2", "tier_3", "tier_4"}
+                        ):
+                            enrichment_attempted += 1
+                            self._ensure_quota(context)
+                            enriched = self.provider_manager.enrich_person(primary)
+                            self._increment_calls(context)
+                            if enriched is None:
+                                enrichment_no_match += 1
+                            else:
+                                enrichment_succeeded += 1
+                                contact_batch.contacts = [
+                                    enriched if contact.provider_person_id == primary.provider_person_id else contact
+                                    for contact in contact_batch.contacts
+                                ]
+                                contact_batch.primary_contact = enriched
+                        org_record.people_request_json = _json_payload(contact_batch.diagnostic_requests)
+                        org_record.raw_people_response_json = _json_payload(contact_batch.diagnostic_responses)
+                        org_record.normalized_contacts_json = _json_payload(
+                            [person.source_metadata.get("normalized_contact", {}) for person in contact_batch.contacts]
+                        )
+                        org_record.warning_message = contact_batch.zero_contact_reason
+                        company_records.append((organization, org_record, contact_batch, person_records))
+                    if len(organizations) < per_page:
+                        break
+                    org_page += 1
 
-            for organization, org_record, people, person_records in company_records:
+            for organization, org_record, contact_batch, person_records in company_records:
+                if org_record.final_status == "filtered" or org_record.reason_category == "missing_company_identifier":
+                    run.companies_skipped += 1
+                    continue
+                people = contact_batch.contacts
+                org_record.qualification_input_json = _json_payload(
+                    {"icp": asdict(icp), "company": asdict(organization), "contacts": [asdict(person) for person in people]}
+                )
                 org_score = score_organization(icp, organization, people)
+                strategy_name = (organization.source_metadata.get("search_strategy") or {}).get("name")
+                if strategy_name in strategy_metrics:
+                    strategy_metrics[strategy_name]["qualification_scores"].append(org_score.score)
+                    if org_score.status == "qualified":
+                        strategy_metrics[strategy_name]["companies_qualified"] += 1
                 organization_scores.append(org_score)
                 org_record.score = int(org_score.score)
                 org_record.needs_manual_review = org_score.needs_manual_review
@@ -282,8 +423,16 @@ class DiscoveryEngine:
                 org_record.manual_review_threshold = int(org_score.manual_review_threshold or 0)
                 org_record.qualification_evaluated_at = org_score.evaluation_timestamp
                 reason_category, reason_details = _organization_reason_category(organization, org_score)
+                discovery_details = json.loads(org_record.reason_details_json or "{}")
+                reason_details["discovery_confidence"] = discovery_details.get("discovery_confidence", {})
                 org_record.warning_message = "; ".join(org_score.reasons) if org_score.reasons else None
-                if org_score.status != "qualified":
+                confidence_band = discovery_details.get("discovery_confidence", {}).get("confidence_band")
+                keep_for_recall = confidence_band in {
+                    "High Confidence",
+                    "Good Prospect",
+                    "Potential Prospect",
+                }
+                if org_score.status != "qualified" and not keep_for_recall:
                     _store_outcome(
                         org_record,
                         run_id=run.id,
@@ -313,7 +462,7 @@ class DiscoveryEngine:
                     "apollo_last_updated": organization.last_updated,
                     "last_sync": now_utc(),
                     "sync_status": "synced",
-                    "needs_manual_review": False,
+                    "needs_manual_review": org_score.status != "qualified",
                     "lead_score": int(org_score.score),
                 }
                 company, created, merged_fields = upsert_company_from_discovery(
@@ -328,15 +477,25 @@ class DiscoveryEngine:
                 company.apollo_last_updated = organization.last_updated or company.apollo_last_updated
                 company.last_sync = now_utc()
                 company.sync_status = "synced"
-                company.needs_manual_review = False
+                company.needs_manual_review = org_score.status != "qualified"
+                company.discovery_contacts_returned = contact_batch.total_contacts_returned
+                company.contact_status = contact_batch.contact_status
+                company.fallback_contact_used = contact_batch.fallback_contact_used
                 org_record.crm_company_id = company.id
                 org_record.last_sync = now_utc()
-                import_reason_category = "duplicate_merged" if merged_fields else "imported"
+                import_reason_category = (
+                    "qualification_manual_review"
+                    if org_score.status != "qualified"
+                    else "duplicate_merged"
+                    if merged_fields
+                    else "imported"
+                )
                 import_reason_details = {
                     "created": created,
                     "merged_fields": merged_fields,
                     "company_id": company.id,
                     "company_name": company.name,
+                    "discovery_confidence": discovery_details.get("discovery_confidence", {}),
                 }
                 _store_outcome(
                     org_record,
@@ -347,10 +506,16 @@ class DiscoveryEngine:
                     decision_stage="import",
                     reason_details=import_reason_details,
                     final_status="imported",
-                    sync_status="imported" if created else "updated" if merged_fields else "skipped",
+                    sync_status=(
+                        "manual_review"
+                        if org_score.status != "qualified"
+                        else "imported" if created else "updated" if merged_fields else "skipped"
+                    ),
                     qualification_status=org_score.status,
                 )
                 imported_company_count += 1
+                if strategy_name in strategy_metrics:
+                    strategy_metrics[strategy_name]["companies_imported"] += 1
                 if created:
                     run.companies_imported += 1
                 elif merged_fields:
@@ -358,48 +523,26 @@ class DiscoveryEngine:
                 else:
                     run.companies_skipped += 1
 
+                if not people:
+                    company.contact_status = "No Contact Found"
+                    company.fallback_contact_used = contact_batch.fallback_contact_used
+
                 for person, person_record in zip(people, person_records):
+                    person_record.qualification_input_json = _json_payload(
+                        {"icp": asdict(icp), "company": asdict(organization), "contact": asdict(person)}
+                    )
                     person_score = score_person(icp, person)
                     contact_score = int(org_score.score + person_score.score)
                     person_record.score = contact_score
-                    person_record.needs_manual_review = person_score.needs_manual_review or contact_score < int(
-                        icp.lead_score_rules.get("import_threshold", 60)
-                    )
+                    person_record.needs_manual_review = False
                     person_record.confidence = person_score.final_confidence.lower() if person_score.final_confidence else (
                         "high" if contact_score >= int(icp.lead_score_rules.get("import_threshold", 60)) else "medium" if contact_score >= int(icp.lead_score_rules.get("manual_review_threshold", 35)) else "low"
                     )
-                    person_record.qualification_status = (
-                        "qualified"
-                        if contact_score >= int(icp.lead_score_rules.get("import_threshold", 60)) and person_score.matched_decision_maker
-                        else "manual_review"
-                        if person_record.needs_manual_review
-                        else "rejected"
-                    )
+                    person_record.qualification_status = "qualified"
                     person_record.warning_message = "; ".join(person_score.reasons) if person_score.reasons else None
                     person_record.qualification_threshold = int(person_score.qualification_threshold or 0)
                     person_record.manual_review_threshold = int(person_score.manual_review_threshold or 0)
                     person_record.qualification_evaluated_at = person_score.evaluation_timestamp
-                    if person_record.qualification_status != "qualified":
-                        reason_category, reason_details = _person_reason_category(
-                            person,
-                            person_score,
-                            qualification_threshold=int(icp.lead_score_rules.get("import_threshold", 60)),
-                        )
-                        _store_outcome(
-                            person_record,
-                            run_id=run.id,
-                            organization=organization,
-                            person=person,
-                            score_result=person_score,
-                            reason_category=reason_category,
-                            decision_stage="qualification",
-                            reason_details=reason_details,
-                            final_status=person_record.qualification_status,
-                            sync_status="manual_review" if person_record.qualification_status == "manual_review" else "rejected",
-                            qualification_status=person_record.qualification_status,
-                        )
-                        run.contacts_skipped += 1
-                        continue
                     blocked_contact = find_blocked_contact_for_discovery(
                         self.db,
                         company_name=organization.name,
@@ -448,6 +591,10 @@ class DiscoveryEngine:
                         "linkedin_url": person.linkedin_url,
                         "source": "apollo_auto",
                         "source_provider": person.source_provider,
+                        "contact_priority": person.contact_priority,
+                        "recommended_primary_contact": person.recommended_primary_contact,
+                        "fallback_contact_used": person.fallback_contact_used,
+                        "contact_selection_reason": person.contact_selection_reason,
                     }
                     contact, created_contact, merged_contact_fields = upsert_contact_from_discovery(
                         self.db,
@@ -461,8 +608,17 @@ class DiscoveryEngine:
                     contact.verification_status = person.email_status or contact.verification_status
                     contact.last_sync = now_utc()
                     contact.lead_score = max(contact.lead_score, contact_score)
+                    contact.contact_priority = contact.contact_priority or person.contact_priority
+                    contact.recommended_primary_contact = bool(contact.recommended_primary_contact or person.recommended_primary_contact)
+                    contact.fallback_contact_used = bool(contact.fallback_contact_used or person.fallback_contact_used)
+                    contact.contact_selection_reason = contact.contact_selection_reason or person.contact_selection_reason
                     person_record.crm_contact_id = contact.id
                     person_record.last_sync = now_utc()
+                    reason_category, reason_details = _person_reason_category(
+                        person,
+                        person_score,
+                        qualification_threshold=int(icp.lead_score_rules.get("import_threshold", 60)),
+                    )
                     import_reason_category = "duplicate_merged" if merged_contact_fields else "imported"
                     import_reason_details = {
                         "created": created_contact,
@@ -479,10 +635,18 @@ class DiscoveryEngine:
                         score_result=person_score,
                         reason_category=import_reason_category,
                         decision_stage="import",
-                        reason_details=import_reason_details,
+                        reason_details={
+                            **import_reason_details,
+                            "contact_priority": person.contact_priority,
+                            "recommended_primary_contact": person.recommended_primary_contact,
+                            "fallback_contact_used": person.fallback_contact_used,
+                            "contact_selection_reason": person.contact_selection_reason,
+                            "selection_reason": person.contact_selection_reason,
+                            "priority_reason": reason_details,
+                        },
                         final_status="imported",
                         sync_status="imported" if created_contact else "updated" if merged_contact_fields else "skipped",
-                        qualification_status=person_record.qualification_status,
+                        qualification_status="qualified",
                     )
                     if created_contact:
                         run.contacts_imported += 1
@@ -504,7 +668,24 @@ class DiscoveryEngine:
             run.qualification_average_score = summary["average_score"]
             run.qualification_top_failure_reasons_json = json.dumps(summary["most_common_failure_reasons"], default=str)
             run.qualification_summary_json = json.dumps(summary, default=str)
-            run.reason_breakdown_json = json.dumps(discovery_run_reasons(self.db, run.id), default=str)
+            reason_breakdown = discovery_run_reasons(self.db, run.id)
+            for metric in strategy_metrics.values():
+                scores = metric.pop("qualification_scores", [])
+                confidence_scores = metric.pop("confidence_scores", [])
+                metric["average_discovery_confidence"] = round(sum(confidence_scores) / len(confidence_scores), 2) if confidence_scores else 0.0
+                metric["average_qualification_score"] = round(sum(scores) / len(scores), 2) if scores else 0.0
+            reason_breakdown["strategy_metrics"] = list(strategy_metrics.values())
+            reason_breakdown["people_enrichment"] = {
+                "attempted": enrichment_attempted,
+                "succeeded": enrichment_succeeded,
+                "no_match": enrichment_no_match,
+            }
+            reason_breakdown["organization_enrichment"] = {
+                "attempted": organization_enrichment_attempted,
+                "succeeded": organization_enrichment_succeeded,
+                "no_match": organization_enrichment_no_match,
+            }
+            run.reason_breakdown_json = json.dumps(reason_breakdown, default=str)
             self.db.flush()
             self.db.commit()
 
@@ -524,6 +705,12 @@ class DiscoveryEngine:
                 "contacts_skipped": run.contacts_skipped,
                 "api_calls_used": run.api_calls_used,
                 "quota_remaining": run.quota_remaining,
+                "people_enrichment_attempted": enrichment_attempted,
+                "people_enrichment_succeeded": enrichment_succeeded,
+                "people_enrichment_no_match": enrichment_no_match,
+                "organization_enrichment_attempted": organization_enrichment_attempted,
+                "organization_enrichment_succeeded": organization_enrichment_succeeded,
+                "organization_enrichment_no_match": organization_enrichment_no_match,
             }
         except (DiscoveryQuotaExceeded, ApolloProviderError, Exception) as exc:
             context.errors.append(str(exc))
@@ -546,86 +733,40 @@ class DiscoveryEngine:
         organization: ProviderOrganization,
         run,
         context: DiscoveryContext,
-    ) -> tuple[list[ProviderPerson], list]:
-        people: list[ProviderPerson] = []
+    ) -> tuple[ContactDiscoveryBatch, list]:
         records = []
-        page = 1
-        per_page = 100
-        while len(people) < self.settings.apollo_max_contacts_per_company:
-            self._ensure_quota(context)
-            results = self.provider_manager.search_people(icp, organization, page=page, per_page=per_page)
-            self._increment_calls(context)
-            if not results:
-                break
-            for person in results:
-                if len(people) >= self.settings.apollo_max_contacts_per_company:
-                    break
-                record = stage_person(self.db, run, icp, organization, person)
-                run.contacts_found += 1
-                blocked_contact = find_blocked_contact_for_discovery(
-                    self.db,
-                    company_name=organization.name,
-                    source_provider=organization.source_provider,
-                    source_record_id=organization.source_record_id,
-                    apollo_organization_id=organization.provider_organization_id,
-                    contact_source_record_id=person.provider_person_id,
-                    apollo_person_id=person.provider_person_id,
-                    email=person.email,
-                    name=person.name,
-                    title=person.title,
+        people_batch = discover_contacts_for_organization(
+            self.provider_manager,
+            icp,
+            organization,
+            max_contacts=self.settings.apollo_max_contacts_per_company,
+            per_page=100,
+            before_search=lambda: (self._ensure_quota(context), self._increment_calls(context)),
+        )
+        for person in people_batch.contacts:
+            run.contacts_found += 1
+            blocked_contact = find_blocked_contact_for_discovery(
+                self.db,
+                company_name=organization.name,
+                source_provider=organization.source_provider,
+                source_record_id=organization.source_record_id,
+                apollo_organization_id=organization.provider_organization_id,
+                contact_source_record_id=person.provider_person_id,
+                apollo_person_id=person.provider_person_id,
+                email=person.email,
+                name=person.name,
+                title=person.title,
+            )
+            if blocked_contact:
+                run.contacts_skipped += 1
+                run.warnings_json = json.dumps(
+                    (json.loads(run.warnings_json) if run.warnings_json else [])
+                    + [f"Blocked do-not-contact contact: {blocked_contact.name} ({blocked_contact.id})"]
                 )
-                if blocked_contact:
-                    reason_details = {
-                        "blocked_contact_id": blocked_contact.id,
-                        "blocked_contact_name": blocked_contact.name,
-                        "blocked_contact_do_not_contact": True,
-                        "company_name": organization.name,
-                        "person_name": person.name,
-                        "person_title": person.title,
-                    }
-                    record.score = 0
-                    record.needs_manual_review = False
-                    record.qualification_status = "rejected"
-                    record.final_status = "rejected"
-                    record.decision_stage = "duplicate_check"
-                    record.reason_category = "duplicate_suppressed"
-                    record.reason_details_json = _json_payload(reason_details)
-                    record.qualification_result_json = _json_payload(
-                        {
-                            "company": {
-                                "name": organization.name,
-                                "provider_name": organization.source_provider,
-                                "provider_record_id": organization.source_record_id,
-                                "apollo_organization_id": organization.provider_organization_id,
-                            },
-                            "person": {
-                                "name": person.name,
-                                "title": person.title,
-                                "provider_record_id": person.provider_person_id,
-                            },
-                            "final_status": "rejected",
-                            "final_score": 0,
-                            "reason_category": "duplicate_suppressed",
-                            "decision_stage": "duplicate_check",
-                            "reason_details": reason_details,
-                            "reasons": ["Existing do-not-contact contact blocked discovery import."],
-                            "rule_results": [],
-                        }
-                    )
-                    record.sync_status = "rejected"
-                    record.warning_message = "Existing do-not-contact contact blocked discovery import."
-                    run.contacts_skipped += 1
-                    run.warnings_json = json.dumps(
-                        (json.loads(run.warnings_json) if run.warnings_json else [])
-                        + [f"Blocked do-not-contact contact: {blocked_contact.name} ({blocked_contact.id})"]
-                    )
-                    continue
-                records.append(record)
-                people.append(person)
-            if len(results) < per_page:
-                break
-            page += 1
-        return people, records
+                continue
+            record = stage_person(self.db, run, icp, organization, person)
+            records.append(record)
+        return people_batch, records
 
 
 def run_discovery_cycle(db: Session, *, product_names: list[str] | None = None, force: bool = False) -> list[dict]:

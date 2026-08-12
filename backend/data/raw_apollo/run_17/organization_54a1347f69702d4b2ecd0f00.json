@@ -1,0 +1,4692 @@
+{
+  "breadcrumbs": [
+    {
+      "label": "Contains Keywords",
+      "signal_field_name": "q_keywords",
+      "value": "material handling",
+      "display_name": "material handling"
+    },
+    {
+      "label": "# Employees",
+      "signal_field_name": "organization_num_employees_ranges",
+      "value": "10,10000",
+      "display_name": "10-10000"
+    },
+    {
+      "label": "Company Locations",
+      "signal_field_name": "organization_locations",
+      "value": "India",
+      "display_name": "India"
+    },
+    {
+      "label": "Company Keywords Contain ANY Of",
+      "signal_field_name": "q_organization_keyword_tags",
+      "value": "Automotive",
+      "display_name": "Automotive"
+    }
+  ],
+  "partial_results_only": false,
+  "has_join": false,
+  "disable_eu_prospecting": false,
+  "partial_results_limit": 10000,
+  "pagination": {
+    "page": 1,
+    "per_page": 100,
+    "total_entries": 14894,
+    "total_pages": 149
+  },
+  "accounts": [],
+  "organizations": [
+    {
+      "id": "5d099c0180f93e7a3371fecf",
+      "name": "Hyundai Motor India Ltd.",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hyundai-motor-india-ltd",
+      "twitter_url": "https://twitter.com/HYUNDAI",
+      "facebook_url": "https://facebook.com/hyundaimotorphilippines",
+      "languages": [
+        "English",
+        "Spanish",
+        "Russian"
+      ],
+      "alexa_ranking": null,
+      "phone": "800 359 127",
+      "linkedin_uid": "36062",
+      "founded_year": 1996,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/68c619cfda5a650001c1aeef/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "800 359 127",
+        "sanitized_number": null
+      },
+      "sanitized_phone": null,
+      "owned_by_organization_id": "5dd8ea21116686008c7fb4e1",
+      "owned_by_organization": {
+        "id": "5dd8ea21116686008c7fb4e1",
+        "name": "Hyundai Motor Group",
+        "website_url": "http://www.hyundaimotorgroup.com"
+      },
+      "num_languages": 3,
+      "owned_by_chain": [
+        "5dd8ea21116686008c7fb4e1"
+      ],
+      "organization_revenue_printed": "8.1B",
+      "organization_revenue": 8100000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.003508771929824561,
+      "organization_headcount_twelve_month_growth": 0.01418439716312057,
+      "organization_headcount_twenty_four_month_growth": -0.01379310344827586
+    },
+    {
+      "id": "601fafd2676d93008cd46d86",
+      "name": "Mercedes-Benz India",
+      "website_url": "http://www.mercedes-benz.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mercedes-benz-india",
+      "twitter_url": null,
+      "facebook_url": "https://facebook.com/mercedesbenzbubhandari",
+      "languages": [],
+      "alexa_ranking": 60836,
+      "phone": "+91 20 6721 2121",
+      "linkedin_uid": "10021590",
+      "founded_year": 1994,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a4fa4e1eab9b000016f5537/picture",
+      "crunchbase_url": null,
+      "primary_domain": "mercedes-benz.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 20 6721 2121",
+        "sanitized_number": "+912067212121"
+      },
+      "sanitized_phone": "+912067212121",
+      "owned_by_organization_id": "6735d186c5073a0001e363b0",
+      "owned_by_organization": {
+        "id": "6735d186c5073a0001e363b0",
+        "name": "Mercedes-Benz AG",
+        "website_url": "http://www.mercedes-benz.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "6735d186c5073a0001e363b0",
+        "673a291d22b3930001ce661e"
+      ],
+      "organization_revenue_printed": "1.5B",
+      "organization_revenue": 1500000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02490842490842491,
+      "organization_headcount_twelve_month_growth": 0.04092261904761905,
+      "organization_headcount_twenty_four_month_growth": 0.09725490196078432
+    },
+    {
+      "id": "54a1347f69702d4b2ecd0f00",
+      "name": "Automotive Research Association of India (ARAI)",
+      "website_url": "http://www.araiindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/the-automotive-research-association-of-india",
+      "twitter_url": "https://twitter.com/araiindia",
+      "facebook_url": "https://facebook.com/araiindia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 241799,
+      "phone": "+91 20676 21185",
+      "linkedin_uid": "414748",
+      "founded_year": 1966,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b28c88d7e1fe0001e52b91/picture",
+      "crunchbase_url": null,
+      "primary_domain": "araiindia.com",
+      "sic_codes": [
+        "8711",
+        "8731"
+      ],
+      "naics_codes": [
+        "541715",
+        "541380"
+      ],
+      "primary_phone": {
+        "number": "+91 20676 21185",
+        "sanitized_number": "+912067621185"
+      },
+      "sanitized_phone": "+912067621185",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "84M",
+      "organization_revenue": 84000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01715686274509804,
+      "organization_headcount_twelve_month_growth": 0.1007957559681698,
+      "organization_headcount_twenty_four_month_growth": 0.2518853695324283
+    },
+    {
+      "id": "5f3ffa0a9272d60001833348",
+      "name": "TVS Motor Company",
+      "website_url": "http://www.tvsmotor.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/tvs-motor-company",
+      "twitter_url": "https://twitter.com/tvsmotorcompany",
+      "facebook_url": "https://www.facebook.com/tvsmotorcompany/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 42223,
+      "phone": "+91 1800 258 7555",
+      "linkedin_uid": "23238",
+      "founded_year": 1979,
+      "publicly_traded_symbol": "TVSMOTOR.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/693bce4571abba0001aae4e5/picture",
+      "crunchbase_url": null,
+      "primary_domain": "tvsmotor.com",
+      "sic_codes": [
+        "3751"
+      ],
+      "naics_codes": [
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 258 7555",
+        "sanitized_number": "+9118002587555"
+      },
+      "sanitized_phone": "+9118002587555",
+      "owned_by_organization_id": "54a128a969702d9ebc491a01",
+      "owned_by_organization": {
+        "id": "54a128a969702d9ebc491a01",
+        "name": "Sundaram Clayton Limited",
+        "website_url": "http://www.sundaram-clayton.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "54a128a969702d9ebc491a01"
+      ],
+      "organization_revenue_printed": "6.0B",
+      "organization_revenue": 5965953000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02270067868008425,
+      "organization_headcount_twelve_month_growth": 0.02558084956582962,
+      "organization_headcount_twenty_four_month_growth": 0.09018336035923662
+    },
+    {
+      "id": "5fbd14cdf23e4c008c627cb4",
+      "name": "Hero MotoCorp",
+      "website_url": "http://www.heromotocorp.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/heromotocorp",
+      "twitter_url": "https://twitter.com/heromotocorp",
+      "facebook_url": "https://facebook.com/HeroMotoCorpIndia",
+      "languages": [],
+      "alexa_ranking": 59854,
+      "phone": "+91 11 4604 4200",
+      "linkedin_uid": "16502",
+      "founded_year": 1984,
+      "publicly_traded_symbol": "HEROMOTOCO.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac53a7c58eb3000125daf3/picture",
+      "crunchbase_url": null,
+      "primary_domain": "heromotocorp.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "33621",
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "+91 11 4604 4200",
+        "sanitized_number": "+911146044200"
+      },
+      "sanitized_phone": "+911146044200",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "5B",
+      "organization_revenue": 5044688000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.002552570803452048,
+      "organization_headcount_twelve_month_growth": -0.01575178997613365,
+      "organization_headcount_twenty_four_month_growth": 0.006099048548426446
+    },
+    {
+      "id": "54a11e0169702d9a8bb94b01",
+      "name": "Bajaj Auto Ltd",
+      "website_url": "http://www.bajajauto.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/bajaj-auto-ltd",
+      "twitter_url": "https://twitter.com/Bajajauto",
+      "facebook_url": "https://facebook.com/BajajAuto/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 62351,
+      "phone": "+91 72198 21111",
+      "linkedin_uid": "11807",
+      "founded_year": 1945,
+      "publicly_traded_symbol": "BAJAJ-AUTO.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aa7c5dd7deff000149942c/picture",
+      "crunchbase_url": null,
+      "primary_domain": "bajajauto.com",
+      "sic_codes": [
+        "3592"
+      ],
+      "naics_codes": [
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "+91 72198 21111",
+        "sanitized_number": "+917219821111"
+      },
+      "sanitized_phone": "+917219821111",
+      "owned_by_organization_id": "5fca299f46d9e90001c05e02",
+      "owned_by_organization": {
+        "id": "5fca299f46d9e90001c05e02",
+        "name": "Bajaj Group",
+        "website_url": "http://www.bajajgroup.org"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5fca299f46d9e90001c05e02"
+      ],
+      "organization_revenue_printed": "6.7B",
+      "organization_revenue": 6693267000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01008711600183402,
+      "organization_headcount_twelve_month_growth": 0.004712678625722104,
+      "organization_headcount_twenty_four_month_growth": 0.0001513317191283293
+    },
+    {
+      "id": "5a9f3b53a6da98d970174b49",
+      "name": "Morris Garages India",
+      "website_url": "http://www.mgmotor.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mgmotorindialtd",
+      "twitter_url": "https://twitter.com/MGMotorIn",
+      "facebook_url": "https://www.facebook.com/MGMotorIN",
+      "languages": [],
+      "alexa_ranking": 74579,
+      "phone": "+91 1800 100 6464",
+      "linkedin_uid": "16271169",
+      "founded_year": 2017,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a7d0fd043c9c000116b9a5/picture",
+      "crunchbase_url": null,
+      "primary_domain": "mgmotor.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 100 6464",
+        "sanitized_number": "+9118001006464"
+      },
+      "sanitized_phone": "+9118001006464",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "1B",
+      "organization_revenue": 1029000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.04028268551236749,
+      "organization_headcount_twelve_month_growth": 0.002724795640326975,
+      "organization_headcount_twenty_four_month_growth": -0.02774108322324967
+    },
+    {
+      "id": "57c504a8a6da986a47e71e2d",
+      "name": "Force Motors Ltd",
+      "website_url": "http://www.forcemotors.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/force-motors",
+      "twitter_url": "https://twitter.com/ForceMotorsFML",
+      "facebook_url": "https://facebook.com/TheForceIsUs",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 613349,
+      "phone": "+91 20 2747 6381",
+      "linkedin_uid": "74912",
+      "founded_year": 1958,
+      "publicly_traded_symbol": "FORCEMOT.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a3ef5e551b0d0001ab2e07/picture",
+      "crunchbase_url": null,
+      "primary_domain": "forcemotors.com",
+      "sic_codes": [
+        "3711",
+        "3714"
+      ],
+      "naics_codes": [
+        "33612",
+        "336110",
+        "336350"
+      ],
+      "primary_phone": {
+        "number": "+91 20 2747 6381",
+        "sanitized_number": "+912027476381"
+      },
+      "sanitized_phone": "+912027476381",
+      "owned_by_organization_id": "64cc9b9954f21a00a30d6fbd",
+      "owned_by_organization": {
+        "id": "64cc9b9954f21a00a30d6fbd",
+        "name": "Jaya Hind Industries Private Limited",
+        "website_url": "http://www.jayahind.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "64cc9b9954f21a00a30d6fbd"
+      ],
+      "organization_revenue_printed": "963.7M",
+      "organization_revenue": 963695000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0002947244326554671,
+      "organization_headcount_twelve_month_growth": 0.01192605843768635,
+      "organization_headcount_twenty_four_month_growth": 0.0815806246016571
+    },
+    {
+      "id": "556deba0736964117de60700",
+      "name": "Ashok Leyland",
+      "website_url": "http://www.ashokleyland.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/ashok-leyland",
+      "twitter_url": "https://twitter.com/ALIndiaOfficial",
+      "facebook_url": "https://facebook.com/AshokLeylandOfficial/",
+      "languages": [],
+      "alexa_ranking": 92921,
+      "phone": "+91 88473 98949",
+      "linkedin_uid": "11986",
+      "founded_year": 1948,
+      "publicly_traded_symbol": "ASHOKLEY.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b0e65e3074080001ac8537/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ashokleyland.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336120",
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 88473 98949",
+        "sanitized_number": "+918847398949"
+      },
+      "sanitized_phone": "+918847398949",
+      "owned_by_organization_id": "5f47cc5760586a0001d05be4",
+      "owned_by_organization": {
+        "id": "5f47cc5760586a0001d05be4",
+        "name": "Hinduja Group Limited",
+        "website_url": "http://www.hindujagroup.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5f47cc5760586a0001d05be4"
+      ],
+      "organization_revenue_printed": "6.0B",
+      "organization_revenue": 5966646000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01297384958443138,
+      "organization_headcount_twelve_month_growth": 0.0207333265243591,
+      "organization_headcount_twenty_four_month_growth": 0.05913522679101314
+    },
+    {
+      "id": "5592294973696418652da300",
+      "name": "Audi India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/audi-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English",
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "1656090",
+      "founded_year": 2007,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/695a086dae333000015ae7ac/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "5511"
+      ],
+      "naics_codes": [
+        "441110"
+      ],
+      "owned_by_organization_id": "5569dc9673696425256ea400",
+      "owned_by_organization": {
+        "id": "5569dc9673696425256ea400",
+        "name": "AUDI AG",
+        "website_url": "http://www.audi.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5569dc9673696425256ea400",
+        "5b1334b5a6da98dccdde69a7",
+        "6472450f602aad00a3296346"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01762114537444934,
+      "organization_headcount_twelve_month_growth": 0.04054054054054054,
+      "organization_headcount_twenty_four_month_growth": 0.008733624454148471
+    },
+    {
+      "id": "56d97b57f3e5bb72fb00314f",
+      "name": "Ultraviolette Automotive",
+      "website_url": "http://www.ultraviolette.com",
+      "angellist_url": "http://angel.co/ultraviolette-automotive",
+      "linkedin_url": "http://www.linkedin.com/company/ultraviolette-automotive",
+      "twitter_url": "https://twitter.com/UltravioletteEV",
+      "facebook_url": "https://www.facebook.com/ultravioletteautomotive/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 80694 53322",
+      "linkedin_uid": "10440819",
+      "founded_year": 2016,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4de6e650fbe0001e1127a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ultraviolette.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "+91 80694 53322",
+        "sanitized_number": "+918069453322"
+      },
+      "sanitized_phone": "+918069453322",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "4M",
+      "organization_revenue": 4000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.08778625954198473,
+      "organization_headcount_twelve_month_growth": 0.1656441717791411,
+      "organization_headcount_twenty_four_month_growth": 0.4690721649484536
+    },
+    {
+      "id": "54a12a0669702d979ccaf401",
+      "name": "Pidilite Industries Limited",
+      "website_url": "http://www.pidilite.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/pidilite-industries",
+      "twitter_url": null,
+      "facebook_url": "https://facebook.com/pages/Pidilite-Industries-Limited/154688371253890",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 478684,
+      "phone": "+91 80026 66066",
+      "linkedin_uid": "462974",
+      "founded_year": 1959,
+      "publicly_traded_symbol": "PIDILITIND.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4f7e11a8b530001356604/picture",
+      "crunchbase_url": null,
+      "primary_domain": "pidilite.com",
+      "sic_codes": [
+        "2899",
+        "2891",
+        "2851",
+        "2819"
+      ],
+      "naics_codes": [
+        "325520",
+        "325510",
+        "325130"
+      ],
+      "primary_phone": {
+        "number": "+91 80026 66066",
+        "sanitized_number": "+918002666066"
+      },
+      "sanitized_phone": "+918002666066",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "1.6B",
+      "organization_revenue": 1553569000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01310186701604979,
+      "organization_headcount_twelve_month_growth": 0.0135998689169261,
+      "organization_headcount_twenty_four_month_growth": 0.03931451612903226
+    },
+    {
+      "id": "54a11d4169702d9a8b3f0301",
+      "name": "Volkswagen India",
+      "website_url": "http://www.volkswagen.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/volkswagen-india",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/Volkswagenindia/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 54970,
+      "phone": "+91 80010 20909",
+      "linkedin_uid": "798080",
+      "founded_year": 2007,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/686ac8a5cc68d10001c371ef/picture",
+      "crunchbase_url": null,
+      "primary_domain": "volkswagen.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 80010 20909",
+        "sanitized_number": "+918001020909"
+      },
+      "sanitized_phone": "+918001020909",
+      "owned_by_organization_id": "5b1334b5a6da98dccdde69a7",
+      "owned_by_organization": {
+        "id": "5b1334b5a6da98dccdde69a7",
+        "name": "Volkswagen Group",
+        "website_url": "http://www.volkswagen-group.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5b1334b5a6da98dccdde69a7",
+        "6472450f602aad00a3296346"
+      ],
+      "organization_revenue_printed": "2.2B",
+      "organization_revenue": 2197000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.004004004004004004,
+      "organization_headcount_twelve_month_growth": -0.02355250245338567,
+      "organization_headcount_twenty_four_month_growth": -0.0311587147030185
+    },
+    {
+      "id": "56d884e8f3e5bb26db0000a6",
+      "name": "MakeMyTrip",
+      "website_url": "http://www.makemytrip.com",
+      "angellist_url": "http://angel.co/makemytrip",
+      "linkedin_url": "http://www.linkedin.com/company/makemytrip.com",
+      "twitter_url": "https://twitter.com/makemytrip",
+      "facebook_url": "https://www.facebook.com/pages/Make-My-Trip/123837174386562?ref=br_tf",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 1011,
+      "phone": "+91 12446 28747",
+      "linkedin_uid": "35113",
+      "founded_year": 2000,
+      "publicly_traded_symbol": "MMYT",
+      "publicly_traded_exchange": "nasdaq",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ae3b5edd2a1d0001224b2c/picture",
+      "crunchbase_url": null,
+      "primary_domain": "makemytrip.com",
+      "sic_codes": [
+        "4724",
+        "4725"
+      ],
+      "naics_codes": [
+        "561510",
+        "561520"
+      ],
+      "primary_phone": {
+        "number": "+91 12446 28747",
+        "sanitized_number": "+911244628747"
+      },
+      "sanitized_phone": "+911244628747",
+      "market_cap": "5.6B",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "1B",
+      "organization_revenue": 1043991000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0006090133982947625,
+      "organization_headcount_twelve_month_growth": 0.03834000421318728,
+      "organization_headcount_twenty_four_month_growth": 0.1592191909689558
+    },
+    {
+      "id": "5d0a13e480f93e3f76dd3d90",
+      "name": "Jindal Stainless",
+      "website_url": "http://www.jindalstainless.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/jindal-stainless",
+      "twitter_url": "https://twitter.com/Jindal_Official",
+      "facebook_url": "https://facebook.com/JindalStainlessOfficial/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11261 88345",
+      "linkedin_uid": "1241509",
+      "founded_year": 1970,
+      "publicly_traded_symbol": "JSL.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a2e643252d099000139c8ea/picture",
+      "crunchbase_url": null,
+      "primary_domain": "jindalstainless.com",
+      "sic_codes": [
+        "3312"
+      ],
+      "naics_codes": [
+        "33142",
+        "331110"
+      ],
+      "primary_phone": {
+        "number": "+91 11261 88345",
+        "sanitized_number": "+911126188345"
+      },
+      "sanitized_phone": "+911126188345",
+      "owned_by_organization_id": "5b135478a6da98dcf02659c7",
+      "owned_by_organization": {
+        "id": "5b135478a6da98dcf02659c7",
+        "name": "Jindal Stainless (Hisar) Ltd",
+        "website_url": "http://www.jshlstainless.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5b135478a6da98dcf02659c7"
+      ],
+      "organization_revenue_printed": "4.8B",
+      "organization_revenue": 4795917000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02450379808870375,
+      "organization_headcount_twelve_month_growth": 0.08597402597402598,
+      "organization_headcount_twenty_four_month_growth": 0.2532973621103117
+    },
+    {
+      "id": "5da37f608d8d450001454be1",
+      "name": "Ola Electric",
+      "website_url": "http://www.olaelectric.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/olaelectric",
+      "twitter_url": "https://twitter.com/OlaElectric",
+      "facebook_url": "https://facebook.com/people/Ola-Electric/100064009628635/",
+      "languages": [],
+      "alexa_ranking": 23780,
+      "phone": "+91 80689 64050",
+      "linkedin_uid": "14567222",
+      "founded_year": 2017,
+      "publicly_traded_symbol": "OLAELEC.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b26af8aaea3b00010c4e4d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "olaelectric.com",
+      "sic_codes": [
+        "3621"
+      ],
+      "naics_codes": [
+        "33639",
+        "336991",
+        "335910"
+      ],
+      "primary_phone": {
+        "number": "+91 80689 64050",
+        "sanitized_number": "+918068964050"
+      },
+      "sanitized_phone": "+918068964050",
+      "owned_by_organization_id": "5b13a6e7a6da98dcab4e96f3",
+      "owned_by_organization": {
+        "id": "5b13a6e7a6da98dcab4e96f3",
+        "name": "Ola",
+        "website_url": "http://www.olacabs.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5b13a6e7a6da98dcab4e96f3"
+      ],
+      "organization_revenue_printed": "239.7M",
+      "organization_revenue": 239725000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.02112482853223594,
+      "organization_headcount_twelve_month_growth": -0.07083333333333333,
+      "organization_headcount_twenty_four_month_growth": -0.09326556543837357
+    },
+    {
+      "id": "5da6f40ebddb830001401e2f",
+      "name": "Luman Automotive",
+      "website_url": "http://www.lumanauto.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/luman-automotive-systems-p-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11455 40808",
+      "linkedin_uid": "14459308",
+      "founded_year": 1978,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a7f6c67856100001c5c546/picture",
+      "crunchbase_url": null,
+      "primary_domain": "lumanauto.com",
+      "sic_codes": [
+        "3714"
+      ],
+      "naics_codes": [
+        "33639",
+        "336320",
+        "336340",
+        "324191"
+      ],
+      "primary_phone": {
+        "number": "+91 11455 40808",
+        "sanitized_number": "+911145540808"
+      },
+      "sanitized_phone": "+911145540808",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "7M",
+      "organization_revenue": 7000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0707070707070707,
+      "organization_headcount_twelve_month_growth": 0.1041666666666667,
+      "organization_headcount_twenty_four_month_growth": 0.2470588235294118
+    },
+    {
+      "id": "54a21fc57468693fda9ca80e",
+      "name": "Škoda India",
+      "website_url": "http://www.skoda-auto.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/skoda-auto-india-pvt-ltd-",
+      "twitter_url": "https://twitter.com/SkodaIndia",
+      "facebook_url": "https://www.facebook.com/SkodaIndia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 1800 123 090 909",
+      "linkedin_uid": "262184",
+      "founded_year": 2001,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4c322c25464000128cb06/picture",
+      "crunchbase_url": null,
+      "primary_domain": "skoda-auto.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 123 090 909",
+        "sanitized_number": "+911800123090909"
+      },
+      "sanitized_phone": "+911800123090909",
+      "owned_by_organization_id": "5a9d2e15a6da98d938b991b5",
+      "owned_by_organization": {
+        "id": "5a9d2e15a6da98d938b991b5",
+        "name": "Škoda Auto",
+        "website_url": "http://www.skoda-auto.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5a9d2e15a6da98d938b991b5",
+        "5b1334b5a6da98dccdde69a7",
+        "6472450f602aad00a3296346"
+      ],
+      "organization_revenue_printed": "2.2B",
+      "organization_revenue": 2197000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.001567398119122257,
+      "organization_headcount_twelve_month_growth": 0.01428571428571429,
+      "organization_headcount_twenty_four_month_growth": 0.05970149253731343
+    },
+    {
+      "id": "5fe03b01155e4200beab824f",
+      "name": "Kia India",
+      "website_url": "http://www.kia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/kiaind",
+      "twitter_url": "https://twitter.com/kia_worldwide?lang=en",
+      "facebook_url": "https://facebook.com/Kiaworldwideofficial/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 3516,
+      "phone": "+91 80010 85000",
+      "linkedin_uid": "13616676",
+      "founded_year": 1944,
+      "publicly_traded_symbol": "000270",
+      "publicly_traded_exchange": "krx",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ace122a74bf10001e6e5f2/picture",
+      "crunchbase_url": null,
+      "primary_domain": "kia.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 80010 85000",
+        "sanitized_number": "+918001085000"
+      },
+      "sanitized_phone": "+918001085000",
+      "owned_by_organization_id": "62f409d8edf7fd00cbc6ff8b",
+      "owned_by_organization": {
+        "id": "62f409d8edf7fd00cbc6ff8b",
+        "name": "Hyundai Motor Company",
+        "website_url": "http://www.hyundai.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "62f409d8edf7fd00cbc6ff8b",
+        "5dd8ea21116686008c7fb4e1"
+      ],
+      "organization_revenue_printed": "72.4B",
+      "organization_revenue": 72375659000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01145767027371101,
+      "organization_headcount_twelve_month_growth": 0.001575795776867318,
+      "organization_headcount_twenty_four_month_growth": 0.08390177353342429
+    },
+    {
+      "id": "56da491ef3e5bb41e0000ffc",
+      "name": "Cars24",
+      "website_url": "http://www.cars24.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/cars24",
+      "twitter_url": "https://twitter.com/cars24india",
+      "facebook_url": "https://facebook.com/cars24india/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 18069,
+      "phone": "+91 90622 42424",
+      "linkedin_uid": "10429660",
+      "founded_year": 2015,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b291d9cba58a00013415b5/picture",
+      "crunchbase_url": null,
+      "primary_domain": "cars24.com",
+      "sic_codes": [
+        "5511",
+        "5012"
+      ],
+      "naics_codes": [
+        "441120"
+      ],
+      "primary_phone": {
+        "number": "+91 90622 42424",
+        "sanitized_number": "+919062242424"
+      },
+      "sanitized_phone": "+919062242424",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "149M",
+      "organization_revenue": 149000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.001189060642092747,
+      "organization_headcount_twelve_month_growth": -0.0333716915995397,
+      "organization_headcount_twenty_four_month_growth": 0.04890738813735692
+    },
+    {
+      "id": "5ed11db9d34e130001e2d1ab",
+      "name": "Bharat Forge Ltd",
+      "website_url": "http://www.bharatforge.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/bharat-forge-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 186442,
+      "phone": "+1 517-393-5300",
+      "linkedin_uid": "54381",
+      "founded_year": 1961,
+      "publicly_traded_symbol": "BHARATFORG.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aa67ac7e58f300014b9415/picture",
+      "crunchbase_url": null,
+      "primary_domain": "bharatforge.com",
+      "sic_codes": [
+        "3593",
+        "3462",
+        "3714"
+      ],
+      "naics_codes": [
+        "332111",
+        "336310",
+        "336412"
+      ],
+      "primary_phone": {
+        "number": "+1 517-393-5300",
+        "sanitized_number": "+15173935300"
+      },
+      "sanitized_phone": "+15173935300",
+      "owned_by_organization_id": "5ed86337bc2e350001151e18",
+      "owned_by_organization": {
+        "id": "5ed86337bc2e350001151e18",
+        "name": "kalyani Additives",
+        "website_url": "http://www.kalyanigroup.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5ed86337bc2e350001151e18"
+      ],
+      "organization_revenue_printed": "1.8B",
+      "organization_revenue": 1788806000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01076095311299001,
+      "organization_headcount_twelve_month_growth": 0.03339882121807466,
+      "organization_headcount_twenty_four_month_growth": 0.09583333333333334
+    },
+    {
+      "id": "54a1b2fe7468695c8260f608",
+      "name": "Havells India Ltd",
+      "website_url": "http://www.havells.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/havells-india-ltd",
+      "twitter_url": "https://twitter.com/havellsindia",
+      "facebook_url": "https://facebook.com/Havells/",
+      "languages": [
+        "English",
+        "English",
+        "English"
+      ],
+      "alexa_ranking": 25208,
+      "phone": "+91 12 0333 1000",
+      "linkedin_uid": "81758",
+      "founded_year": 1983,
+      "publicly_traded_symbol": "HAVELLS.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69adcef66138a6000133a48c/picture",
+      "crunchbase_url": null,
+      "primary_domain": "havells.com",
+      "sic_codes": [
+        "3631"
+      ],
+      "naics_codes": [
+        "33599",
+        "335132",
+        "335210",
+        "335929"
+      ],
+      "primary_phone": {
+        "number": "+91 12 0333 1000",
+        "sanitized_number": "+911203331000"
+      },
+      "sanitized_phone": "+911203331000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "2.4B",
+      "organization_revenue": 2397017000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02379733879222109,
+      "organization_headcount_twelve_month_growth": 0.04779363624459866,
+      "organization_headcount_twenty_four_month_growth": 0.1052486187845304
+    },
+    {
+      "id": "5d0ab4b0f65125c94629df96",
+      "name": "Cummins India",
+      "website_url": "http://www.cumminsindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/cummins-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 20 6706 7000",
+      "linkedin_uid": "7306008",
+      "founded_year": 1919,
+      "publicly_traded_symbol": "CUMMINSIND.NS",
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a3a6af81149100015e497e/picture",
+      "crunchbase_url": null,
+      "primary_domain": "cumminsindia.com",
+      "sic_codes": [
+        "3511",
+        "3714"
+      ],
+      "naics_codes": [
+        "333",
+        "336310"
+      ],
+      "primary_phone": {
+        "number": "+91 20 6706 7000",
+        "sanitized_number": "+912067067000"
+      },
+      "sanitized_phone": "+912067067000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "10M",
+      "organization_revenue": 10000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.009694719471947194,
+      "organization_headcount_twelve_month_growth": 0.03422776251848722,
+      "organization_headcount_twenty_four_month_growth": 0.1191129401005944
+    },
+    {
+      "id": "5fc8cf84d5906f00010703a2",
+      "name": "Mechanical Engineering Design Hub",
+      "website_url": "http://www.digitalcadtraining.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mechanical-engineering-design-hub",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 85540 70478",
+      "linkedin_uid": "68952923",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a54757fa064b00015cff45/picture",
+      "crunchbase_url": null,
+      "primary_domain": "digitalcadtraining.com",
+      "sic_codes": [
+        "8711",
+        "8299"
+      ],
+      "naics_codes": [
+        "541330",
+        "611430"
+      ],
+      "primary_phone": {
+        "number": "+91 85540 70478",
+        "sanitized_number": "+918554070478"
+      },
+      "sanitized_phone": "+918554070478",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.02631578947368421,
+      "organization_headcount_twenty_four_month_growth": 0.02631578947368421
+    },
+    {
+      "id": "5d344744f651258044870156",
+      "name": "Toyota Kirloskar Motor",
+      "website_url": "http://www.toyotabharat.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/toyota-kirloskar-motor",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": 31783,
+      "phone": null,
+      "linkedin_uid": "39881",
+      "founded_year": 1997,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b2624c68cf450001e84dcf/picture",
+      "crunchbase_url": null,
+      "primary_domain": "toyotabharat.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "owned_by_organization_id": "5f483e27369a630001be034c",
+      "owned_by_organization": {
+        "id": "5f483e27369a630001be034c",
+        "name": "Toyota Motor Corporation",
+        "website_url": "http://www.global.toyota"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5f483e27369a630001be034c"
+      ],
+      "organization_revenue_printed": "7.7B",
+      "organization_revenue": 7672000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02117896223085069,
+      "organization_headcount_twelve_month_growth": 0.1178516228748068,
+      "organization_headcount_twenty_four_month_growth": 0.3381128584643848
+    },
+    {
+      "id": "5f4ab7ecbe61be0001649006",
+      "name": "Mercedes-Benz T&T Motors",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mercedes-benz-t-&-t-motors-ltd.",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "1645458",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a7de55576ab400013853bb/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "5511",
+        "7538"
+      ],
+      "naics_codes": [
+        "441110",
+        "441120",
+        "811111"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02888086642599278,
+      "organization_headcount_twelve_month_growth": 0.09195402298850575,
+      "organization_headcount_twenty_four_month_growth": 0.163265306122449
+    },
+    {
+      "id": "57c49752a6da9832d7d347b9",
+      "name": "Eicher Trucks and Buses",
+      "website_url": "http://www.eichertrucksandbuses.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/etbindia",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 1800 102 3531",
+      "linkedin_uid": "219795",
+      "founded_year": 1948,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69637348fd9008000151df66/picture",
+      "crunchbase_url": null,
+      "primary_domain": "eichertrucksandbuses.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336120"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 102 3531",
+        "sanitized_number": "+9118001023531"
+      },
+      "sanitized_phone": "+9118001023531",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "2.9B",
+      "organization_revenue": 2881000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.0006357279084551812,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": -0.02238805970149254
+    },
+    {
+      "id": "5f4012149b1d2f00015ad44a",
+      "name": "HARMAN India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/harmanindia",
+      "twitter_url": "https://twitter.com/Harman",
+      "facebook_url": "https://www.facebook.com/HarmanInt",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+1 800-645-7484",
+      "linkedin_uid": "2256794",
+      "founded_year": 2009,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b1255f5ede340001114601/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "naics_codes": [
+        "336320",
+        "334310",
+        "334418"
+      ],
+      "primary_phone": {
+        "number": "+1 800-645-7484",
+        "sanitized_number": "+18006457484"
+      },
+      "sanitized_phone": "+18006457484",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01604621309370988,
+      "organization_headcount_twelve_month_growth": -0.07733975323502859,
+      "organization_headcount_twenty_four_month_growth": -0.04871237977040025
+    },
+    {
+      "id": "5b80a48b324d440c641b7d86",
+      "name": "Volvo Car India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/volvocarindia",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English",
+        "German",
+        "Spanish",
+        "French",
+        "Italian",
+        "Portuguese",
+        "Chinese",
+        "Japanese",
+        "Russian"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "13210104",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b12d0886f6e60001196fa7/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "owned_by_organization_id": "54a1281869702d93136dea00",
+      "owned_by_organization": {
+        "id": "54a1281869702d93136dea00",
+        "name": "Geely Auto International",
+        "website_url": "http://www.geely.com"
+      },
+      "num_languages": 9,
+      "owned_by_chain": [
+        "54a1281869702d93136dea00",
+        "55e17928f3e5bb66cf0027b2"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01904761904761905,
+      "organization_headcount_twelve_month_growth": -0.009259259259259259,
+      "organization_headcount_twenty_four_month_growth": 0.0
+    },
+    {
+      "id": "57c4da73a6da986a57bb521b",
+      "name": "Mahindra Last Mile Mobility",
+      "website_url": "http://www.mahindralastmilemobility.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/mahindralmm",
+      "twitter_url": "https://twitter.com/MahindraLMM",
+      "facebook_url": "https://facebook.com/mahindralastmilemobility/",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 1800 120 150 150",
+      "linkedin_uid": "537288",
+      "founded_year": 1994,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a41f4236ee670001f1e67d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "mahindralastmilemobility.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 120 150 150",
+        "sanitized_number": "+911800120150150"
+      },
+      "sanitized_phone": "+911800120150150",
+      "owned_by_organization_id": "5e577a2f9303fe0001d6d6c2",
+      "owned_by_organization": {
+        "id": "5e577a2f9303fe0001d6d6c2",
+        "name": "Mahindra Group",
+        "website_url": "http://www.mahindra.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5e577a2f9303fe0001d6d6c2"
+      ],
+      "organization_revenue_printed": "443M",
+      "organization_revenue": 443000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02626262626262626,
+      "organization_headcount_twelve_month_growth": 0.09247311827956989,
+      "organization_headcount_twenty_four_month_growth": 0.2315151515151515
+    },
+    {
+      "id": "5f0cbed8c6d77a0112cc3d5c",
+      "name": "Saraswati Trailer Udhyog LLP",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/stullp",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "28733447",
+      "founded_year": 2006,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/68167acccda76c0001a1a0f2/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3715",
+        "3716"
+      ],
+      "naics_codes": [
+        "336212"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": -0.1538461538461539
+    },
+    {
+      "id": "54a121f569702d88c40d8402",
+      "name": "Ather Energy",
+      "website_url": "http://www.atherenergy.com",
+      "angellist_url": "http://angel.co/ather-energy",
+      "linkedin_url": "http://www.linkedin.com/company/ather-energy",
+      "twitter_url": "https://twitter.com/atherenergy",
+      "facebook_url": "http://www.facebook.com/atherenergy",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 35325,
+      "phone": "+91 76766 00900",
+      "linkedin_uid": "3532548",
+      "founded_year": 2013,
+      "publicly_traded_symbol": "ATHERENERG.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a750e120a995d000157237f/picture",
+      "crunchbase_url": null,
+      "primary_domain": "atherenergy.com",
+      "sic_codes": [
+        "3593"
+      ],
+      "naics_codes": [
+        "33611",
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "+91 76766 00900",
+        "sanitized_number": "+917676600900"
+      },
+      "sanitized_phone": "+917676600900",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "390.7M",
+      "organization_revenue": 390685000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02272727272727273,
+      "organization_headcount_twelve_month_growth": 0.04763610315186247,
+      "organization_headcount_twenty_four_month_growth": 0.2896825396825397
+    },
+    {
+      "id": "5e55bfdb42fe9f00012c541e",
+      "name": "CEAT Limited",
+      "website_url": "http://www.ceat.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/ceat-tyres-limited",
+      "twitter_url": "https://twitter.com/ceattyres",
+      "facebook_url": "https://facebook.com/ceattyresindia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 92463,
+      "phone": "+91 22249 30621",
+      "linkedin_uid": "10443548",
+      "founded_year": 1958,
+      "publicly_traded_symbol": "CEATLTD.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69afa5ecaa7aa50001788bea/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ceat.com",
+      "sic_codes": [
+        "3011"
+      ],
+      "naics_codes": [
+        "326211"
+      ],
+      "primary_phone": {
+        "number": "+91 22249 30621",
+        "sanitized_number": "+912224930621"
+      },
+      "sanitized_phone": "+912224930621",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "1.7B",
+      "organization_revenue": 1668183000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01519302615193026,
+      "organization_headcount_twelve_month_growth": -0.03842412451361868,
+      "organization_headcount_twenty_four_month_growth": -0.06657223796033994
+    },
+    {
+      "id": "55695347736964254f7c0600",
+      "name": "Schbang",
+      "website_url": "http://www.schbang.com",
+      "angellist_url": "http://angel.co/white-rivers-digital",
+      "linkedin_url": "http://www.linkedin.com/company/letschbang",
+      "twitter_url": null,
+      "facebook_url": "https://facebook.com/schbang/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 92566,
+      "phone": "+91 22618 48518",
+      "linkedin_uid": "10779125",
+      "founded_year": 2015,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b143c557c5460001498ac0/picture",
+      "crunchbase_url": null,
+      "primary_domain": "schbang.com",
+      "sic_codes": [
+        "7311"
+      ],
+      "naics_codes": [
+        "541810",
+        "541511"
+      ],
+      "primary_phone": {
+        "number": "+91 22618 48518",
+        "sanitized_number": "+912261848518"
+      },
+      "sanitized_phone": "+912261848518",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "524M",
+      "organization_revenue": 524000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01380368098159509,
+      "organization_headcount_twelve_month_growth": 0.02560124127230411,
+      "organization_headcount_twenty_four_month_growth": 0.1952983725135624
+    },
+    {
+      "id": "55f8af9df3e5bb195b002366",
+      "name": "Appinventiv",
+      "website_url": "http://www.appinventiv.com",
+      "angellist_url": "http://angel.co/appinventiv",
+      "linkedin_url": "http://www.linkedin.com/company/appinventiv",
+      "twitter_url": "https://twitter.com/appinventiv",
+      "facebook_url": "https://www.facebook.com/Appinventiv/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 28756,
+      "phone": "+91 84481 82018",
+      "linkedin_uid": "9322687",
+      "founded_year": 2015,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aa95b02620d00001e74a49/picture",
+      "crunchbase_url": null,
+      "primary_domain": "appinventiv.com",
+      "sic_codes": [
+        "7375",
+        "7371",
+        "7373"
+      ],
+      "naics_codes": [
+        "541511",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+91 84481 82018",
+        "sanitized_number": "+918448182018"
+      },
+      "sanitized_phone": "+918448182018",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "40M",
+      "organization_revenue": 40000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01883830455259027,
+      "organization_headcount_twelve_month_growth": 0.03261734287987271,
+      "organization_headcount_twenty_four_month_growth": 0.146643109540636
+    },
+    {
+      "id": "55923d0173696417398c8c00",
+      "name": "Suzuki Motorcycle India Private Ltd.",
+      "website_url": "http://www.suzukimotorcycle.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/suzuki-motorcycle-india-ltd-",
+      "twitter_url": "https://twitter.com/suzuki2wheelers",
+      "facebook_url": "https://facebook.com/Suzuki2Wheelers",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 581434,
+      "phone": null,
+      "linkedin_uid": "553292",
+      "founded_year": 2006,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69adaf32bda5430001baf58a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "suzukimotorcycle.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336991"
+      ],
+      "owned_by_organization_id": "55ed7a32f3e5bb387100220e",
+      "owned_by_organization": {
+        "id": "55ed7a32f3e5bb387100220e",
+        "name": "SUZUKI EGYPT S.A.E.",
+        "website_url": "http://www.globalsuzuki.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "55ed7a32f3e5bb387100220e"
+      ],
+      "organization_revenue_printed": "2.3B",
+      "organization_revenue": 2300000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.006130790190735695,
+      "organization_headcount_twelve_month_growth": 0.01178918169209431,
+      "organization_headcount_twenty_four_month_growth": 0.08961911874533234
+    },
+    {
+      "id": "5f3f861c74dd8b00014a5720",
+      "name": "Škoda Auto Volkswagen India Private Limited",
+      "website_url": "http://www.skoda-vw.co.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/-koda-auto-volkswagen-india-private-limited",
+      "twitter_url": "https://twitter.com/SkodaIndia",
+      "facebook_url": "https://facebook.com/pages/Skoda-Auto-Volkswagen-India-Pvt-Ltd/101625024597913",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 213 566 1000",
+      "linkedin_uid": "66225714",
+      "founded_year": 2001,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac04dacc4f7000017707bb/picture",
+      "crunchbase_url": null,
+      "primary_domain": "skoda-vw.co.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 213 566 1000",
+        "sanitized_number": "+912135661000"
+      },
+      "sanitized_phone": "+912135661000",
+      "owned_by_organization_id": "5a9d2e15a6da98d938b991b5",
+      "owned_by_organization": {
+        "id": "5a9d2e15a6da98d938b991b5",
+        "name": "Škoda Auto",
+        "website_url": "http://www.skoda-auto.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5a9d2e15a6da98d938b991b5",
+        "5b1334b5a6da98dccdde69a7",
+        "6472450f602aad00a3296346"
+      ],
+      "organization_revenue_printed": "2.2B",
+      "organization_revenue": 2197000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.00387409200968523,
+      "organization_headcount_twelve_month_growth": -0.006708193579300431,
+      "organization_headcount_twenty_four_month_growth": -0.02401129943502825
+    },
+    {
+      "id": "5c27de7ca3ae61cdc1448a50",
+      "name": "Nayara Energy",
+      "website_url": "http://www.nayaraenergy.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/nayaraenergy",
+      "twitter_url": "https://www.twitter.com/NayaraEnergy/",
+      "facebook_url": "https://www.facebook.com/NayaraEnergy/",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 22661 21800",
+      "linkedin_uid": "13715550",
+      "founded_year": 1989,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4940097ff5500017c9ca8/picture",
+      "crunchbase_url": null,
+      "primary_domain": "nayaraenergy.com",
+      "sic_codes": [
+        "2911",
+        "5541"
+      ],
+      "naics_codes": [
+        "324110",
+        "45711"
+      ],
+      "primary_phone": {
+        "number": "+91 22661 21800",
+        "sanitized_number": "+912266121800"
+      },
+      "sanitized_phone": "+912266121800",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "15.7B",
+      "organization_revenue": 15709000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.006842619745845552,
+      "organization_headcount_twelve_month_growth": 0.01812191103789127,
+      "organization_headcount_twenty_four_month_growth": 0.07590529247910864
+    },
+    {
+      "id": "559233df73696418df3cc900",
+      "name": "Asahi India Glass Limited (AIS)",
+      "website_url": "http://www.aisglass.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/asahi-india-glass-limited",
+      "twitter_url": "https://twitter.com/AsahiIndia",
+      "facebook_url": "https://www.facebook.com/AsahiIndiaGlassLtd",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 726337,
+      "phone": "+91 12 4406 2212",
+      "linkedin_uid": "327874",
+      "founded_year": 1984,
+      "publicly_traded_symbol": "ASAHIINDIA.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a38c837598530001b632e2/picture",
+      "crunchbase_url": null,
+      "primary_domain": "aisglass.com",
+      "naics_codes": [
+        "327211",
+        "327215",
+        "336390"
+      ],
+      "primary_phone": {
+        "number": "+91 12 4406 2212",
+        "sanitized_number": "+911244062212"
+      },
+      "sanitized_phone": "+911244062212",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "522M",
+      "organization_revenue": 522014000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02397959183673469,
+      "organization_headcount_twelve_month_growth": 0.05520504731861198,
+      "organization_headcount_twenty_four_month_growth": 0.1199776785714286
+    },
+    {
+      "id": "5f72f947ccbf0600bfbd2d78",
+      "name": "Daimler India Commercial Vehicles",
+      "website_url": "http://www.daimler-trucksasia.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/daimler-india-commercial-vehicles",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 44496 94000",
+      "linkedin_uid": "64964210",
+      "founded_year": 2009,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ad19742c2dbc0001b69376/picture",
+      "crunchbase_url": null,
+      "primary_domain": "daimler-trucksasia.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336120"
+      ],
+      "primary_phone": {
+        "number": "+91 44496 94000",
+        "sanitized_number": "+914449694000"
+      },
+      "sanitized_phone": "+914449694000",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.00909435392194013,
+      "organization_headcount_twelve_month_growth": -0.0007642338555598013,
+      "organization_headcount_twenty_four_month_growth": -0.01617757712565839
+    },
+    {
+      "id": "57c4f3dda6da986a98945588",
+      "name": "Network18 Media & Investments Limited",
+      "website_url": "http://www.nw18.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/network18",
+      "twitter_url": null,
+      "facebook_url": "https://facebook.com/Network18grp",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 82576,
+      "phone": "+91 22400 19000",
+      "linkedin_uid": "10399490",
+      "founded_year": 1993,
+      "publicly_traded_symbol": "NETWORK18.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aa6c8812403e0001d6066d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "nw18.com",
+      "sic_codes": [
+        "4899"
+      ],
+      "naics_codes": [
+        "51612",
+        "51929",
+        "51312"
+      ],
+      "primary_phone": {
+        "number": "+91 22400 19000",
+        "sanitized_number": "+912240019000"
+      },
+      "sanitized_phone": "+912240019000",
+      "owned_by_organization_id": "5d0ab6a4f65125e761feb093",
+      "owned_by_organization": {
+        "id": "5d0ab6a4f65125e761feb093",
+        "name": "Reliance Industries Limited",
+        "website_url": "http://www.ril.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5d0ab6a4f65125e761feb093"
+      ],
+      "organization_revenue_printed": "225.7M",
+      "organization_revenue": 225661000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02850356294536817,
+      "organization_headcount_twelve_month_growth": 0.05609756097560976,
+      "organization_headcount_twenty_four_month_growth": 0.1174193548387097
+    },
+    {
+      "id": "556cf24673696411c7705c00",
+      "name": "Hinduja Tech Limited",
+      "website_url": "http://www.hindujatech.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hindujatech",
+      "twitter_url": "https://twitter.com/hindujatech",
+      "facebook_url": "https://facebook.com/hindujatech",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 44666 91000",
+      "linkedin_uid": "507280",
+      "founded_year": 2009,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b26e5cdca4ff00019c53e6/picture",
+      "crunchbase_url": null,
+      "primary_domain": "hindujatech.com",
+      "sic_codes": [
+        "3711",
+        "8711",
+        "7373"
+      ],
+      "naics_codes": [
+        "54133",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+91 44666 91000",
+        "sanitized_number": "+914466691000"
+      },
+      "sanitized_phone": "+914466691000",
+      "owned_by_organization_id": "5f47cc5760586a0001d05be4",
+      "owned_by_organization": {
+        "id": "5f47cc5760586a0001d05be4",
+        "name": "Hinduja Group Limited",
+        "website_url": "http://www.hindujagroup.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5f47cc5760586a0001d05be4"
+      ],
+      "organization_revenue_printed": "50M",
+      "organization_revenue": 50000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.0214987714987715,
+      "organization_headcount_twelve_month_growth": -0.01727328809376928,
+      "organization_headcount_twenty_four_month_growth": -0.1125348189415042
+    },
+    {
+      "id": "5da30fc955f0860001b31b04",
+      "name": "Samarth Jobs Management Consultants",
+      "website_url": "http://www.samarthjobs.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/samarthjobs-management-consultants",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/samarthjobs/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 92271 66166",
+      "linkedin_uid": "3073441",
+      "founded_year": 2006,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/66f802aacbf6f9000181ecb8/picture",
+      "crunchbase_url": null,
+      "primary_domain": "samarthjobs.in",
+      "sic_codes": [
+        "7361",
+        "7363",
+        "8742"
+      ],
+      "naics_codes": [
+        "561311",
+        "561320",
+        "541612"
+      ],
+      "primary_phone": {
+        "number": "+91 92271 66166",
+        "sanitized_number": "+919227166166"
+      },
+      "sanitized_phone": "+919227166166",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": -0.025
+    },
+    {
+      "id": "5f5b25709c4248011fb64819",
+      "name": "ASK AUTOMOTIVE LIMITED",
+      "website_url": "http://www.askbrake.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/ask-automotive-limited",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/askgrp",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11 4503 2488",
+      "linkedin_uid": "14811160",
+      "founded_year": 1988,
+      "publicly_traded_symbol": "ASKAUTOLTD.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aaacc0a3da970001166a26/picture",
+      "crunchbase_url": null,
+      "primary_domain": "askbrake.com",
+      "sic_codes": [
+        "3711",
+        "3714"
+      ],
+      "naics_codes": [
+        "33639",
+        "336340"
+      ],
+      "primary_phone": {
+        "number": "+91 11 4503 2488",
+        "sanitized_number": "+911145032488"
+      },
+      "sanitized_phone": "+911145032488",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "444.4M",
+      "organization_revenue": 444372000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.01558073654390935,
+      "organization_headcount_twenty_four_month_growth": 0.08966565349544073
+    },
+    {
+      "id": "5e5615004e4bc20001ff22bc",
+      "name": "Industrial Knowledge",
+      "website_url": "http://www.nikunjbhoraniya.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/industrialknowledge",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "14462107",
+      "founded_year": 2014,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/66dea8f057ba36000107e09a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "nikunjbhoraniya.com",
+      "sic_codes": [
+        "8731"
+      ],
+      "naics_codes": [
+        "61142",
+        "611430"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.1428571428571428,
+      "organization_headcount_twelve_month_growth": 0.1428571428571428,
+      "organization_headcount_twenty_four_month_growth": 0.2631578947368421
+    },
+    {
+      "id": "61adc1e6df658800da5b4dc5",
+      "name": "Daimler Truck Innovation Center India (DTICI)",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/daimler-truck-innovation-center-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+49 711 84850",
+      "linkedin_uid": "77141487",
+      "founded_year": 2021,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b137d21738d7000155d821/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "8711",
+        "7371"
+      ],
+      "naics_codes": [
+        "541330",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+49 711 84850",
+        "sanitized_number": "+4971184850"
+      },
+      "sanitized_phone": "+4971184850",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01369081574443811,
+      "organization_headcount_twelve_month_growth": 0.03223932616903863,
+      "organization_headcount_twenty_four_month_growth": 0.1095847642834842
+    },
+    {
+      "id": "5f72ff463ddb5e008cb9ee03",
+      "name": "India - Startup Jobs & Hiring",
+      "website_url": "http://www.hrcircle.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hirectindia",
+      "twitter_url": "https://twitter.com/tahk2030",
+      "facebook_url": "https://www.facebook.com/risingindiaventures",
+      "languages": [
+        "French",
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "14539195",
+      "founded_year": 2018,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a44ec99b6d563000102819e/picture",
+      "crunchbase_url": null,
+      "primary_domain": "hrcircle.in",
+      "sic_codes": [
+        "7361"
+      ],
+      "naics_codes": [
+        "561311"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 2,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.01075268817204301,
+      "organization_headcount_twenty_four_month_growth": -0.1214953271028037
+    },
+    {
+      "id": "6010f1f418833900a4db1fc4",
+      "name": "Hindustan Petroleum Corporation Limited",
+      "website_url": "http://www.hindustanpetroleum.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hpcl",
+      "twitter_url": "https://twitter.com/HPCL",
+      "facebook_url": "https://www.facebook.com/hpcl",
+      "languages": [],
+      "alexa_ranking": 53709,
+      "phone": "+91 22228 63900",
+      "linkedin_uid": "11668",
+      "founded_year": 1974,
+      "publicly_traded_symbol": "HINDPETRO.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a47c4c24471200014a476d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "hindustanpetroleum.com",
+      "sic_codes": [
+        "2911",
+        "5541"
+      ],
+      "naics_codes": [
+        "324110",
+        "45711"
+      ],
+      "primary_phone": {
+        "number": "+91 22228 63900",
+        "sanitized_number": "+912222863900"
+      },
+      "sanitized_phone": "+912222863900",
+      "owned_by_organization_id": "54a1b3a17468695475134d09",
+      "owned_by_organization": {
+        "id": "54a1b3a17468695475134d09",
+        "name": "Oil and Natural Gas Corporation Ltd",
+        "website_url": "http://www.ongcindia.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "54a1b3a17468695475134d09"
+      ],
+      "organization_revenue_printed": "47B",
+      "organization_revenue": 47005704000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01928783382789317,
+      "organization_headcount_twelve_month_growth": 0.05936777178103315,
+      "organization_headcount_twenty_four_month_growth": 0.1455727863931966
+    },
+    {
+      "id": "5e57d06cd5bd4a000176305c",
+      "name": "Aditya Birla Chemicals",
+      "website_url": "http://www.adityabirlachemicals.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/aditya-birla-chemicals",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 354969,
+      "phone": "+91 22619 80400",
+      "linkedin_uid": "3549051",
+      "founded_year": 1947,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a675f3a61cca00019c0935/picture",
+      "crunchbase_url": null,
+      "primary_domain": "adityabirlachemicals.com",
+      "sic_codes": [
+        "2869"
+      ],
+      "naics_codes": [
+        "325180",
+        "325211",
+        "325199"
+      ],
+      "primary_phone": {
+        "number": "+91 22619 80400",
+        "sanitized_number": "+912261980400"
+      },
+      "sanitized_phone": "+912261980400",
+      "owned_by_organization_id": "54a1b8727468694f8fc51d0b",
+      "owned_by_organization": {
+        "id": "54a1b8727468694f8fc51d0b",
+        "name": "Aditya Birla Group",
+        "website_url": "http://www.adityabirla.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "54a1b8727468694f8fc51d0b"
+      ],
+      "organization_revenue_printed": "1B",
+      "organization_revenue": 1021000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.00404040404040404,
+      "organization_headcount_twenty_four_month_growth": 0.109375
+    },
+    {
+      "id": "5a9f6fd0a6da98d954df732c",
+      "name": "izmo ltd",
+      "website_url": "http://www.izmoltd.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/izmo-ltd",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/people/IZMO-Limited/100087599474978",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 80671 25400",
+      "linkedin_uid": "6591573",
+      "founded_year": 1995,
+      "publicly_traded_symbol": "IZMO.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a52297af2d6f00013ad32d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "izmoltd.com",
+      "sic_codes": [
+        "7375"
+      ],
+      "naics_codes": [
+        "513210",
+        "541511"
+      ],
+      "primary_phone": {
+        "number": "+91 80671 25400",
+        "sanitized_number": "+918067125400"
+      },
+      "sanitized_phone": "+918067125400",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "30.3M",
+      "organization_revenue": 30312000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.002717391304347826,
+      "organization_headcount_twelve_month_growth": 0.02228412256267409,
+      "organization_headcount_twenty_four_month_growth": 0.0955223880597015
+    },
+    {
+      "id": "5da358430394920001ad90b5",
+      "name": "Taggd",
+      "website_url": "http://www.taggd.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/taggdasia",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/taggdasia",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 12 4442 7070",
+      "linkedin_uid": "14718778",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4e1931b0d7a0001e6049b/picture",
+      "crunchbase_url": null,
+      "primary_domain": "taggd.in",
+      "sic_codes": [
+        "7361"
+      ],
+      "naics_codes": [
+        "561311",
+        "561312",
+        "541612"
+      ],
+      "primary_phone": {
+        "number": "+91 12 4442 7070",
+        "sanitized_number": "+911244427070"
+      },
+      "sanitized_phone": "+911244427070",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "11M",
+      "organization_revenue": 11000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.04852320675105485,
+      "organization_headcount_twelve_month_growth": 0.08991228070175439,
+      "organization_headcount_twenty_four_month_growth": 0.1478060046189376
+    },
+    {
+      "id": "54a12b1669702dcef9b57202",
+      "name": "Berger Paints India",
+      "website_url": "http://www.bergerpaints.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/bergerpaintsindia",
+      "twitter_url": "https://twitter.com/bergerpaintsind",
+      "facebook_url": "https://facebook.com/BergerPaintsIndia/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 33222 99724",
+      "linkedin_uid": "3114627",
+      "founded_year": 1923,
+      "publicly_traded_symbol": "BERGEPAINT.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a686f81d2ec6100014a6ffa/picture",
+      "crunchbase_url": null,
+      "primary_domain": "bergerpaints.com",
+      "sic_codes": [
+        "3571",
+        "2851"
+      ],
+      "naics_codes": [
+        "325510"
+      ],
+      "primary_phone": {
+        "number": "+91 33222 99724",
+        "sanitized_number": "+913322299724"
+      },
+      "sanitized_phone": "+913322299724",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "1.3B",
+      "organization_revenue": 1264091000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.008913412563667233,
+      "organization_headcount_twelve_month_growth": 0.02678185745140389,
+      "organization_headcount_twenty_four_month_growth": 0.1071262226362366
+    },
+    {
+      "id": "5e58254105b18900013cd0bb",
+      "name": "Renault Nissan Automotive India Pvt Ltd",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/renault-nissan-automotive-india-pvt-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "14761099",
+      "founded_year": 2008,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac588dc42f4d00014e22d2/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01608040201005025,
+      "organization_headcount_twelve_month_growth": -0.03069306930693069,
+      "organization_headcount_twenty_four_month_growth": 0.09876543209876543
+    },
+    {
+      "id": "556d70a473696411c1971401",
+      "name": "Brakes India",
+      "website_url": "http://www.brakesindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/brakes-india",
+      "twitter_url": null,
+      "facebook_url": "https://facebook.com/brakesindia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 44 2652 6000",
+      "linkedin_uid": "54176",
+      "founded_year": 1962,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69d67429b6681f0001c6554e/picture",
+      "crunchbase_url": null,
+      "primary_domain": "brakesindia.com",
+      "sic_codes": [
+        "3531"
+      ],
+      "naics_codes": [
+        "336390",
+        "331511"
+      ],
+      "primary_phone": {
+        "number": "+91 44 2652 6000",
+        "sanitized_number": "+914426526000"
+      },
+      "sanitized_phone": "+914426526000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "910M",
+      "organization_revenue": 910000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01282051282051282,
+      "organization_headcount_twelve_month_growth": 0.02243313201035375,
+      "organization_headcount_twenty_four_month_growth": 0.04451300132216836
+    },
+    {
+      "id": "5f4a45b5c3db740001b7e95c",
+      "name": "ITI And Diploma Jobs",
+      "website_url": "http://www.itijobsindia.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/iti-and-diploma-jobs",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "68156497",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/66e44e74453e4b000150ef89/picture",
+      "crunchbase_url": null,
+      "primary_domain": "itijobsindia.in",
+      "sic_codes": [
+        "3531"
+      ],
+      "naics_codes": [
+        "54151",
+        "519290"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.001926782273603083,
+      "organization_headcount_twelve_month_growth": 0.0196078431372549,
+      "organization_headcount_twenty_four_month_growth": 0.2410501193317423
+    },
+    {
+      "id": "5d0a418980f93e5ee92f7477",
+      "name": "Spinny",
+      "website_url": "http://www.spinny.com",
+      "angellist_url": "http://angel.co/spinny",
+      "linkedin_url": "http://www.linkedin.com/company/spinny",
+      "twitter_url": "https://twitter.com/myspinny",
+      "facebook_url": "https://www.facebook.com/mySpinny.Cars",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 23605,
+      "phone": "+91 72772 77275",
+      "linkedin_uid": "9329072",
+      "founded_year": 2015,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ad3e434ca0750001ba7d58/picture",
+      "crunchbase_url": null,
+      "primary_domain": "spinny.com",
+      "sic_codes": [
+        "5013"
+      ],
+      "naics_codes": [
+        "441120"
+      ],
+      "primary_phone": {
+        "number": "+91 72772 77275",
+        "sanitized_number": "+917277277275"
+      },
+      "sanitized_phone": "+917277277275",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "513M",
+      "organization_revenue": 513000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0122634898388227,
+      "organization_headcount_twelve_month_growth": 0.02592329545454546,
+      "organization_headcount_twenty_four_month_growth": 0.07477678571428571
+    },
+    {
+      "id": "54a138e269702db45dfc0b00",
+      "name": "Sasken Technologies Limited",
+      "website_url": "http://www.sasken.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/saskentechnologieslimited",
+      "twitter_url": "https://twitter.com/saskentweets",
+      "facebook_url": "https://www.facebook.com/SaskenTechnologiesLtd",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 80669 43000",
+      "linkedin_uid": "4681",
+      "founded_year": 1989,
+      "publicly_traded_symbol": "SASKEN.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a3a1513b72560001473d83/picture",
+      "crunchbase_url": null,
+      "primary_domain": "sasken.com",
+      "sic_codes": [
+        "3711",
+        "7371",
+        "8731"
+      ],
+      "naics_codes": [
+        "54133",
+        "541512",
+        "541715"
+      ],
+      "primary_phone": {
+        "number": "+91 80669 43000",
+        "sanitized_number": "+918066943000"
+      },
+      "sanitized_phone": "+918066943000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "118.4M",
+      "organization_revenue": 118444000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.03815892997639654,
+      "organization_headcount_twelve_month_growth": 0.0611178126256534,
+      "organization_headcount_twenty_four_month_growth": 0.2602674307545368
+    },
+    {
+      "id": "559228e173696419d8f0a000",
+      "name": "Volvo Trucks India",
+      "website_url": "http://www.volvotrucks.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/volvo-trucks-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 80678 87000",
+      "linkedin_uid": "363040",
+      "founded_year": 1996,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a7de615a4527000162ef62/picture",
+      "crunchbase_url": null,
+      "primary_domain": "volvotrucks.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336120"
+      ],
+      "primary_phone": {
+        "number": "+91 80678 87000",
+        "sanitized_number": "+918067887000"
+      },
+      "sanitized_phone": "+918067887000",
+      "owned_by_organization_id": "5f45d4f66fcf3b00014c9249",
+      "owned_by_organization": {
+        "id": "5f45d4f66fcf3b00014c9249",
+        "name": "Volvo Trucks",
+        "website_url": "http://www.volvotrucks.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5f45d4f66fcf3b00014c9249",
+        "5e56a72232bf81008c5b95b6",
+        "55e1552ff3e5bb2fe0000003"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.003947368421052632,
+      "organization_headcount_twelve_month_growth": 0.01474530831099196,
+      "organization_headcount_twenty_four_month_growth": 0.09235209235209235
+    },
+    {
+      "id": "5da65a92a0722700018fc27a",
+      "name": "Bharat Petroleum Corporation Limited",
+      "website_url": "http://www.bharatpetroleum.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/bpcl",
+      "twitter_url": "https://twitter.com/bpclimited",
+      "facebook_url": "https://www.facebook.com/BharatPetroleumcorporation",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 28944,
+      "phone": "+91 22 2271 3000",
+      "linkedin_uid": "14911",
+      "founded_year": 1976,
+      "publicly_traded_symbol": "BPCL.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a43bdc305a510001be392d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "bharatpetroleum.in",
+      "sic_codes": [
+        "2911",
+        "1311",
+        "5171"
+      ],
+      "naics_codes": [
+        "324110",
+        "45711"
+      ],
+      "primary_phone": {
+        "number": "+91 22 2271 3000",
+        "sanitized_number": "+912222713000"
+      },
+      "sanitized_phone": "+912222713000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "48.4B",
+      "organization_revenue": 48437534000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02655947898646586,
+      "organization_headcount_twelve_month_growth": 0.03732647814910026,
+      "organization_headcount_twenty_four_month_growth": 0.1414347137361394
+    },
+    {
+      "id": "60fa0f4697cc3900a40e73c6",
+      "name": "Electric Vehicle Info",
+      "website_url": "http://www.e-vehicleinfo.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/electric-vehicle-info",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": 244647,
+      "phone": null,
+      "linkedin_uid": "73034997",
+      "founded_year": 2020,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac196029c0d50001997ef8/picture",
+      "crunchbase_url": null,
+      "primary_domain": "e-vehicleinfo.com",
+      "naics_codes": [
+        "516210",
+        "513120"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": -0.08333333333333333,
+      "organization_headcount_twenty_four_month_growth": 0.0
+    },
+    {
+      "id": "5e54f1e3e2ed5b00984ec351",
+      "name": "Jaguar Land Rover India",
+      "website_url": "http://www.landroverusa.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/jlrindia",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": 35567,
+      "phone": "+91 80063 76837",
+      "linkedin_uid": "14656931",
+      "founded_year": 2009,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4ad2331d16d000174f978/picture",
+      "crunchbase_url": null,
+      "primary_domain": "landroverusa.com",
+      "sic_codes": [
+        "3711",
+        "5511"
+      ],
+      "naics_codes": [
+        "336110",
+        "441110"
+      ],
+      "primary_phone": {
+        "number": "+91 80063 76837",
+        "sanitized_number": "+918006376837"
+      },
+      "sanitized_phone": "+918006376837",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "30.8B",
+      "organization_revenue": 30797000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.004195804195804196,
+      "organization_headcount_twelve_month_growth": 0.02279202279202279,
+      "organization_headcount_twenty_four_month_growth": 0.1271585557299843
+    },
+    {
+      "id": "62e918fcec39b400e21c8e8e",
+      "name": "Luxoft India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/luxoft-india",
+      "twitter_url": "https://twitter.com/Luxoft",
+      "facebook_url": "https://www.facebook.com/Luxoft",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "82592632",
+      "founded_year": 2017,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69f661a005c12b00016188e3/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "naics_codes": [
+        "541511",
+        "541512"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.04339250493096647,
+      "organization_headcount_twelve_month_growth": 0.058,
+      "organization_headcount_twenty_four_month_growth": 0.1183932346723044
+    },
+    {
+      "id": "54a1273b69702d8b197ed600",
+      "name": "Subros Limited",
+      "website_url": "http://www.subros.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/subros-limited",
+      "twitter_url": "https://twitter.com/subroslimited",
+      "facebook_url": "https://facebook.com/subrosd",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11234 14946",
+      "linkedin_uid": "53553",
+      "founded_year": 1985,
+      "publicly_traded_symbol": "SUBROS.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aeaa1b4ca0750001c5e475/picture",
+      "crunchbase_url": null,
+      "primary_domain": "subros.com",
+      "sic_codes": [
+        "3621",
+        "3714"
+      ],
+      "naics_codes": [
+        "336390"
+      ],
+      "primary_phone": {
+        "number": "+91 11234 14946",
+        "sanitized_number": "+911123414946"
+      },
+      "sanitized_phone": "+911123414946",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "399.6M",
+      "organization_revenue": 399597000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.0101119537739256,
+      "organization_headcount_twelve_month_growth": -0.02939093484419263,
+      "organization_headcount_twenty_four_month_growth": -0.02628774422735346
+    },
+    {
+      "id": "5d33029680f93e316e94a6e1",
+      "name": "Embitel Technologies",
+      "website_url": "http://www.embitel.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/embitel-technologies-india",
+      "twitter_url": "https://twitter.com/embitel",
+      "facebook_url": "https://facebook.com/EmbitelTechnologies",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 80416 94200",
+      "linkedin_uid": "268681",
+      "founded_year": 2006,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/687288a39ba8c50001287087/picture",
+      "crunchbase_url": null,
+      "primary_domain": "embitel.com",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "33639",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+91 80416 94200",
+        "sanitized_number": "+918041694200"
+      },
+      "sanitized_phone": "+918041694200",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "4.5M",
+      "organization_revenue": 4500000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.07328833172613308,
+      "organization_headcount_twelve_month_growth": 0.1533678756476684,
+      "organization_headcount_twenty_four_month_growth": 0.392991239048811
+    },
+    {
+      "id": "5da28161eb6efe00018b623a",
+      "name": "DHL Express India",
+      "website_url": "http://www.express.dhl",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/dhlexpressindia",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 2187,
+      "phone": null,
+      "linkedin_uid": "13299793",
+      "founded_year": 1979,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6725aadf03423c000199c079/picture",
+      "crunchbase_url": null,
+      "primary_domain": "express.dhl",
+      "sic_codes": [
+        "4215"
+      ],
+      "naics_codes": [
+        "492110",
+        "488510"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "768M",
+      "organization_revenue": 768000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.001264222503160556,
+      "organization_headcount_twelve_month_growth": -0.02222222222222222,
+      "organization_headcount_twenty_four_month_growth": -0.02101359703337454
+    },
+    {
+      "id": "6705597027119f01b083281e",
+      "name": "BMW TechWorks India",
+      "website_url": "http://www.bmwtechworks.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/bmw-techworks-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "104806503",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/672711ea6f116c0001a52334/picture",
+      "crunchbase_url": null,
+      "primary_domain": "bmwtechworks.in",
+      "sic_codes": [
+        "7375",
+        "7371"
+      ],
+      "naics_codes": [
+        "54133",
+        "541511",
+        "541512"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.1964696853415196,
+      "organization_headcount_twelve_month_growth": 0.8319623971797885,
+      "organization_headcount_twenty_four_month_growth": 96.4375
+    },
+    {
+      "id": "5e57952228954600015947fe",
+      "name": "Porsche India",
+      "website_url": "http://www.porsche.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/porscheindia",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+1 424-369-7178",
+      "linkedin_uid": "14469817",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6882fc3270f9cf00010ae73b/picture",
+      "crunchbase_url": null,
+      "primary_domain": "porsche.in",
+      "sic_codes": [
+        "5511"
+      ],
+      "naics_codes": [
+        "441110"
+      ],
+      "primary_phone": {
+        "number": "+1 424-369-7178",
+        "sanitized_number": "+14243697178"
+      },
+      "sanitized_phone": "+14243697178",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.04651162790697674,
+      "organization_headcount_twelve_month_growth": 0.025,
+      "organization_headcount_twenty_four_month_growth": 0.2058823529411765
+    },
+    {
+      "id": "5fc715ab69ecbe00d6ff7738",
+      "name": "ALTEN India",
+      "website_url": "http://www.alten-india.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/alten-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 80 4034 3000",
+      "linkedin_uid": "2312703",
+      "founded_year": 2010,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a519feaf2d6f00013a8e5e/picture",
+      "crunchbase_url": null,
+      "primary_domain": "alten-india.com",
+      "sic_codes": [
+        "8711"
+      ],
+      "naics_codes": [
+        "54133",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+91 80 4034 3000",
+        "sanitized_number": "+918040343000"
+      },
+      "sanitized_phone": "+918040343000",
+      "owned_by_organization_id": "54a1297869702d8b190c1e02",
+      "owned_by_organization": {
+        "id": "54a1297869702d8b190c1e02",
+        "name": "ALTEN",
+        "website_url": "http://www.alten.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "54a1297869702d8b190c1e02"
+      ],
+      "organization_revenue_printed": "413.7M",
+      "organization_revenue": 413700000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02669717772692601,
+      "organization_headcount_twelve_month_growth": 0.05859221392056626,
+      "organization_headcount_twenty_four_month_growth": 0.1416454622561493
+    },
+    {
+      "id": "658280e7e0d8160001047227",
+      "name": "VinFast India",
+      "website_url": "http://www.vinfastauto.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/vinfast-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 19002 32389",
+      "linkedin_uid": "101363945",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b3d6d5262b5000018b3303/picture",
+      "crunchbase_url": null,
+      "primary_domain": "vinfastauto.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+91 19002 32389",
+        "sanitized_number": "+911900232389"
+      },
+      "sanitized_phone": "+911900232389",
+      "owned_by_organization_id": "65fc2ca813cada000758a93b",
+      "owned_by_organization": {
+        "id": "65fc2ca813cada000758a93b",
+        "name": "VINFAST",
+        "website_url": "http://www.vinfastauto.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "65fc2ca813cada000758a93b",
+        "65583b91c1fa100001e44515"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.1629392971246006,
+      "organization_headcount_twelve_month_growth": 1.476190476190476,
+      "organization_headcount_twenty_four_month_growth": 18.15789473684211
+    },
+    {
+      "id": "5e9ed5790fa35b00983785fe",
+      "name": "Apollo Tyres Ltd",
+      "website_url": "http://www.apollotyres.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/apollo-tyres-ltd.",
+      "twitter_url": "https://twitter.com/apollotyres",
+      "facebook_url": "https://www.facebook.com/ApolloTyresLtd/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 124 272 1000",
+      "linkedin_uid": "28999",
+      "founded_year": 1972,
+      "publicly_traded_symbol": "APOLLOTYRE.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ae2e08bda5430001bf29a1/picture",
+      "crunchbase_url": null,
+      "primary_domain": "apollotyres.com",
+      "sic_codes": [
+        "3011"
+      ],
+      "naics_codes": [
+        "32621"
+      ],
+      "primary_phone": {
+        "number": "+91 124 272 1000",
+        "sanitized_number": "+911242721000"
+      },
+      "sanitized_phone": "+911242721000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "3B",
+      "organization_revenue": 3029351000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.00977891156462585,
+      "organization_headcount_twelve_month_growth": 0.01800257179597085,
+      "organization_headcount_twenty_four_month_growth": 0.04418553528247966
+    },
+    {
+      "id": "54a1291769702dc128fe3601",
+      "name": "Rane Group",
+      "website_url": "http://www.ranegroup.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/rane-holdings-limited",
+      "twitter_url": "https://twitter.com/Rane_Group",
+      "facebook_url": "https://facebook.com/pages/Rane-Group/818660764826835",
+      "languages": [
+        "English",
+        "English"
+      ],
+      "alexa_ranking": 166056,
+      "phone": "+91 44281 12472",
+      "linkedin_uid": "210381",
+      "founded_year": 1929,
+      "publicly_traded_symbol": "505800",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a46f582f816e0001caa94b/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ranegroup.com",
+      "sic_codes": [
+        "3711",
+        "3714"
+      ],
+      "naics_codes": [
+        "336330",
+        "336340",
+        "336310"
+      ],
+      "primary_phone": {
+        "number": "+91 44281 12472",
+        "sanitized_number": "+914428112472"
+      },
+      "sanitized_phone": "+914428112472",
+      "owned_by_organization_id": "5f4880b09aa6a20001fcc9c8",
+      "owned_by_organization": {
+        "id": "5f4880b09aa6a20001fcc9c8",
+        "name": "ZF Group",
+        "website_url": "http://www.zf.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "5f4880b09aa6a20001fcc9c8"
+      ],
+      "organization_revenue_printed": "535M",
+      "organization_revenue": 535024000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.001199040767386091,
+      "organization_headcount_twelve_month_growth": 0.001199040767386091,
+      "organization_headcount_twenty_four_month_growth": 0.01705237515225335
+    },
+    {
+      "id": "54a13b0169702d28512f5c01",
+      "name": "ELGI EQUIPMENTS LIMITED",
+      "website_url": "http://www.elgi.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/elgi-equipments-ltd",
+      "twitter_url": "https://twitter.com/elgiequipments",
+      "facebook_url": "https://facebook.com/elgiaircompressors/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 42225 89555",
+      "linkedin_uid": "81404",
+      "founded_year": 1960,
+      "publicly_traded_symbol": "ELGIEQUIP.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a94969f92b110001014913/picture",
+      "crunchbase_url": null,
+      "primary_domain": "elgi.com",
+      "sic_codes": [
+        "3531"
+      ],
+      "naics_codes": [
+        "333912"
+      ],
+      "primary_phone": {
+        "number": "+91 42225 89555",
+        "sanitized_number": "+914222589555"
+      },
+      "sanitized_phone": "+914222589555",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "420.4M",
+      "organization_revenue": 420365000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.00209643605870021,
+      "organization_headcount_twelve_month_growth": 0.03165467625899281,
+      "organization_headcount_twenty_four_month_growth": 0.1890547263681592
+    },
+    {
+      "id": "54a127be69702d8b193f1e01",
+      "name": "Escorts Kubota Limited",
+      "website_url": "http://www.escortskubota.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/escortskubotalimited",
+      "twitter_url": "https://twitter.com/EscortsKubota",
+      "facebook_url": "https://www.facebook.com/escortskubotalimited",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 12922 50222",
+      "linkedin_uid": "26170",
+      "founded_year": 1944,
+      "publicly_traded_symbol": "ESCORTS.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aeaeddee4a090001f3f271/picture",
+      "crunchbase_url": null,
+      "primary_domain": "escortskubota.com",
+      "sic_codes": [
+        "3531"
+      ],
+      "naics_codes": [
+        "333111",
+        "333120"
+      ],
+      "primary_phone": {
+        "number": "+91 12922 50222",
+        "sanitized_number": "+911292250222"
+      },
+      "sanitized_phone": "+911292250222",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "1.3B",
+      "organization_revenue": 1287340000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.002228525121555916,
+      "organization_headcount_twelve_month_growth": -0.01942517343904856,
+      "organization_headcount_twenty_four_month_growth": -0.006027727546714889
+    },
+    {
+      "id": "54a11f6f69702da10f21f501",
+      "name": "LeadSquared",
+      "website_url": "http://www.leadsquared.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/leadsquared",
+      "twitter_url": "https://twitter.com/LeadSquared",
+      "facebook_url": "https://facebook.com/LeadSquared",
+      "languages": [
+        "English",
+        "English"
+      ],
+      "alexa_ranking": 12556,
+      "phone": "+91 90191 72733",
+      "linkedin_uid": "2502171",
+      "founded_year": 2011,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ad241206c3710001cd311d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "leadsquared.com",
+      "sic_codes": [
+        "7372"
+      ],
+      "naics_codes": [
+        "54161",
+        "513210"
+      ],
+      "primary_phone": {
+        "number": "+91 90191 72733",
+        "sanitized_number": "+919019172733"
+      },
+      "sanitized_phone": "+919019172733",
+      "owned_by_organization_id": "54a1395869702d0486bf2c00",
+      "owned_by_organization": {
+        "id": "54a1395869702d0486bf2c00",
+        "name": "Gaja Capital",
+        "website_url": "http://www.gajacapital.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "54a1395869702d0486bf2c00"
+      ],
+      "organization_revenue_printed": "42M",
+      "organization_revenue": 42000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.0081374321880651,
+      "organization_headcount_twelve_month_growth": -0.01614349775784753,
+      "organization_headcount_twenty_four_month_growth": -0.1202886928628709
+    },
+    {
+      "id": "54a11b6869702da10fda3500",
+      "name": "CarDekho Group",
+      "website_url": "http://www.cardekho.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/cardekhogroup",
+      "twitter_url": "https://twitter.com/CarDekho",
+      "facebook_url": "https://www.facebook.com/CarDekho/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 2177,
+      "phone": "+91 1800 200 3000",
+      "linkedin_uid": "3036704",
+      "founded_year": 2008,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac9c10f47d8c0001f66418/picture",
+      "crunchbase_url": null,
+      "primary_domain": "cardekho.com",
+      "sic_codes": [
+        "7375",
+        "5511"
+      ],
+      "naics_codes": [
+        "441110",
+        "441120",
+        "519290"
+      ],
+      "primary_phone": {
+        "number": "+91 1800 200 3000",
+        "sanitized_number": "+9118002003000"
+      },
+      "sanitized_phone": "+9118002003000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "327M",
+      "organization_revenue": 327000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0090032154340836,
+      "organization_headcount_twelve_month_growth": 0.02549019607843137,
+      "organization_headcount_twenty_four_month_growth": 0.05870445344129555
+    },
+    {
+      "id": "5da499a1d7e66f0001f3ebfb",
+      "name": "Usha International",
+      "website_url": "http://www.usha.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/usha-international",
+      "twitter_url": "https://twitter.com/UshaIntl",
+      "facebook_url": "https://www.facebook.com/UshaInternational",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 12445 83100",
+      "linkedin_uid": "334903",
+      "founded_year": 1936,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ae325e8ef5e00001c7ee8d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "usha.com",
+      "sic_codes": [
+        "3631"
+      ],
+      "naics_codes": [
+        "33324",
+        "335220",
+        "336390",
+        "44921"
+      ],
+      "primary_phone": {
+        "number": "+91 12445 83100",
+        "sanitized_number": "+911244583100"
+      },
+      "sanitized_phone": "+911244583100",
+      "owned_by_organization_id": "5e712caab1666100fabda7e9",
+      "owned_by_organization": {
+        "id": "5e712caab1666100fabda7e9",
+        "name": "Honda",
+        "website_url": "http://www.global.honda"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5e712caab1666100fabda7e9",
+        "5c26425ef65125e2956a848e",
+        "5f02e2e673392300da4d7840"
+      ],
+      "organization_revenue_printed": "570M",
+      "organization_revenue": 570000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01649601820250285,
+      "organization_headcount_twelve_month_growth": 0.02289639381797367,
+      "organization_headcount_twenty_four_month_growth": 0.03594202898550725
+    },
+    {
+      "id": "65f92a7aa3647702e8baa593",
+      "name": "OLX India",
+      "website_url": "http://www.olx.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/olxindia",
+      "twitter_url": "https://twitter.com/olx_india",
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": 1274,
+      "phone": "+91 98211 10000",
+      "linkedin_uid": "100951470",
+      "founded_year": 2018,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b0f193138d030001c577d6/picture",
+      "crunchbase_url": null,
+      "primary_domain": "olx.in",
+      "sic_codes": [
+        "7359"
+      ],
+      "naics_codes": [
+        "519290"
+      ],
+      "primary_phone": {
+        "number": "+91 98211 10000",
+        "sanitized_number": "+919821110000"
+      },
+      "sanitized_phone": "+919821110000",
+      "owned_by_organization_id": "633c0e17136d0f00a3b91054",
+      "owned_by_organization": {
+        "id": "633c0e17136d0f00a3b91054",
+        "name": "CarTrade Tech Ltd.",
+        "website_url": "http://www.cartradetech.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "633c0e17136d0f00a3b91054",
+        "556d5d4b7369641271e8e900"
+      ],
+      "organization_revenue_printed": "23M",
+      "organization_revenue": 23000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.05,
+      "organization_headcount_twelve_month_growth": 0.1333333333333333,
+      "organization_headcount_twenty_four_month_growth": 0.7673267326732673
+    },
+    {
+      "id": "5592097b736964199bc52f00",
+      "name": "Delta Electronics India",
+      "website_url": "http://www.deltaelectronicsindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/delta-electronics-india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 101887,
+      "phone": null,
+      "linkedin_uid": "13326422",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ae62fd6138a6000138687b/picture",
+      "crunchbase_url": null,
+      "primary_domain": "deltaelectronicsindia.com",
+      "sic_codes": [
+        "3621"
+      ],
+      "naics_codes": [
+        "33531",
+        "334",
+        "33324"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02268308489954634,
+      "organization_headcount_twelve_month_growth": 0.05622489959839357,
+      "organization_headcount_twenty_four_month_growth": 0.2395915161036921
+    },
+    {
+      "id": "5b8580aef874f721ad8907d2",
+      "name": "Yulu",
+      "website_url": "http://www.yulu.bike",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/yulu",
+      "twitter_url": "https://twitter.com/yulubike",
+      "facebook_url": "https://facebook.com/yulumobility/",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "13576580",
+      "founded_year": 2017,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69fd891c43b711000126a5bb/picture",
+      "crunchbase_url": null,
+      "primary_domain": "yulu.bike",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "33621",
+        "485310",
+        "532289"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "28M",
+      "organization_revenue": 28000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.02988505747126437,
+      "organization_headcount_twelve_month_growth": 0.09268292682926829,
+      "organization_headcount_twenty_four_month_growth": 0.2173913043478261
+    },
+    {
+      "id": "54a139ca69702d0486f56e00",
+      "name": "Gabriel India Limited",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/gabriel-india-limited",
+      "twitter_url": "https://twitter.com/AnandGroupIndia",
+      "facebook_url": "https://www.facebook.com/AnandGroupIndia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "338622",
+      "founded_year": 1961,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b26bfd383c300001880de6/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3714"
+      ],
+      "naics_codes": [
+        "336390"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.007478632478632479,
+      "organization_headcount_twelve_month_growth": -0.05252422233554309,
+      "organization_headcount_twenty_four_month_growth": -0.04423868312757202
+    },
+    {
+      "id": "636e0763c4a30a00e2d0a6b4",
+      "name": "Exide Energy Solutions Ltd",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/exide-energy",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 70440 00000",
+      "linkedin_uid": "89693413",
+      "founded_year": 2022,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69624551686a750001960b49/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3691"
+      ],
+      "naics_codes": [
+        "335910"
+      ],
+      "primary_phone": {
+        "number": "+91 70440 00000",
+        "sanitized_number": "+917044000000"
+      },
+      "sanitized_phone": "+917044000000",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.008951406649616368,
+      "organization_headcount_twelve_month_growth": 0.0778688524590164,
+      "organization_headcount_twenty_four_month_growth": 0.4293478260869565
+    },
+    {
+      "id": "5de4e4cbda602f008da4cf9a",
+      "name": "MosChip®",
+      "website_url": "http://www.moschip.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/moschiptech",
+      "twitter_url": "https://twitter.com/moschiptech",
+      "facebook_url": "https://facebook.com/MosChipTech/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 40662 29292",
+      "linkedin_uid": "55874",
+      "founded_year": 1999,
+      "publicly_traded_symbol": "532407",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b243e0d44784000150c600/picture",
+      "crunchbase_url": null,
+      "primary_domain": "moschip.com",
+      "sic_codes": [
+        "3671",
+        "3674",
+        "7373"
+      ],
+      "naics_codes": [
+        "334413",
+        "541512"
+      ],
+      "primary_phone": {
+        "number": "+91 40662 29292",
+        "sanitized_number": "+914066229292"
+      },
+      "sanitized_phone": "+914066229292",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "65.2M",
+      "organization_revenue": 65169000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.04509582863585118,
+      "organization_headcount_twelve_month_growth": 0.1494110353378797,
+      "organization_headcount_twenty_four_month_growth": 0.3290322580645161
+    },
+    {
+      "id": "559218be736964188a8b6700",
+      "name": "IndiaMART InterMESH Limited",
+      "website_url": "http://www.indiamart.com",
+      "angellist_url": "http://angel.co/indiamart",
+      "linkedin_url": "http://www.linkedin.com/company/indiamart-intermesh-limited",
+      "twitter_url": "https://twitter.com/IndiaMART",
+      "facebook_url": "https://facebook.com/IndiaMART",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 704,
+      "phone": "+91 12 0677 7777",
+      "linkedin_uid": "59402",
+      "founded_year": 1999,
+      "publicly_traded_symbol": "INDIAMART.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b11567afb2c90001413870/picture",
+      "crunchbase_url": null,
+      "primary_domain": "indiamart.com",
+      "sic_codes": [
+        "7389",
+        ""
+      ],
+      "naics_codes": [
+        "519290"
+      ],
+      "primary_phone": {
+        "number": "+91 12 0677 7777",
+        "sanitized_number": "+911206777777"
+      },
+      "sanitized_phone": "+911206777777",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "166.9M",
+      "organization_revenue": 166945000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.002033898305084746,
+      "organization_headcount_twelve_month_growth": 0.01441317776252574,
+      "organization_headcount_twenty_four_month_growth": 0.05217126004271331
+    },
+    {
+      "id": "559216d9736964188a876000",
+      "name": "Wheels India Limited",
+      "website_url": "http://www.wheelsindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/wheelsindialimited",
+      "twitter_url": "https://twitter.com/WheelsIndiaLtd",
+      "facebook_url": "https://www.facebook.com/Wheels-India-Limited-106107288870855",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+1 847-699-7000",
+      "linkedin_uid": "2118977",
+      "founded_year": 1962,
+      "publicly_traded_symbol": "WHEELS.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a4af536ef42600014c42e1/picture",
+      "crunchbase_url": null,
+      "primary_domain": "wheelsindia.com",
+      "sic_codes": [
+        "3714"
+      ],
+      "naics_codes": [
+        "336390"
+      ],
+      "primary_phone": {
+        "number": "+1 847-699-7000",
+        "sanitized_number": "+18476997000"
+      },
+      "sanitized_phone": "+18476997000",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "581.5M",
+      "organization_revenue": 581484000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01564537157757497,
+      "organization_headcount_twelve_month_growth": 0.0130039011703511,
+      "organization_headcount_twenty_four_month_growth": 0.02163934426229508
+    },
+    {
+      "id": "5da32cfc1e516a000181b6d7",
+      "name": "Ampere Electric Vehicles",
+      "website_url": "http://www.ampere-electric.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/ampere-vehicles-pvt-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "5636595",
+      "founded_year": 2008,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/670c18ea3d137a0001d793d2/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ampere-electric.com",
+      "sic_codes": [
+        "3751"
+      ],
+      "naics_codes": [
+        "336991"
+      ],
+      "owned_by_organization_id": "62ecfb3832593300cce44b3b",
+      "owned_by_organization": {
+        "id": "62ecfb3832593300cce44b3b",
+        "name": "Greaves Technologies Limited",
+        "website_url": "http://www.greavestechnologies.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "62ecfb3832593300cce44b3b"
+      ],
+      "organization_revenue_printed": "77.5M",
+      "organization_revenue": 77470000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0136986301369863,
+      "organization_headcount_twelve_month_growth": 0.04225352112676056,
+      "organization_headcount_twenty_four_month_growth": -0.0975609756097561
+    },
+    {
+      "id": "54a134a869702d38bb615000",
+      "name": "SRF Limited",
+      "website_url": "http://www.srf.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/srflimited",
+      "twitter_url": "https://twitter.com/srflimited",
+      "facebook_url": "https://facebook.com/srflimited/",
+      "languages": [],
+      "alexa_ranking": 252876,
+      "phone": "+91 12 4435 4400",
+      "linkedin_uid": "13109",
+      "founded_year": 1970,
+      "publicly_traded_symbol": "SRF.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a7b2a04a8e6100014788a8/picture",
+      "crunchbase_url": null,
+      "primary_domain": "srf.com",
+      "sic_codes": [
+        "2899"
+      ],
+      "naics_codes": [
+        "32599",
+        "325199",
+        "313210",
+        "326112"
+      ],
+      "primary_phone": {
+        "number": "+91 12 4435 4400",
+        "sanitized_number": "+911244354400"
+      },
+      "sanitized_phone": "+911244354400",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "1.6B",
+      "organization_revenue": 1640344000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.008187772925764192,
+      "organization_headcount_twelve_month_growth": 0.01959701904499034,
+      "organization_headcount_twenty_four_month_growth": 0.08296687188507769
+    },
+    {
+      "id": "5d0a4deba3ae61e789e4b679",
+      "name": "Hindustan Zinc",
+      "website_url": "http://www.hzlindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hindustanzinc",
+      "twitter_url": "https://twitter.com/hindustan_zinc",
+      "facebook_url": "https://www.facebook.com/HindustanZinc/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 29466 04000",
+      "linkedin_uid": "13742084",
+      "founded_year": 1966,
+      "publicly_traded_symbol": "HINDZINC.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a5c3caa6256bf0001c62a19/picture",
+      "crunchbase_url": null,
+      "primary_domain": "hzlindia.com",
+      "sic_codes": [
+        "1499"
+      ],
+      "naics_codes": [
+        "21229",
+        "212230",
+        "331410"
+      ],
+      "primary_phone": {
+        "number": "+91 29466 04000",
+        "sanitized_number": "+912946604000"
+      },
+      "sanitized_phone": "+912946604000",
+      "owned_by_organization_id": "618228a668564f00c2c2703a",
+      "owned_by_organization": {
+        "id": "618228a668564f00c2c2703a",
+        "name": "Vedanta Group",
+        "website_url": "http://www.vedantalimited.com"
+      },
+      "num_languages": 1,
+      "owned_by_chain": [
+        "618228a668564f00c2c2703a"
+      ],
+      "organization_revenue_printed": "4.2B",
+      "organization_revenue": 4170138000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01202185792349727,
+      "organization_headcount_twelve_month_growth": 0.05566368236667964,
+      "organization_headcount_twenty_four_month_growth": 0.1390172196556069
+    },
+    {
+      "id": "5f48a54e945fe700012bf7c3",
+      "name": "CIE Automotive India Ltd.",
+      "website_url": "http://www.cie-india.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/cie-automotive-india-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 20298 04621",
+      "linkedin_uid": "14581672",
+      "founded_year": 1996,
+      "publicly_traded_symbol": "CIEINDIA.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ad87f8c1310b00011eb2b8/picture",
+      "crunchbase_url": null,
+      "primary_domain": "cie-india.com",
+      "sic_codes": [
+        "3714"
+      ],
+      "naics_codes": [
+        "336390"
+      ],
+      "primary_phone": {
+        "number": "+91 20298 04621",
+        "sanitized_number": "+912029804621"
+      },
+      "sanitized_phone": "+912029804621",
+      "owned_by_organization_id": "6093b49d67e8cb01265fe54c",
+      "owned_by_organization": {
+        "id": "6093b49d67e8cb01265fe54c",
+        "name": "CIE Automotive",
+        "website_url": "http://www.cieautomotive.com"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "6093b49d67e8cb01265fe54c"
+      ],
+      "organization_revenue_printed": "1B",
+      "organization_revenue": 1046798000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.002291825821237586,
+      "organization_headcount_twelve_month_growth": -0.02245508982035928,
+      "organization_headcount_twenty_four_month_growth": 0.04563650920736589
+    },
+    {
+      "id": "54a1c36b7468695c822eaa0e",
+      "name": "HR International",
+      "website_url": "http://www.hrinternational.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/hrinternationalindia",
+      "twitter_url": "https://twitter.com/hrinewdelhi",
+      "facebook_url": "https://www.facebook.com/hrinternational.in/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11 4735 0210",
+      "linkedin_uid": "778511",
+      "founded_year": 2005,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/686e094bf1b0140001f24fdb/picture",
+      "crunchbase_url": null,
+      "primary_domain": "hrinternational.in",
+      "sic_codes": [
+        "7361",
+        "7363"
+      ],
+      "naics_codes": [
+        "561311",
+        "561320"
+      ],
+      "primary_phone": {
+        "number": "+91 11 4735 0210",
+        "sanitized_number": "+911147350210"
+      },
+      "sanitized_phone": "+911147350210",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "4.9M",
+      "organization_revenue": 4915000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01293103448275862,
+      "organization_headcount_twelve_month_growth": 0.004385964912280702,
+      "organization_headcount_twenty_four_month_growth": 0.0
+    },
+    {
+      "id": "57c4db96a6da986a47e600f9",
+      "name": "Isuzu Motors India Private Limited",
+      "website_url": "http://www.isuzu.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/isuzu-motors-india-pvt-ltd-",
+      "twitter_url": "https://twitter.com/IsuzuIndia",
+      "facebook_url": "https://www.facebook.com/IsuzuMotorsIndia/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+1 714-935-9300",
+      "linkedin_uid": "3643283",
+      "founded_year": 1975,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69acbab535e27c0001a38779/picture",
+      "crunchbase_url": null,
+      "primary_domain": "isuzu.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "33612",
+        "336110"
+      ],
+      "primary_phone": {
+        "number": "+1 714-935-9300",
+        "sanitized_number": "+17149359300"
+      },
+      "sanitized_phone": "+17149359300",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "4B",
+      "organization_revenue": 4017000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.01648351648351648,
+      "organization_headcount_twelve_month_growth": -0.009681881051175657,
+      "organization_headcount_twenty_four_month_growth": -0.009681881051175657
+    },
+    {
+      "id": "5c1ff966a3ae61750a625776",
+      "name": "SUZUKI MOTOR GUJARAT PRIVATE LIMITED",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/suzuki-motor-gujarat-private-limited",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+81 53-440-2061",
+      "linkedin_uid": "27431214",
+      "founded_year": 2015,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69a3b32281149100015eafa1/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "sic_codes": [
+        "3711",
+        "3714"
+      ],
+      "naics_codes": [
+        "336211",
+        "336390"
+      ],
+      "primary_phone": {
+        "number": "+81 53-440-2061",
+        "sanitized_number": "+81534402061"
+      },
+      "sanitized_phone": "+81534402061",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.03101736972704715,
+      "organization_headcount_twelve_month_growth": -0.1473799126637555,
+      "organization_headcount_twenty_four_month_growth": -0.1408140814081408
+    },
+    {
+      "id": "5e75fdbf69e98600cf774767",
+      "name": "Rockman Industries",
+      "website_url": "http://www.rockman.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/rockman-industries-ltd.",
+      "twitter_url": "https://twitter.com/rockmanindustry",
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11 4327 0701",
+      "linkedin_uid": "975187",
+      "founded_year": 1960,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ae1f66bda5430001beac38/picture",
+      "crunchbase_url": null,
+      "primary_domain": "rockman.in",
+      "sic_codes": [
+        "3714"
+      ],
+      "naics_codes": [
+        "336390",
+        "331523"
+      ],
+      "primary_phone": {
+        "number": "+91 11 4327 0701",
+        "sanitized_number": "+911143270701"
+      },
+      "sanitized_phone": "+911143270701",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "314M",
+      "organization_revenue": 314000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.001668056713928273,
+      "organization_headcount_twelve_month_growth": -0.007462686567164179,
+      "organization_headcount_twenty_four_month_growth": 0.03457216940363008
+    },
+    {
+      "id": "5f40be3fb303b700017e20d2",
+      "name": "HERO ELECTRIC VEHICLES PVT LTD",
+      "website_url": "http://www.heroelectric.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/companynamehero",
+      "twitter_url": "https://twitter.com/hero_electric",
+      "facebook_url": "https://facebook.com/heroelectricindia",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": 833110,
+      "phone": "1860-2662-2662",
+      "linkedin_uid": "2887631",
+      "founded_year": 1993,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b1268a15187a00011c4a70/picture",
+      "crunchbase_url": null,
+      "primary_domain": "heroelectric.in",
+      "sic_codes": [
+        "3711"
+      ],
+      "naics_codes": [
+        "33639",
+        "336991"
+      ],
+      "primary_phone": {
+        "number": "1860-2662-2662",
+        "sanitized_number": null
+      },
+      "sanitized_phone": null,
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "121.7M",
+      "organization_revenue": 121713000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.004184100418410041,
+      "organization_headcount_twelve_month_growth": -0.048,
+      "organization_headcount_twenty_four_month_growth": -0.25625
+    },
+    {
+      "id": "54a1391b69702de5b3cc0d00",
+      "name": "PeopleLogic",
+      "website_url": "http://www.peoplelogic.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/peoplelogic-business-solutions",
+      "twitter_url": "https://twitter.com/PeopleLogicInd",
+      "facebook_url": "https://www.facebook.com/PeopleLogicBS",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 80 4340 2222",
+      "linkedin_uid": "232374",
+      "founded_year": 2007,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69aabf57a5d6f80001cfd20a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "peoplelogic.in",
+      "sic_codes": [
+        "7361"
+      ],
+      "naics_codes": [
+        "54161",
+        "561311",
+        "561320"
+      ],
+      "primary_phone": {
+        "number": "+91 80 4340 2222",
+        "sanitized_number": "+918043402222"
+      },
+      "sanitized_phone": "+918043402222",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "56.5M",
+      "organization_revenue": 56500000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.04026845637583892,
+      "organization_headcount_twelve_month_growth": 0.0130718954248366,
+      "organization_headcount_twenty_four_month_growth": 0.1567164179104478
+    },
+    {
+      "id": "54a1347269702d42554b1d00",
+      "name": "Pricol Limited",
+      "website_url": "http://www.pricol.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/pricollimited",
+      "twitter_url": "https://twitter.com/pricolindia?lang=en",
+      "facebook_url": "https://facebook.com/people/Pricol-Ltd/100068007458952/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 42 2433 6000",
+      "linkedin_uid": "93811",
+      "founded_year": 1975,
+      "publicly_traded_symbol": "PRICOLLTD.BO",
+      "publicly_traded_exchange": "bse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69644b2b611e1c00018de983/picture",
+      "crunchbase_url": null,
+      "primary_domain": "pricol.com",
+      "sic_codes": [
+        "3711",
+        "3714:Motor Vehicle Parts and Accessories"
+      ],
+      "naics_codes": [
+        "33631",
+        "336320"
+      ],
+      "primary_phone": {
+        "number": "+91 42 2433 6000",
+        "sanitized_number": "+914224336000"
+      },
+      "sanitized_phone": "+914224336000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "430.0M",
+      "organization_revenue": 429952000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01676646706586826,
+      "organization_headcount_twelve_month_growth": 0.01131625967837999,
+      "organization_headcount_twenty_four_month_growth": 0.02846759539672926
+    },
+    {
+      "id": "5e58ecfb5846280001bfc462",
+      "name": "Automotive Skills Development Council - India",
+      "website_url": "http://www.asdc.org.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/asdc-in",
+      "twitter_url": "https://twitter.com/skillsasdc",
+      "facebook_url": "https://facebook.com/AutomotiveSkillsDevelopmentCouncil",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11425 99800",
+      "linkedin_uid": "7923959",
+      "founded_year": 2011,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/677b72cda8d54b000196225d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "asdc.org.in",
+      "sic_codes": [
+        "3731"
+      ],
+      "naics_codes": [
+        "33639",
+        "611430",
+        "813920"
+      ],
+      "primary_phone": {
+        "number": "+91 11425 99800",
+        "sanitized_number": "+911142599800"
+      },
+      "sanitized_phone": "+911142599800",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "2M",
+      "organization_revenue": 2000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.1527777777777778,
+      "organization_headcount_twenty_four_month_growth": 0.3174603174603174
+    },
+    {
+      "id": "631ef25515144d00cc450569",
+      "name": "MAN TRUCK & BUS INDIA PVT. LTD",
+      "website_url": "http://www.mantruckandbusindia.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/man-truck-and-bus-india-pvt-ltd",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "83006174",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/68be8f6a3856a3000111d350/picture",
+      "crunchbase_url": null,
+      "primary_domain": "mantruckandbusindia.com",
+      "sic_codes": [
+        "3711",
+        "8711"
+      ],
+      "naics_codes": [
+        "336120",
+        "541330"
+      ],
+      "owned_by_organization_id": "5fed72714d641900d6240f44",
+      "owned_by_organization": {
+        "id": "5fed72714d641900d6240f44",
+        "name": "MAN Truck & Bus SE",
+        "website_url": "http://www.man.eu"
+      },
+      "num_languages": 0,
+      "owned_by_chain": [
+        "5fed72714d641900d6240f44"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01263537906137184,
+      "organization_headcount_twelve_month_growth": 0.1639004149377593,
+      "organization_headcount_twenty_four_month_growth": 0.5327868852459017
+    },
+    {
+      "id": "5de7936ab9af74008dc829f3",
+      "name": "Simple Energy",
+      "website_url": "http://www.simpleenergy.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/simple-energy-pvt-ltd",
+      "twitter_url": "https://twitter.com/SimpleEnergyEV",
+      "facebook_url": "https://facebook.com/simpleEV/",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 89290 45085",
+      "linkedin_uid": "26598274",
+      "founded_year": 2019,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69b23b37f390590001e9f3bd/picture",
+      "crunchbase_url": null,
+      "primary_domain": "simpleenergy.in",
+      "sic_codes": [
+        "3751"
+      ],
+      "naics_codes": [
+        "336991",
+        "441227"
+      ],
+      "primary_phone": {
+        "number": "+91 89290 45085",
+        "sanitized_number": "+918929045085"
+      },
+      "sanitized_phone": "+918929045085",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": "18M",
+      "organization_revenue": 18000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.05825242718446602,
+      "organization_headcount_twelve_month_growth": 0.2004405286343612,
+      "organization_headcount_twenty_four_month_growth": 0.6124260355029586
+    },
+    {
+      "id": "54a1349069702d36c9815a00",
+      "name": "Trilegal",
+      "website_url": "http://www.trilegal.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/trilegal",
+      "twitter_url": "https://twitter.com/trilegallaw",
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 11416 39393",
+      "linkedin_uid": "39959",
+      "founded_year": 2000,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a48c3670106cf00018f0e54/picture",
+      "crunchbase_url": null,
+      "primary_domain": "trilegal.com",
+      "sic_codes": [
+        "8111"
+      ],
+      "naics_codes": [
+        "541110"
+      ],
+      "primary_phone": {
+        "number": "+91 11416 39393",
+        "sanitized_number": "+911141639393"
+      },
+      "sanitized_phone": "+911141639393",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "180M",
+      "organization_revenue": 180000000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.1508087535680304,
+      "organization_headcount_twelve_month_growth": 0.3276619099890231,
+      "organization_headcount_twenty_four_month_growth": 0.6444595513256288
+    },
+    {
+      "id": "5f4703a864b5950001929173",
+      "name": "Onward Technologies Limited",
+      "website_url": "http://www.onwardgroup.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/onward-technologies",
+      "twitter_url": "https://twitter.com/OnwardTech",
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 22249 26570",
+      "linkedin_uid": "11498",
+      "founded_year": 1991,
+      "publicly_traded_symbol": "ONWARDTEC.NS",
+      "publicly_traded_exchange": "nse",
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69ac7be5a259920001ec551a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "onwardgroup.com",
+      "sic_codes": [
+        "8711",
+        "7371",
+        "8731"
+      ],
+      "naics_codes": [
+        "541511",
+        "541330",
+        "541715"
+      ],
+      "primary_phone": {
+        "number": "+91 22249 26570",
+        "sanitized_number": "+912224926570"
+      },
+      "sanitized_phone": "+912224926570",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": "57.9M",
+      "organization_revenue": 57867000.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.01248992747784045,
+      "organization_headcount_twelve_month_growth": 0.02529579763361893,
+      "organization_headcount_twenty_four_month_growth": 0.02154471544715447
+    }
+  ],
+  "model_ids": [
+    "5d099c0180f93e7a3371fecf",
+    "601fafd2676d93008cd46d86",
+    "54a1347f69702d4b2ecd0f00",
+    "5f3ffa0a9272d60001833348",
+    "5fbd14cdf23e4c008c627cb4",
+    "54a11e0169702d9a8bb94b01",
+    "5a9f3b53a6da98d970174b49",
+    "57c504a8a6da986a47e71e2d",
+    "556deba0736964117de60700",
+    "5592294973696418652da300",
+    "56d97b57f3e5bb72fb00314f",
+    "54a12a0669702d979ccaf401",
+    "54a11d4169702d9a8b3f0301",
+    "56d884e8f3e5bb26db0000a6",
+    "5d0a13e480f93e3f76dd3d90",
+    "5da37f608d8d450001454be1",
+    "5da6f40ebddb830001401e2f",
+    "54a21fc57468693fda9ca80e",
+    "5fe03b01155e4200beab824f",
+    "56da491ef3e5bb41e0000ffc",
+    "5ed11db9d34e130001e2d1ab",
+    "54a1b2fe7468695c8260f608",
+    "5d0ab4b0f65125c94629df96",
+    "5fc8cf84d5906f00010703a2",
+    "5d344744f651258044870156",
+    "5f4ab7ecbe61be0001649006",
+    "57c49752a6da9832d7d347b9",
+    "5f4012149b1d2f00015ad44a",
+    "5b80a48b324d440c641b7d86",
+    "57c4da73a6da986a57bb521b",
+    "5f0cbed8c6d77a0112cc3d5c",
+    "54a121f569702d88c40d8402",
+    "5e55bfdb42fe9f00012c541e",
+    "55695347736964254f7c0600",
+    "55f8af9df3e5bb195b002366",
+    "55923d0173696417398c8c00",
+    "5f3f861c74dd8b00014a5720",
+    "5c27de7ca3ae61cdc1448a50",
+    "559233df73696418df3cc900",
+    "5f72f947ccbf0600bfbd2d78",
+    "57c4f3dda6da986a98945588",
+    "556cf24673696411c7705c00",
+    "5da30fc955f0860001b31b04",
+    "5f5b25709c4248011fb64819",
+    "5e5615004e4bc20001ff22bc",
+    "61adc1e6df658800da5b4dc5",
+    "5f72ff463ddb5e008cb9ee03",
+    "6010f1f418833900a4db1fc4",
+    "5e57d06cd5bd4a000176305c",
+    "5a9f6fd0a6da98d954df732c",
+    "5da358430394920001ad90b5",
+    "54a12b1669702dcef9b57202",
+    "5e58254105b18900013cd0bb",
+    "556d70a473696411c1971401",
+    "5f4a45b5c3db740001b7e95c",
+    "5d0a418980f93e5ee92f7477",
+    "54a138e269702db45dfc0b00",
+    "559228e173696419d8f0a000",
+    "5da65a92a0722700018fc27a",
+    "60fa0f4697cc3900a40e73c6",
+    "5e54f1e3e2ed5b00984ec351",
+    "62e918fcec39b400e21c8e8e",
+    "54a1273b69702d8b197ed600",
+    "5d33029680f93e316e94a6e1",
+    "5da28161eb6efe00018b623a",
+    "6705597027119f01b083281e",
+    "5e57952228954600015947fe",
+    "5fc715ab69ecbe00d6ff7738",
+    "658280e7e0d8160001047227",
+    "5e9ed5790fa35b00983785fe",
+    "54a1291769702dc128fe3601",
+    "54a13b0169702d28512f5c01",
+    "54a127be69702d8b193f1e01",
+    "54a11f6f69702da10f21f501",
+    "54a11b6869702da10fda3500",
+    "5da499a1d7e66f0001f3ebfb",
+    "65f92a7aa3647702e8baa593",
+    "5592097b736964199bc52f00",
+    "5b8580aef874f721ad8907d2",
+    "54a139ca69702d0486f56e00",
+    "636e0763c4a30a00e2d0a6b4",
+    "5de4e4cbda602f008da4cf9a",
+    "559218be736964188a8b6700",
+    "559216d9736964188a876000",
+    "5da32cfc1e516a000181b6d7",
+    "54a134a869702d38bb615000",
+    "5d0a4deba3ae61e789e4b679",
+    "5f48a54e945fe700012bf7c3",
+    "54a1c36b7468695c822eaa0e",
+    "57c4db96a6da986a47e600f9",
+    "5c1ff966a3ae61750a625776",
+    "5e75fdbf69e98600cf774767",
+    "5f40be3fb303b700017e20d2",
+    "54a1391b69702de5b3cc0d00",
+    "54a1347269702d42554b1d00",
+    "5e58ecfb5846280001bfc462",
+    "631ef25515144d00cc450569",
+    "5de7936ab9af74008dc829f3",
+    "54a1349069702d36c9815a00",
+    "5f4703a864b5950001929173"
+  ],
+  "num_fetch_result": null,
+  "derived_params": {}
+}

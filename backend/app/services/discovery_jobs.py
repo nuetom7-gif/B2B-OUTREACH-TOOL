@@ -12,8 +12,9 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.db import session as db_session
+from app.discovery.contact_strategy import discover_contacts_for_organization
 from app.discovery.config_loader import load_icp_config
-from app.discovery.engine import run_discovery_cycle
+from app.discovery.engine import DiscoveryEngine, run_discovery_cycle
 from app.discovery.provider_manager import create_default_provider_manager
 from app.discovery.qualification import score_organization, score_person
 from app.discovery.repository import todays_api_calls_used
@@ -77,22 +78,26 @@ def _parse_keywords(keywords: str | None) -> list[str]:
 
 def _build_icp(request: DiscoveryJobCreate) -> ICPProductLine:
     base = next(
-        (item for item in load_icp_config() if item.product_name.lower() == request.product_segment.lower()),
+        (
+            item
+            for item in load_icp_config()
+            if item.search_profile_name.lower() == (request.profile_name or request.product_segment).lower()
+            or item.product_name.lower() == request.product_segment.lower()
+        ),
         None,
     )
     if base is None:
         raise ValueError(f"Unknown product segment: {request.product_segment}")
 
+    if request.profile_name:
+        return base
     merged_keywords = list(dict.fromkeys(base.company_keywords + _parse_keywords(request.keywords) + [request.industry]))
-    target_industries = [request.industry] if request.industry else base.target_industries
-    country = [request.country] if request.country else base.country
-    regions = [request.state] if request.state else base.regions
     return ICPProductLine(
         product_name=base.product_name,
         enabled=True,
-        country=country,
-        regions=regions,
-        target_industries=target_industries,
+        country=[request.country] if request.country else base.country,
+        regions=[request.state] if request.state else base.regions,
+        target_industries=[request.industry] if request.industry else base.target_industries,
         exclude_industries=base.exclude_industries,
         company_keywords=merged_keywords,
         exclude_keywords=base.exclude_keywords,
@@ -108,6 +113,36 @@ def _build_icp(request: DiscoveryJobCreate) -> ICPProductLine:
         search_frequency="On Demand",
         priority=base.priority,
     )
+
+
+def run_profile_discovery_job(db: Session, job: DiscoveryJob, request: DiscoveryJobCreate) -> DiscoveryJob:
+    job.status = "running"
+    job.current_step = "Running configured discovery profile"
+    job.started_at = now_utc()
+    db.commit()
+    try:
+        icp = _build_icp(request)
+        result = DiscoveryEngine(db).run_product_line(icp)
+        job.status = "completed" if result.get("status") == "completed" else "failed"
+        job.current_step = "Completed" if job.status == "completed" else "Failed"
+        job.progress_percent = 100
+        job.companies_found = int(result.get("companies_found", 0) or 0)
+        job.companies_processed = job.companies_found
+        job.contacts_discovered = int(result.get("contacts_found", 0) or 0)
+        job.imported_leads = int(result.get("contacts_imported", 0) or 0)
+        job.api_calls_used = int(result.get("api_calls_used", 0) or 0)
+        job.result_json = json.dumps(result, default=str)
+        if result.get("error"):
+            job.error_message = str(result["error"])
+    except Exception as exc:
+        job.status = "failed"
+        job.current_step = "Failed"
+        job.error_message = str(exc)
+        job.result_json = json.dumps({"status": "failed", "error": str(exc)}, default=str)
+    finally:
+        job.ended_at = now_utc()
+        db.commit()
+    return job
 
 
 def create_discovery_job(db: Session, payload: DiscoveryJobCreate) -> DiscoveryJob:
@@ -184,6 +219,8 @@ def run_targeted_discovery_job(
     *,
     cancel_event: Event | None = None,
 ) -> DiscoveryJob:
+    if request.profile_name:
+        return run_profile_discovery_job(db, job, request)
     settings = get_settings()
     cancel_event = cancel_event or _job_cancel_event(job.id)
     provider_manager = create_default_provider_manager()
@@ -204,6 +241,12 @@ def run_targeted_discovery_job(
         contacts_per_company = max(1, request.contacts_per_company)
         page = 1
         per_page = max(10, min(100, companies_limit))
+
+        def _before_search() -> None:
+            used = todays_api_calls_used(db) + (_provider_calls_used(provider_manager) - start_calls)
+            if used >= settings.apollo_daily_call_limit:
+                raise RuntimeError("Apollo daily call limit reached")
+
         while job.companies_processed < companies_limit and job.imported_leads < contacts_limit:
             _check_cancel(job, db, cancel_event)
             job.current_step = f"Searching Apollo companies page {page}"
@@ -221,10 +264,18 @@ def run_targeted_discovery_job(
 
                 job.companies_processed += 1
                 job.current_step = f"Qualifying {organization.name}"
-                people = provider_manager.search_people(icp, organization, page=1, per_page=contacts_per_company)
-                job.contacts_discovered += len(people)
+                contact_batch = discover_contacts_for_organization(
+                    provider_manager,
+                    icp,
+                    organization,
+                    max_contacts=contacts_per_company,
+                    per_page=contacts_per_company,
+                    before_search=_before_search,
+                )
+                job.contacts_discovered += len(contact_batch.contacts)
                 job.api_calls_used = _provider_calls_used(provider_manager) - start_calls
                 job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db) - job.api_calls_used)
+                people = contact_batch.contacts
 
                 org_score = score_organization(icp, organization, people)
                 if org_score.status != "qualified":
@@ -268,13 +319,17 @@ def run_targeted_discovery_job(
                 company.last_sync = now_utc()
                 company.sync_status = "synced"
                 company.needs_manual_review = False
+                company.discovery_contacts_returned = contact_batch.total_contacts_returned
+                company.contact_status = contact_batch.contact_status
+                company.fallback_contact_used = contact_batch.fallback_contact_used
 
-                for person in people[:contacts_per_company]:
+                if not people:
+                    company.contact_status = "No Contact Found"
+                    company.fallback_contact_used = contact_batch.fallback_contact_used
+
+                for person in people:
                     _check_cancel(job, db, cancel_event)
                     person_score = score_person(icp, person)
-                    if person_score.status != "qualified":
-                        job.skipped_leads += 1
-                        continue
                     blocked_contact = find_blocked_contact_for_discovery(
                         db,
                         company_name=organization.name,
@@ -311,6 +366,10 @@ def run_targeted_discovery_job(
                         "linkedin_url": person.linkedin_url,
                         "source": "apollo_auto",
                         "source_provider": person.source_provider,
+                        "contact_priority": person.contact_priority,
+                        "recommended_primary_contact": person.recommended_primary_contact,
+                        "fallback_contact_used": person.fallback_contact_used,
+                        "contact_selection_reason": person.contact_selection_reason,
                     }
                     contact, created_contact, merged_fields = upsert_contact_from_discovery(
                         db,
@@ -324,11 +383,13 @@ def run_targeted_discovery_job(
                     contact.verification_status = person.email_status or contact.verification_status
                     contact.last_sync = now_utc()
                     contact.lead_score = max(contact.lead_score, int(org_score.score + person_score.score))
-                    job.qualified_leads += 1
-                    if created_contact or merged_fields:
-                        job.imported_leads += 1
-                    else:
-                        job.skipped_leads += 1
+                    contact.contact_priority = contact.contact_priority or person.contact_priority
+                    contact.recommended_primary_contact = bool(contact.recommended_primary_contact or person.recommended_primary_contact)
+                    contact.fallback_contact_used = bool(contact.fallback_contact_used or person.fallback_contact_used)
+                    contact.contact_selection_reason = contact.contact_selection_reason or person.contact_selection_reason
+                    if person_score.status == "qualified":
+                        job.qualified_leads += 1
+                    job.imported_leads += 1
                     _log_job(
                         db,
                         job,

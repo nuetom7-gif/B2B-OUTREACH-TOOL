@@ -26,7 +26,32 @@ class ICPProductLine:
     lead_score_rules: dict[str, Any]
     search_frequency: str
     qualification_rules: dict[str, Any] = field(default_factory=dict)
+    discovery_confidence_rules: dict[str, Any] = field(default_factory=dict)
     priority: int = 0
+    profile_name: str | None = None
+    target_segment: str | None = None
+    exact_industries: list[str] = field(default_factory=list)
+    related_industries: list[str] = field(default_factory=list)
+    broad_industries: list[str] = field(default_factory=list)
+    product_keywords: list[str] = field(default_factory=list)
+    product_keyword_priorities: dict[str, int] = field(default_factory=dict)
+    application_keywords: list[str] = field(default_factory=list)
+    manufacturing_keywords: list[str] = field(default_factory=list)
+    process_keywords: list[str] = field(default_factory=list)
+    negative_keywords: list[str] = field(default_factory=list)
+    locations: list[str] = field(default_factory=list)
+    apollo_search: dict[str, Any] = field(default_factory=dict)
+    business_division: str | None = None
+    states: list[str] = field(default_factory=list)
+    apollo_industries: list[str] = field(default_factory=list)
+    decision_maker_tiers: dict[str, list[str]] = field(default_factory=dict)
+    manufacturing_cluster_preference: str | None = None
+    product_recommendations: list[str] = field(default_factory=list)
+    email_template_mapping: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def search_profile_name(self) -> str:
+        return self.profile_name or self.product_name
 
 
 @dataclass(slots=True)
@@ -74,6 +99,11 @@ class DiscoveryContactCandidate:
     country: str | None = None
     region: str | None = None
     confidence: str | None = None
+    contact_priority: str | None = None
+    contact_priority_rank: int | None = None
+    recommended_primary_contact: bool = False
+    contact_selection_reason: str | None = None
+    fallback_contact_used: bool = False
     source_metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -118,6 +148,12 @@ class DiscoveryScoreResult:
     overall_recommendation: str | None = None
     final_confidence: str | None = None
     matched_cluster: str | None = None
+    total_contacts_returned: int = 0
+    selected_contact_name: str | None = None
+    selected_contact_title: str | None = None
+    selected_contact_priority: str | None = None
+    selected_contact_reason: str | None = None
+    fallback_contact_used: bool = False
 
 
 @dataclass(slots=True)

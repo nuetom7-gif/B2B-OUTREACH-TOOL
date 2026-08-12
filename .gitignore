@@ -1,1 +1,3 @@
 node_modules
+Frontend_1/.env.local
+Frontend_1/.env.*.local

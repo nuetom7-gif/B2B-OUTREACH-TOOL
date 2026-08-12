@@ -12,6 +12,7 @@ from app.discovery.types import (
     QualificationImpact,
     QualificationRuleResult,
 )
+from app.discovery.contact_strategy import CONTACT_PRIORITY_POINTS, match_priority_label, priority_points, priority_rank
 
 
 DEFAULT_BROAD_INDUSTRY_TERMS = [
@@ -234,7 +235,14 @@ def _keyword_rules(rules: dict[str, Any], icp: ICPProductLine) -> dict[str, dict
 
 def _negative_rules(rules: dict[str, Any], icp: ICPProductLine) -> dict[str, float]:
     negative = _section(rules, "negative_keywords", "negative_signals")
-    negatives = negative or rules.get("negative_keywords") or rules.get("exclude_keywords") or icp.exclude_keywords or []
+    negatives = (
+        negative
+        or rules.get("negative_keywords")
+        or rules.get("exclude_keywords")
+        or icp.negative_keywords
+        or icp.exclude_keywords
+        or []
+    )
     weights = _weight_map(negatives, default_points=0.0)
     normalized: dict[str, float] = {}
     for label, points in weights.items():
@@ -318,6 +326,46 @@ def _decision_maker_rules(rules: dict[str, Any], icp: ICPProductLine) -> dict[st
     )
 
 
+def _contact_priority_label(person: DiscoveryContactCandidate) -> str:
+    if person.contact_priority:
+        return person.contact_priority
+    matched = match_priority_label(person.title)
+    return matched or "low"
+
+
+def _contact_priority_reason(person: DiscoveryContactCandidate, priority_label: str) -> str:
+    if person.contact_selection_reason:
+        return person.contact_selection_reason
+    if priority_label == "tier_1":
+        return f"Matched Tier 1 purchase/procurement title: {person.title}."
+    if priority_label == "tier_2":
+        return f"Matched Tier 2 plant/operations title: {person.title}."
+    if priority_label == "tier_3":
+        return f"Matched Tier 3 maintenance/quality/safety title: {person.title}."
+    if priority_label == "tier_4":
+        return f"Matched Tier 4 leadership title: {person.title}."
+    return f"Used fallback business-contact search for title: {person.title}."
+
+
+def _best_contact_candidate(people: list[DiscoveryContactCandidate]) -> DiscoveryContactCandidate | None:
+    if not people:
+        return None
+
+    def sort_key(person: DiscoveryContactCandidate) -> tuple[int, int, int, str, str]:
+        label = _contact_priority_label(person)
+        verified = 1 if (person.email_status or "").lower() == "verified" else 0
+        points = priority_points(label)
+        return (
+            priority_rank(label),
+            -points,
+            -verified,
+            (person.name or "").lower(),
+            (person.title or "").lower(),
+        )
+
+    return sorted(people, key=sort_key)[0]
+
+
 def _location_hints(organization: DiscoveryCompanyCandidate) -> list[str]:
     hints = [organization.city, organization.region, organization.country]
     payload = organization.source_metadata or {}
@@ -371,6 +419,11 @@ def _score_organization_rule_set(
     matched_industry_name: str | None = None
     matched_decision_maker_title: str | None = None
     matched_cluster: str | None = None
+    best_contact = _best_contact_candidate(people)
+    best_contact_priority = _contact_priority_label(best_contact) if best_contact else None
+    best_contact_reason = _contact_priority_reason(best_contact, best_contact_priority) if best_contact else None
+    best_contact_title = best_contact.title if best_contact else None
+    best_contact_points = float(priority_points(best_contact_priority)) if best_contact_priority else 0.0
 
     country_rules = _country_rules(rules, icp)
     country_points = 0.0
@@ -537,6 +590,27 @@ def _score_organization_rule_set(
     score += decision_maker_points
     rule_results.append(_record_rule("Decision Maker", decision_maker_points, decision_maker_max, decision_maker_reason))
 
+    contact_priority_points = best_contact_points
+    if contact_priority_points > 0:
+        applied_bonuses.append(
+            QualificationImpact(
+                label="Contact Priority",
+                category="contact_priority",
+                points=contact_priority_points,
+                reason=best_contact_reason or "Selected best available contact.",
+                matched_value=best_contact_priority,
+            )
+        )
+    score += contact_priority_points
+    rule_results.append(
+        _record_rule(
+            "Contact Priority",
+            contact_priority_points,
+            max(CONTACT_PRIORITY_POINTS.values()),
+            best_contact_reason or "No contacts returned.",
+        )
+    )
+
     verified_points = _verified_points(rules)
     verified_contact_present = any((person.email_status or "").lower() == "verified" for person in people)
     verified_score = verified_points if verified_contact_present else 0.0
@@ -603,7 +677,7 @@ def _score_organization_rule_set(
     strong_exact_match = matched_industry_level == "exact"
     has_decent_employee_band = employee_points > 0
 
-    if score >= qualification_threshold and strong_industry and matched_decision_maker_title:
+    if score >= qualification_threshold:
         status = "qualified"
     elif score >= manual_review_threshold or missing_data or positive_signal or has_decent_employee_band:
         status = "manual_review"
@@ -637,6 +711,12 @@ def _score_organization_rule_set(
         "overall_recommendation": status.replace("_", " ").title(),
         "final_confidence": final_confidence,
         "matched_cluster": matched_cluster,
+        "total_contacts_returned": len(people),
+        "selected_contact_name": best_contact.name if best_contact else None,
+        "selected_contact_title": best_contact_title,
+        "selected_contact_priority": best_contact_priority,
+        "selected_contact_reason": best_contact_reason,
+        "fallback_contact_used": bool(any(person.fallback_contact_used for person in people)),
     }
 
 
@@ -655,6 +735,24 @@ def score_person(icp: ICPProductLine, person: DiscoveryContactCandidate) -> Disc
     rule_results: list[QualificationRuleResult] = []
     applied_bonuses: list[QualificationImpact] = []
     applied_penalties: list[QualificationImpact] = []
+    contact_priority_label = _contact_priority_label(person)
+    contact_priority_points = float(priority_points(contact_priority_label))
+    contact_priority_reason = _contact_priority_reason(person, contact_priority_label)
+
+    if contact_priority_points > 0:
+        applied_bonuses.append(
+            QualificationImpact(
+                label="Contact Priority",
+                category="contact_priority",
+                points=contact_priority_points,
+                reason=contact_priority_reason,
+                matched_value=contact_priority_label,
+            )
+        )
+        score += contact_priority_points
+    rule_results.append(
+        _record_rule("Contact Priority", contact_priority_points, max(CONTACT_PRIORITY_POINTS.values()), contact_priority_reason)
+    )
 
     decision_maker_rules = _decision_maker_rules(rules, icp)
     decision_maker_max = max(decision_maker_rules.values(), default=0.0)
@@ -694,8 +792,8 @@ def score_person(icp: ICPProductLine, person: DiscoveryContactCandidate) -> Disc
     qualification_threshold, manual_review_threshold = _thresholds(rules)
     missing_data = _is_missing_person_data(person)
 
-    positive_signal = bool(matched_title or verified_contact_present)
-    if score >= qualification_threshold and matched_title:
+    positive_signal = bool(matched_title or verified_contact_present or contact_priority_points > 0)
+    if score >= qualification_threshold:
         status = "qualified"
     elif score >= manual_review_threshold or missing_data or positive_signal:
         status = "manual_review"
@@ -729,6 +827,12 @@ def score_person(icp: ICPProductLine, person: DiscoveryContactCandidate) -> Disc
         overall_recommendation=status.replace("_", " ").title(),
         final_confidence=final_confidence,
         matched_cluster=None,
+        selected_contact_name=person.name,
+        selected_contact_title=person.title,
+        selected_contact_priority=contact_priority_label,
+        selected_contact_reason=contact_priority_reason,
+        total_contacts_returned=1,
+        fallback_contact_used=person.fallback_contact_used,
     )
 
 

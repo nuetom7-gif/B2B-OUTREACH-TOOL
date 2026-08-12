@@ -1,0 +1,247 @@
+{
+  "breadcrumbs": [
+    {
+      "label": "Contains Keywords",
+      "signal_field_name": "q_keywords",
+      "value": "CO2 laser",
+      "display_name": "CO2 laser"
+    },
+    {
+      "label": "# Employees",
+      "signal_field_name": "organization_num_employees_ranges",
+      "value": "10,10000",
+      "display_name": "10-10000"
+    },
+    {
+      "label": "Company Locations",
+      "signal_field_name": "organization_locations",
+      "value": "India",
+      "display_name": "India"
+    },
+    {
+      "label": "Company Keywords Contain ANY Of",
+      "signal_field_name": "q_organization_keyword_tags",
+      "value": "Machine Builders",
+      "display_name": "Machine Builders"
+    }
+  ],
+  "partial_results_only": false,
+  "has_join": false,
+  "disable_eu_prospecting": false,
+  "partial_results_limit": 10000,
+  "pagination": {
+    "page": 1,
+    "per_page": 100,
+    "total_entries": 5,
+    "total_pages": 1
+  },
+  "accounts": [],
+  "organizations": [
+    {
+      "id": "65b0bccad2048200017233d8",
+      "name": "Kasthuri Machine Builders",
+      "website_url": "http://www.kasthurimachines.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/kasthuri-machine-builders-kmb",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "7822965",
+      "founded_year": 1987,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/66e60bfed16aa70001cbec7a/picture",
+      "crunchbase_url": null,
+      "primary_domain": "kasthurimachines.com",
+      "sic_codes": [
+        "3531",
+        "3559",
+        "3541"
+      ],
+      "naics_codes": [
+        "333248",
+        "541330"
+      ],
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.08333333333333333,
+      "organization_headcount_twelve_month_growth": 0.04761904761904762,
+      "organization_headcount_twenty_four_month_growth": 0.04761904761904762
+    },
+    {
+      "id": "5e56330de08ed0000101ec2b",
+      "name": "SSC Control Pvt. Ltd.",
+      "website_url": "http://www.ssccontrol.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/ssc-control",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 93130 80866",
+      "linkedin_uid": "30890307",
+      "founded_year": 1966,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/69fc51e5a94e1b0001b05a74/picture",
+      "crunchbase_url": null,
+      "primary_domain": "ssccontrol.com",
+      "sic_codes": [
+        "5063"
+      ],
+      "naics_codes": [
+        "42361",
+        "541330",
+        "335314",
+        "423830"
+      ],
+      "primary_phone": {
+        "number": "+91 93130 80866",
+        "sanitized_number": "+919313080866"
+      },
+      "sanitized_phone": "+919313080866",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": -0.03333333333333333,
+      "organization_headcount_twelve_month_growth": -0.03333333333333333,
+      "organization_headcount_twenty_four_month_growth": -0.2162162162162162
+    },
+    {
+      "id": "57c4a3c3a6da982c7213cd84",
+      "name": "Armstrong Machine Builders Pvt. Ltd. - India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/armstrong-machine-builders-pvt-ltd---india",
+      "twitter_url": null,
+      "facebook_url": "https://www.facebook.com/armstrongsolutions/",
+      "languages": [],
+      "alexa_ranking": null,
+      "phone": "+91 96730 02942",
+      "linkedin_uid": "7825518",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/63edac0a998f12000100b12d/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "naics_codes": [
+        "33324"
+      ],
+      "primary_phone": {
+        "number": "+91 96730 02942",
+        "sanitized_number": "+919673002942"
+      },
+      "sanitized_phone": "+919673002942",
+      "owned_by_organization_id": null,
+      "num_languages": 0,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": 0.0
+    },
+    {
+      "id": "54a126de69702dab370e0e00",
+      "name": "Associated Technocrats Pvt. Ltd.",
+      "website_url": "http://www.atplonline.in",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/associated-technocrats-pvt-ltd-",
+      "twitter_url": "https://twitter.com/LtdAssociated",
+      "facebook_url": "https://www.facebook.com/Associated-Technocrats-Pvt-Ltd-ATPL-147127748752729/",
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+91 98189 12000",
+      "linkedin_uid": "2703419",
+      "founded_year": 1991,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/675e6c87a1ba0a00019e102d/picture",
+      "crunchbase_url": null,
+      "primary_domain": "atplonline.in",
+      "sic_codes": [
+        "5084"
+      ],
+      "naics_codes": [
+        "33324",
+        "423830"
+      ],
+      "primary_phone": {
+        "number": "+91 98189 12000",
+        "sanitized_number": "+919818912000"
+      },
+      "sanitized_phone": "+919818912000",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": 0.0
+    },
+    {
+      "id": "57c4da36a6da986a9893ba22",
+      "name": "Manjira Machine Builders Private Limited - India",
+      "website_url": null,
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/manjira-machine-builders-private-limited---india",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": null,
+      "linkedin_uid": "7851542",
+      "founded_year": null,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6a54894b531c9e00014e7e2e/picture",
+      "crunchbase_url": null,
+      "primary_domain": null,
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "intent_strength": null,
+      "show_intent": true,
+      "has_intent_signal_account": false,
+      "intent_signal_account": null,
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.0,
+      "organization_headcount_twenty_four_month_growth": 0.07142857142857142
+    }
+  ],
+  "model_ids": [
+    "65b0bccad2048200017233d8",
+    "5e56330de08ed0000101ec2b",
+    "57c4a3c3a6da982c7213cd84",
+    "54a126de69702dab370e0e00",
+    "57c4da36a6da986a9893ba22"
+  ],
+  "num_fetch_result": null,
+  "derived_params": {}
+}

@@ -1,0 +1,1 @@
+import{B as e,U as t}from"./hooks-Bhf6P96L.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

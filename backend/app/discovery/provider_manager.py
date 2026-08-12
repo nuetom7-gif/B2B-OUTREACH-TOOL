@@ -6,6 +6,7 @@ from app.core.config import get_settings
 from app.discovery.apollo_provider import ApolloProvider
 from app.discovery.provider import DiscoveryProvider
 from app.discovery.types import DiscoveryCompanyCandidate, DiscoveryContactCandidate, ICPProductLine
+from app.discovery.search_strategy import SearchStrategy
 
 
 class DiscoveryProviderManager:
@@ -25,6 +26,7 @@ class DiscoveryProviderManager:
             for name in (enabled_provider_names or self._enabled_names_from_settings())
             if name.strip()
         ]
+        self.last_search_diagnostic: dict | None = None
 
     def _enabled_names_from_settings(self) -> list[str]:
         value = getattr(self.settings, "discovery_enabled_providers", "apollo")
@@ -62,6 +64,23 @@ class DiscoveryProviderManager:
             results.extend(provider.search_organizations(icp, page=page, per_page=per_page))
         return results
 
+    def search_organizations_for_strategy(
+        self,
+        icp: ICPProductLine,
+        strategy: SearchStrategy,
+        *,
+        page: int,
+        per_page: int,
+    ) -> list[DiscoveryCompanyCandidate]:
+        results: list[DiscoveryCompanyCandidate] = []
+        for provider in self.enabled_providers():
+            try:
+                results.extend(provider.search_organizations(icp, page=page, per_page=per_page, strategy=strategy))
+            except TypeError:
+                # Keeps older/fake providers compatible with the manager contract.
+                results.extend(provider.search_organizations(icp, page=page, per_page=per_page))
+        return results
+
     def search_people(
         self,
         icp: ICPProductLine,
@@ -69,11 +88,26 @@ class DiscoveryProviderManager:
         *,
         page: int,
         per_page: int,
+        title_filters: list[str] | None = None,
     ) -> list[DiscoveryContactCandidate]:
         provider = self.provider_for_name(organization.source_provider)
         if provider is None:
             return []
-        return provider.search_people(icp, organization, page=page, per_page=per_page)
+        results = provider.search_people(icp, organization, page=page, per_page=per_page, title_filters=title_filters)
+        self.last_search_diagnostic = getattr(provider, "last_people_diagnostic", None)
+        return results
+
+    def enrich_person(self, contact: DiscoveryContactCandidate) -> DiscoveryContactCandidate | None:
+        provider = self.provider_for_name(contact.source_provider)
+        if provider is None:
+            return None
+        return provider.enrich_person(contact)
+
+    def enrich_organization(self, organization: DiscoveryCompanyCandidate) -> DiscoveryCompanyCandidate | None:
+        provider = self.provider_for_name(organization.source_provider)
+        if provider is None:
+            return None
+        return provider.enrich_organization(organization)
 
     def close(self) -> None:
         for provider in self._providers.values():
