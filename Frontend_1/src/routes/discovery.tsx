@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { PageHeader, StateCard, SectionCardTitle } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,6 +47,7 @@ function DiscoveryPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const enabledProfiles = profiles.data ?? [];
+  const selectedProfile = enabledProfiles.find((profile) => profile.profile_name === profileName);
   const latestRun = useMemo(() => runs.data?.[0] ?? null, [runs.data]);
   const latestStage = useMemo(() => staging.data?.items[0] ?? null, [staging.data]);
   const stageDetail = useDiscoveryStagingDetail(latestStage?.id ?? null);
@@ -131,6 +133,17 @@ function DiscoveryPage() {
                 </SelectContent>
               </Select>
             </div>
+            {selectedProfile ? (
+              <div className="space-y-3 rounded-lg border border-border/70 bg-muted/20 p-3">
+                <div>
+                  <p className="text-sm font-medium">Apollo search criteria</p>
+                  <p className="text-xs text-muted-foreground">Read-only criteria from the selected backend profile.</p>
+                </div>
+                <CriteriaTags label="Company keywords" values={selectedProfile.company_keywords} />
+                <CriteriaTags label="Primary industry signals" values={selectedProfile.apollo_industries} />
+                <CriteriaTags label="Related industry signals" values={selectedProfile.related_industries} />
+              </div>
+            ) : null}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Country</Label>
@@ -293,6 +306,25 @@ function DiscoveryPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function CriteriaTags({ label, values }: { label: string; values: string[] | undefined }) {
+  if (!values?.length) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {values.map((value) => (
+          <Badge key={value} variant="secondary" className="font-normal">
+            {value}
+          </Badge>
+        ))}
       </div>
     </div>
   );

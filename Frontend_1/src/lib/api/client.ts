@@ -74,3 +74,15 @@ export async function apiPut<T>(path: string, body?: unknown): Promise<T> {
   const res = await api.put<T>(normalizePath(path), body);
   return res.data;
 }
+
+export async function downloadCsv(path: string, filename: string): Promise<void> {
+  const response = await api.get<Blob>(normalizePath(path), { responseType: "blob" });
+  const url = window.URL.createObjectURL(response.data);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.URL.revokeObjectURL(url);
+}

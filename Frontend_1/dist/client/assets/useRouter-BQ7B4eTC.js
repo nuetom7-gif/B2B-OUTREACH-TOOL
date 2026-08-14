@@ -1,0 +1,1 @@
+import{V as e,W as t}from"./hooks-yHzU1z__.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

@@ -439,6 +439,9 @@ export interface BackendDiscoveryProfile {
   employee_min: number | null;
   employee_max: number | null;
   decision_makers?: string[];
+  company_keywords?: string[];
+  apollo_industries?: string[];
+  related_industries?: string[];
 }
 
 export interface BackendSetting {

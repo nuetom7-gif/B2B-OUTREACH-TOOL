@@ -183,6 +183,13 @@ def get_search_profiles():
             "employee_min": icp.employee_min,
             "employee_max": icp.employee_max,
             "decision_makers": icp.target_titles,
+            # Expose the configured criteria so clients can explain the
+            # backend-owned Apollo search without duplicating its logic.
+            "company_keywords": list(
+                dict.fromkeys(icp.product_keywords + icp.manufacturing_keywords + icp.application_keywords)
+            ),
+            "apollo_industries": icp.apollo_industries or icp.exact_industries,
+            "related_industries": icp.related_industries,
         }
         for icp in profiles
         if icp.enabled

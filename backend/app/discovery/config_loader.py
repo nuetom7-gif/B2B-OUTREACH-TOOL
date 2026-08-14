@@ -59,6 +59,12 @@ def _parse_product_line(payload: dict[str, Any], *, base: dict[str, Any] | None 
         payload.get("decision_maker_titles") or payload.get("decision_makers") or payload.get("target_titles")
     )
     apollo_industries = _as_list(payload.get("apollo_industries"))
+    company_keywords = _as_list(payload.get("company_keywords"))
+    # Hierarchical industry packs use the Apollo-facing names below, while
+    # legacy micro-ICPs already use the normalized names. Keep one canonical
+    # set so both configurations create identical search requests.
+    product_keywords = _as_list(payload.get("product_keywords")) or company_keywords
+    exact_industries = _as_list(payload.get("exact_industries")) or apollo_industries
     return ICPProductLine(
         product_name=str(payload["product_name"]).strip(),
         enabled=bool(payload.get("enabled", True)),
@@ -66,7 +72,7 @@ def _parse_product_line(payload: dict[str, Any], *, base: dict[str, Any] | None 
         regions=_as_list(payload.get("regions")),
         target_industries=apollo_industries or _as_list(payload.get("target_industries")),
         exclude_industries=_as_list(payload.get("exclude_industries")),
-        company_keywords=_as_list(payload.get("company_keywords")),
+        company_keywords=company_keywords,
         exclude_keywords=_as_list(payload.get("exclude_keywords")),
         apollo_filters=_as_dict(payload.get("apollo_filters")),
         employee_min=int(payload.get("employee_min", 0) or 0),
@@ -83,10 +89,10 @@ def _parse_product_line(payload: dict[str, Any], *, base: dict[str, Any] | None 
         priority=int(payload.get("priority", 0) or 0),
         profile_name=str(payload.get("profile_name") or payload.get("name") or payload.get("micro_icp") or "").strip() or None,
         target_segment=str(payload.get("target_segment") or payload.get("name") or "").strip() or None,
-        exact_industries=_as_list(payload.get("exact_industries")),
+        exact_industries=exact_industries,
         related_industries=_as_list(payload.get("related_industries")),
         broad_industries=_as_list(payload.get("broad_industries")),
-        product_keywords=_as_list(payload.get("product_keywords")),
+        product_keywords=product_keywords,
         product_keyword_priorities={str(key): int(value) for key, value in _as_dict(payload.get("product_keyword_priorities")).items()},
         application_keywords=_as_list(payload.get("application_keywords")),
         manufacturing_keywords=_as_list(payload.get("manufacturing_keywords")),

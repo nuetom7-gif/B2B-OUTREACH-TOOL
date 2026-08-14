@@ -213,6 +213,37 @@ class Phase2DiscoveryTests(TestCase):
         self.assertIn("laser cutting", request.product_keywords)
         self.assertIn("industrial vacuum supplier", request.negative_keywords)
 
+    def test_search_profiles_expose_backend_owned_apollo_criteria(self):
+        response = self._client().get("/discovery/search-profiles")
+
+        self.assertEqual(response.status_code, 200)
+        profile = next(item for item in response.json() if item["profile_name"] == "Laser Equipment Manufacturers")
+        self.assertIn("laser manufacturer", profile["company_keywords"])
+        self.assertIn("CO2 laser", profile["company_keywords"])
+        self.assertEqual(
+            profile["apollo_industries"],
+            ["Machinery", "Mechanical or Industrial Engineering", "Industrial Automation"],
+        )
+        self.assertEqual(profile["related_industries"], ["Electronic Manufacturing", "Semiconductors"])
+
+    def test_government_contracting_profile_keeps_apollo_terms_together(self):
+        profile = next(item for item in load_icp_config() if item.search_profile_name == "Government & Public Sector Contractors")
+        provider = ApolloProvider.__new__(ApolloProvider)
+        params = provider._common_org_params(profile, page=1, per_page=50)
+
+        self.assertEqual(profile.exact_industries, ["Civil Engineering", "Construction"])
+        self.assertEqual(
+            params["q_organization_keyword_tags[]"],
+            [
+                "government contractor",
+                "government contracting",
+                "public sector contracting",
+                "federal contractor",
+                "state contractor",
+                "municipal contractor",
+            ],
+        )
+
     def test_apollo_company_search_separates_keywords_from_industry_labels(self):
         profile = next(item for item in load_icp_config() if item.search_profile_name == "Laser Equipment Manufacturers")
         provider = ApolloProvider.__new__(ApolloProvider)

@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useContacts } from "@/lib/api/hooks";
+import { downloadCsv } from "@/lib/api/client";
 import type { BackendContact } from "@/lib/api/types";
 
 export const Route = createFileRoute("/contacts")({
@@ -35,6 +36,7 @@ function ContactsPage() {
   const navigate = useNavigate();
   const [verification, setVerification] = useState("all");
   const [priority, setPriority] = useState("all");
+  const [exporting, setExporting] = useState(false);
 
   const data = query.data ?? [];
   const statuses = useMemo(
@@ -55,6 +57,18 @@ function ContactsPage() {
       ),
     [data, verification, priority],
   );
+
+  async function exportContacts() {
+    setExporting(true);
+    try {
+      await downloadCsv("/contacts/export/csv", "yash-technology-contacts.csv");
+      toast.success("Contacts CSV downloaded");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not export contacts");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   if (query.isError) {
     return (
@@ -197,8 +211,8 @@ function ContactsPage() {
         title="Contacts"
         description={`${rows.length} of ${data.length} decision makers`}
         actions={
-          <Button variant="outline" onClick={() => toast.success("Export queued")}>
-            <Download className="size-4" /> Export
+          <Button variant="outline" onClick={() => void exportContacts()} disabled={exporting}>
+            <Download className="size-4" /> {exporting ? "Exporting..." : "Export"}
           </Button>
         }
       />

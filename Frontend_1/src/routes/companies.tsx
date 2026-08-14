@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCompanies } from "@/lib/api/hooks";
+import { downloadCsv } from "@/lib/api/client";
 import type { BackendCompany } from "@/lib/api/types";
 
 export const Route = createFileRoute("/companies")({
@@ -44,6 +45,7 @@ function CompaniesPage() {
   const [source, setSource] = useState("all");
   const [sync, setSync] = useState("all");
   const [review, setReview] = useState("all");
+  const [exporting, setExporting] = useState(false);
 
   const data = query.data ?? [];
 
@@ -63,6 +65,18 @@ function CompaniesPage() {
       ),
     [data, source, sync, review],
   );
+
+  async function exportCompanies() {
+    setExporting(true);
+    try {
+      await downloadCsv("/companies/export/csv", "yash-technology-companies.csv");
+      toast.success("Companies CSV downloaded");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not export companies");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   if (query.isError) {
     return (
@@ -203,8 +217,8 @@ function CompaniesPage() {
         description={`${rows.length} of ${data.length} discovered companies`}
         actions={
           <>
-            <Button variant="outline" onClick={() => toast.success("Export queued")}>
-              <Download className="size-4" /> Export
+            <Button variant="outline" onClick={() => void exportCompanies()} disabled={exporting}>
+              <Download className="size-4" /> {exporting ? "Exporting..." : "Export"}
             </Button>
             <Button asChild>
               <Link to="/discovery">
