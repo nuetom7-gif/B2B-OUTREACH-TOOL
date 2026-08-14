@@ -1,5 +1,5 @@
 import { s as useDashboardStats } from "./hooks-xnZ2zKrZ.js";
-import { d as Badge } from "./router-CjNjiVPZ.js";
+import { d as Badge } from "./router-B42mCDaV.js";
 import { a as CardContent, i as Card, n as SectionCardTitle, o as CardHeader, r as StateCard, t as PageHeader } from "./page-header-B6w8wS7t.js";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";

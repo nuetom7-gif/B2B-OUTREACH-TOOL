@@ -15,7 +15,7 @@ var tsrStartManifest = () => ({ routes: {
 			"/settings"
 		],
 		preloads: [
-			"/assets/index-LGb4IBUf.js",
+			"/assets/index-Dvb_qmbD.js",
 			"/assets/hooks-yHzU1z__.js",
 			"/assets/dist-CFomTDks.js",
 			"/assets/link-BErlL430.js",
@@ -44,7 +44,7 @@ var tsrStartManifest = () => ({ routes: {
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-LGb4IBUf.js"
+			src: "/assets/index-Dvb_qmbD.js"
 		} }]
 	},
 	"/": {
@@ -134,7 +134,7 @@ var tsrStartManifest = () => ({ routes: {
 		filePath: "D:/B2B lead-generation and outreach tool/Frontend_1/src/routes/research-queue.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/research-queue-BqEZmfAV.js",
+			"/assets/research-queue-2VAXy6JB.js",
 			"/assets/page-header-YW0nInwU.js",
 			"/assets/status-badge-ftMllwuA.js"
 		]

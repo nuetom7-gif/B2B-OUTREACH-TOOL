@@ -199,6 +199,85 @@ class Phase2DiscoveryTests(TestCase):
         self.assertEqual(review_response.status_code, 200)
         self.assertEqual(review_response.json()["total"], 1)
 
+    def test_manual_review_approval_imports_company_and_closes_record(self):
+        db = self.SessionLocal()
+        run = DiscoveryRun(product_name="Test Product", search_frequency="Daily", status="completed")
+        db.add(run)
+        db.flush()
+        record = DiscoveryStagingRecord(
+            run_id=run.id,
+            product_name="Test Product",
+            provider_name="apollo",
+            record_type="organization",
+            apollo_organization_id="apollo-org-1",
+            company_name="Approved Company",
+            industry="Machinery",
+            needs_manual_review=True,
+            qualification_status="manual_review",
+            final_status="manual_review",
+            decision_stage="qualification",
+            reason_category="score_below_threshold",
+            sync_status="manual_review",
+            score=42,
+        )
+        db.add(record)
+        db.commit()
+        record_id = record.id
+        db.close()
+
+        response = self._client().post(
+            f"/discovery/staging/{record_id}/review",
+            json={"decision": "approve"},
+            headers={"X-API-Key": "test-key"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["record"]["final_status"], "approved")
+        with self.SessionLocal() as db:
+            approved_record = db.get(DiscoveryStagingRecord, record_id)
+            company = db.get(Company, approved_record.crm_company_id)
+            self.assertFalse(approved_record.needs_manual_review)
+            self.assertEqual(approved_record.sync_status, "imported")
+            self.assertEqual(company.name, "Approved Company")
+            self.assertFalse(company.needs_manual_review)
+
+    def test_manual_review_rejection_closes_record_without_creating_company(self):
+        db = self.SessionLocal()
+        run = DiscoveryRun(product_name="Test Product", search_frequency="Daily", status="completed")
+        db.add(run)
+        db.flush()
+        record = DiscoveryStagingRecord(
+            run_id=run.id,
+            product_name="Test Product",
+            provider_name="apollo",
+            record_type="organization",
+            company_name="Rejected Company",
+            needs_manual_review=True,
+            qualification_status="manual_review",
+            final_status="manual_review",
+            decision_stage="qualification",
+            reason_category="industry_mismatch",
+            sync_status="manual_review",
+        )
+        db.add(record)
+        db.commit()
+        record_id = record.id
+        db.close()
+
+        response = self._client().post(
+            f"/discovery/staging/{record_id}/review",
+            json={"decision": "reject"},
+            headers={"X-API-Key": "test-key"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["record"]["final_status"], "rejected")
+        with self.SessionLocal() as db:
+            rejected_record = db.get(DiscoveryStagingRecord, record_id)
+            self.assertFalse(rejected_record.needs_manual_review)
+            self.assertEqual(rejected_record.sync_status, "rejected")
+            self.assertIsNone(rejected_record.crm_company_id)
+
     def test_micro_icp_profiles_build_categorized_search_intent(self):
         profiles = load_icp_config()
         profile = next(item for item in profiles if item.search_profile_name == "Laser Equipment Manufacturers")
