@@ -43,6 +43,7 @@ class ICPProductLine:
     apollo_search: dict[str, Any] = field(default_factory=dict)
     business_division: str | None = None
     states: list[str] = field(default_factory=list)
+    cities: list[str] = field(default_factory=list)
     apollo_industries: list[str] = field(default_factory=list)
     decision_maker_tiers: dict[str, list[str]] = field(default_factory=dict)
     manufacturing_cluster_preference: str | None = None

@@ -92,6 +92,7 @@ def build_provider_request(icp: ICPProductLine, strategy: SearchStrategy) -> Apo
         profile_name=request.profile_name,
         countries=request.countries,
         states=request.states,
+        cities=request.cities,
         employee_ranges=request.employee_ranges,
         exact_industries=[strategy.industry] if strategy.industry and not strategy.related_industry else [],
         related_industries=[strategy.industry] if strategy.industry and strategy.related_industry else [],

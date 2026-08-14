@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import pandas as pd
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Response, UploadFile
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import get_settings
 from app.db.session import get_db
@@ -889,16 +889,20 @@ def export_companies_csv(db: Session = Depends(get_db)):
 
 @router.get("/contacts/export/csv")
 def export_contacts_csv(db: Session = Depends(get_db)):
+    contacts = db.execute(
+        select(Contact).options(selectinload(Contact.company).selectinload(Company.product_fits))
+    ).scalars().all()
     data = [
         {
             "name": contact.name,
             "title": contact.title,
             "company": contact.company.name,
+            "product_fit": ", ".join(company_product_fits(contact.company)),
             "source": contact.source,
             "email": contact.email,
             "phone": contact.phone,
             "linkedin_url": contact.linkedin_url,
         }
-        for contact in db.execute(select(Contact)).scalars().all()
+        for contact in contacts
     ]
     return Response(pd.DataFrame(data).to_csv(index=False), media_type="text/csv")

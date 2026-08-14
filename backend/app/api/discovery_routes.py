@@ -3,17 +3,21 @@ from __future__ import annotations
 from dataclasses import asdict, replace
 import json
 
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.base import DiscoveryStagingRecord
+from app.models.base import Company, DiscoveryStagingRecord
 from app.discovery.config_loader import load_icp_config
 from app.discovery.engine import DiscoveryEngine, run_discovery_cycle
 from app.discovery.repository import discovery_run_reasons, discovery_summary, get_run, list_runs, list_staging_records, list_staging_records_page
 from app.schemas import (
     DiscoveryJobCreate,
     DiscoveryJobRead,
+    DiscoveryManualReviewDecision,
     DiscoveryRunRead,
     DiscoveryRunReasonsRead,
     DiscoveryRunRequest,
@@ -23,8 +27,108 @@ from app.schemas import (
 )
 from app.api.routes import require_write_api_key
 from app.services.discovery_jobs import create_discovery_job, get_job, job_detail, list_jobs, request_cancel, submit_discovery_job
+from app.services.discovery_merge import find_blocked_contact_for_discovery, upsert_company_from_discovery, upsert_contact_from_discovery
+from app.services.outreach import add_audit
 
 router = APIRouter(prefix="/discovery", tags=["discovery"])
+
+
+def _review_time():
+    return datetime.now(timezone.utc)
+
+
+def _review_details(record: DiscoveryStagingRecord, decision: str, note: str) -> dict:
+    try:
+        details = json.loads(record.reason_details_json or "{}")
+    except json.JSONDecodeError:
+        details = {}
+    details["manual_review"] = {
+        "decision": decision,
+        "note": note.strip(),
+        "decided_at": _review_time().isoformat(),
+    }
+    return details
+
+
+def _approve_staged_company(db: Session, record: DiscoveryStagingRecord) -> tuple[Company, int]:
+    company = db.get(Company, record.crm_company_id) if record.crm_company_id else None
+    if company is None:
+        company, _, _ = upsert_company_from_discovery(
+            db,
+            company_payload={
+                "name": record.company_name or "Unnamed company",
+                "industry": record.industry or "Unspecified",
+                "source": "apollo_auto",
+                "source_provider": record.provider_name,
+                "source_record_id": record.apollo_organization_id,
+                "apollo_organization_id": record.apollo_organization_id,
+                "notes": "Approved from discovery manual review.",
+                "product_fits": [record.product_name],
+                "last_sync": _review_time(),
+                "sync_status": "synced",
+                "needs_manual_review": False,
+                "lead_score": record.score,
+            },
+            source_provider=record.provider_name,
+        )
+        record.crm_company_id = company.id
+
+    company.needs_manual_review = False
+    company.sync_status = "synced"
+
+    contacts_imported = 0
+    people = db.execute(
+        select(DiscoveryStagingRecord).where(
+            DiscoveryStagingRecord.run_id == record.run_id,
+            DiscoveryStagingRecord.record_type == "person",
+            DiscoveryStagingRecord.apollo_organization_id == record.apollo_organization_id,
+        )
+    ).scalars().all()
+    for person in people:
+        if person.crm_contact_id or not person.person_name:
+            continue
+        blocked = find_blocked_contact_for_discovery(
+            db,
+            company_name=company.name,
+            source_provider=person.provider_name,
+            source_record_id=record.apollo_organization_id,
+            apollo_organization_id=record.apollo_organization_id,
+            contact_source_record_id=person.apollo_person_id,
+            apollo_person_id=person.apollo_person_id,
+            email=person.person_email,
+            name=person.person_name,
+            title=person.person_title or "Unknown",
+        )
+        if blocked:
+            person.final_status = "rejected"
+            person.sync_status = "rejected"
+            person.warning_message = "Existing do-not-contact contact blocked manual-review approval."
+            continue
+        contact, created, _ = upsert_contact_from_discovery(
+            db,
+            company=company,
+            contact_payload={
+                "name": person.person_name,
+                "title": person.person_title or "Unknown",
+                "source_record_id": person.apollo_person_id,
+                "apollo_person_id": person.apollo_person_id,
+                "email": person.person_email,
+                "phone": person.person_phone,
+                "linkedin_url": person.person_linkedin_url,
+                "source": "apollo_auto",
+                "source_provider": person.provider_name,
+                "last_sync": _review_time(),
+                "lead_score": person.score or record.score,
+            },
+            source_provider=person.provider_name,
+        )
+        person.crm_company_id = company.id
+        person.crm_contact_id = contact.id
+        person.final_status = "approved"
+        person.sync_status = "imported" if created else "updated"
+        person.needs_manual_review = False
+        contacts_imported += int(created)
+    return company, contacts_imported
 
 
 def _serialize_run(run) -> DiscoveryRunRead:
@@ -120,6 +224,7 @@ def _serialize_job(job) -> DiscoveryJobRead:
         industry=job.industry,
         country=job.country,
         state=job.state,
+        city=job.city,
         keywords=job.keywords,
         company_limit=job.company_limit,
         contacts_per_company=job.contacts_per_company,
@@ -197,13 +302,13 @@ def get_search_profiles():
 
 
 @router.get("/search-builder")
-def get_search_builder(profile_name: str, country: str | None = None, state: str | None = None, employee_min: int | None = None, employee_max: int | None = None):
+def get_search_builder(profile_name: str, country: str | None = None, state: str | None = None, city: str | None = None, employee_min: int | None = None, employee_max: int | None = None):
     from app.discovery.search_builder import build_icp_search_request
 
     profile = next((icp for icp in load_icp_config() if icp.search_profile_name.lower() == profile_name.lower()), None)
     if profile is None:
         raise HTTPException(status_code=404, detail="Discovery search profile not found")
-    return asdict(build_icp_search_request(profile, country=country, state=state, employee_min=employee_min, employee_max=employee_max))
+    return asdict(build_icp_search_request(profile, country=country, state=state, city=city, employee_min=employee_min, employee_max=employee_max))
 
 
 @router.post("/run")
@@ -228,6 +333,7 @@ def trigger_discovery(
             industry=profile.target_segment or profile.search_profile_name,
             country=payload.country or (profile.country[0] if profile.country else "India"),
             state=payload.state,
+            city=payload.city,
             company_limit=settings.apollo_max_companies_per_run,
             contacts_per_company=settings.apollo_max_contacts_per_company,
             max_leads=settings.apollo_max_companies_per_run * settings.apollo_max_contacts_per_company,
@@ -371,6 +477,57 @@ def discovery_manual_review(
 ):
     items, total = list_staging_records_page(db, manual_review_only=True, limit=limit, offset=offset)
     return {"items": [_serialize_stage_summary(item) for item in items], "total": total, "limit": limit, "offset": offset}
+
+
+@router.post("/staging/{record_id}/review")
+def decide_manual_review(
+    record_id: int,
+    payload: DiscoveryManualReviewDecision,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_write_api_key),
+):
+    decision = payload.decision.strip().lower()
+    if decision not in {"approve", "reject"}:
+        raise HTTPException(status_code=400, detail="decision must be approve or reject")
+    record = db.get(DiscoveryStagingRecord, record_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Discovery staging record not found")
+    if not record.needs_manual_review:
+        raise HTTPException(status_code=409, detail="This record has already been reviewed")
+    if record.record_type != "organization":
+        raise HTTPException(status_code=400, detail="Only organization records can be decided from the research queue")
+
+    contacts_imported = 0
+    company = db.get(Company, record.crm_company_id) if record.crm_company_id else None
+    if decision == "approve":
+        company, contacts_imported = _approve_staged_company(db, record)
+        record.final_status = "approved"
+        record.sync_status = "imported"
+        record.warning_message = "Approved during manual review."
+    else:
+        if company and company.needs_manual_review:
+            company.needs_manual_review = False
+            company.sync_status = "rejected"
+        record.final_status = "rejected"
+        record.sync_status = "rejected"
+        record.warning_message = "Rejected during manual review."
+
+    record.needs_manual_review = False
+    record.decision_stage = "manual_review"
+    record.reason_details_json = json.dumps(_review_details(record, decision, payload.note), default=str)
+    record.last_sync = _review_time()
+    add_audit(
+        db,
+        entity_type="discovery_staging_record",
+        entity_id=str(record.id),
+        action="manual_review_approved" if decision == "approve" else "manual_review_rejected",
+        reason="Discovery record approved during manual review." if decision == "approve" else "Discovery record rejected during manual review.",
+        metadata={"record_id": record.id, "note": payload.note.strip(), "contacts_imported": contacts_imported},
+        company_id=company.id if company else None,
+    )
+    db.commit()
+    db.refresh(record)
+    return {"record": _serialize_stage(record), "contacts_imported": contacts_imported}
 
 
 @router.get("/summary")

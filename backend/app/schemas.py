@@ -186,6 +186,7 @@ class DiscoveryJobCreate(BaseModel):
     industry: str
     country: str
     state: str | None = None
+    city: str | None = None
     keywords: str = ""
     company_limit: int = 30
     contacts_per_company: int = 2
@@ -200,6 +201,7 @@ class DiscoveryJobRead(BaseModel):
     industry: str
     country: str
     state: str | None = None
+    city: str | None = None
     keywords: str = ""
     company_limit: int
     contacts_per_company: int
@@ -456,6 +458,11 @@ class DiscoveryStagingPageRead(BaseModel):
     offset: int
 
 
+class DiscoveryManualReviewDecision(BaseModel):
+    decision: str
+    note: str = ""
+
+
 class DiscoveryRunRequest(BaseModel):
     product_names: list[str] | None = None
     force: bool = False
@@ -463,6 +470,7 @@ class DiscoveryRunRequest(BaseModel):
     industry: str | None = None
     country: str | None = None
     state: str | None = None
+    city: str | None = None
     keywords: str | None = None
     company_limit: int | None = None
     contacts_per_company: int | None = None

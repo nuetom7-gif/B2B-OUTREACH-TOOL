@@ -295,6 +295,7 @@ class DiscoveryJob(Base, TimestampMixin):
     industry: Mapped[str] = mapped_column(String(255), nullable=False)
     country: Mapped[str] = mapped_column(String(128), nullable=False)
     state: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(128), nullable=True)
     keywords: Mapped[str] = mapped_column(Text, default="", nullable=False)
     company_limit: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
     contacts_per_company: Mapped[int] = mapped_column(Integer, default=2, nullable=False)

@@ -1474,7 +1474,7 @@ function RootComponent() {
 }
 //#endregion
 //#region src/routes/index.tsx
-var $$splitComponentImporter$11 = () => import("./routes-CQUFYtU0.js");
+var $$splitComponentImporter$11 = () => import("./routes-CUBAFU2l.js");
 var Route$11 = createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "Dashboard — Yash Technology Outreach Hub" },
@@ -1495,7 +1495,7 @@ var Route$11 = createFileRoute("/")({
 });
 //#endregion
 //#region src/routes/analytics.tsx
-var $$splitComponentImporter$10 = () => import("./analytics-BYMDI3nY.js");
+var $$splitComponentImporter$10 = () => import("./analytics-BwprI7kC.js");
 var Route$10 = createFileRoute("/analytics")({
 	head: () => ({ meta: [
 		{ title: "Analytics — Yash Technology Outreach Hub" },
@@ -1516,7 +1516,7 @@ var Route$10 = createFileRoute("/analytics")({
 });
 //#endregion
 //#region src/routes/campaigns.tsx
-var $$splitComponentImporter$9 = () => import("./campaigns-BQlhNO78.js");
+var $$splitComponentImporter$9 = () => import("./campaigns-BDhoBxGZ.js");
 var Route$9 = createFileRoute("/campaigns")({
 	head: () => ({ meta: [
 		{ title: "Campaigns — Yash Technology Outreach Hub" },
@@ -1537,7 +1537,7 @@ var Route$9 = createFileRoute("/campaigns")({
 });
 //#endregion
 //#region src/routes/companies.tsx
-var $$splitComponentImporter$8 = () => import("./companies-G2dRyCVJ.js");
+var $$splitComponentImporter$8 = () => import("./companies-BhVBUV5V.js");
 var Route$8 = createFileRoute("/companies")({
 	head: () => ({ meta: [
 		{ title: "Companies — Yash Technology Outreach Hub" },
@@ -1558,7 +1558,7 @@ var Route$8 = createFileRoute("/companies")({
 });
 //#endregion
 //#region src/routes/contacts.tsx
-var $$splitComponentImporter$7 = () => import("./contacts-BPGQ1k-J.js");
+var $$splitComponentImporter$7 = () => import("./contacts-Deoejuow.js");
 var Route$7 = createFileRoute("/contacts")({
 	head: () => ({ meta: [
 		{ title: "Contacts — Yash Technology Outreach Hub" },
@@ -1579,7 +1579,7 @@ var Route$7 = createFileRoute("/contacts")({
 });
 //#endregion
 //#region src/routes/discovery.tsx
-var $$splitComponentImporter$6 = () => import("./discovery-D2KAuCHd.js");
+var $$splitComponentImporter$6 = () => import("./discovery-DK2otFSX.js");
 var Route$6 = createFileRoute("/discovery")({
 	head: () => ({ meta: [
 		{ title: "Discovery — Yash Technology Outreach Hub" },
@@ -1600,7 +1600,7 @@ var Route$6 = createFileRoute("/discovery")({
 });
 //#endregion
 //#region src/routes/drafts.tsx
-var $$splitComponentImporter$5 = () => import("./drafts-BReXkUrM.js");
+var $$splitComponentImporter$5 = () => import("./drafts-CYaZ5BHv.js");
 var Route$5 = createFileRoute("/drafts")({
 	head: () => ({ meta: [
 		{ title: "AI Drafts — Yash Technology Outreach Hub" },
@@ -1663,7 +1663,7 @@ var Route$3 = createFileRoute("/research-queue")({
 });
 //#endregion
 //#region src/routes/settings.tsx
-var $$splitComponentImporter$2 = () => import("./settings-D1WLoGSs.js");
+var $$splitComponentImporter$2 = () => import("./settings-CIfBGT7U.js");
 var Route$2 = createFileRoute("/settings")({
 	head: () => ({ meta: [
 		{ title: "Settings — Yash Technology Outreach Hub" },
@@ -1684,7 +1684,7 @@ var Route$2 = createFileRoute("/settings")({
 });
 //#endregion
 //#region src/routes/companies.$companyId.tsx
-var $$splitComponentImporter$1 = () => import("./companies._companyId-YvWF4mgr.js");
+var $$splitComponentImporter$1 = () => import("./companies._companyId-BwhNGJfC.js");
 var Route$1 = createFileRoute("/companies/$companyId")({
 	head: () => ({ meta: [
 		{ title: "Company record — Yash Technology Outreach Hub" },
@@ -1705,7 +1705,7 @@ var Route$1 = createFileRoute("/companies/$companyId")({
 });
 //#endregion
 //#region src/routes/contacts.$contactId.tsx
-var $$splitComponentImporter = () => import("./contacts._contactId-BrfdccpX.js");
+var $$splitComponentImporter = () => import("./contacts._contactId-B-kspQlH.js");
 var Route = createFileRoute("/contacts/$contactId")({
 	head: () => ({ meta: [
 		{ title: "Contact profile — Yash Technology Outreach Hub" },

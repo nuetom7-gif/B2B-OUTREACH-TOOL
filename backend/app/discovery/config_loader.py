@@ -102,6 +102,7 @@ def _parse_product_line(payload: dict[str, Any], *, base: dict[str, Any] | None 
         apollo_search=_as_dict(payload.get("apollo_search")),
         business_division=str(payload.get("business_division") or "").strip() or None,
         states=_as_list(payload.get("states")),
+        cities=_as_list(payload.get("cities")),
         apollo_industries=apollo_industries,
         decision_maker_tiers=decision_maker_tiers,
         manufacturing_cluster_preference=str(payload.get("manufacturing_cluster_preference") or "").strip() or None,

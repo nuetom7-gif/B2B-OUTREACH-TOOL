@@ -1,5 +1,5 @@
 import { r as useCompany } from "./hooks-xnZ2zKrZ.js";
-import { d as Badge, h as Button, p as Separator, r as Route } from "./router-CZcbm7f-.js";
+import { d as Badge, h as Button, p as Separator, r as Route } from "./router-CjNjiVPZ.js";
 import { a as CardContent, i as Card, o as CardHeader, r as StateCard, t as PageHeader } from "./page-header-B6w8wS7t.js";
 import { Link } from "@tanstack/react-router";
 import { jsx, jsxs } from "react/jsx-runtime";

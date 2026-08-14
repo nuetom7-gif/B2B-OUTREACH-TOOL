@@ -256,6 +256,21 @@ class Phase2DiscoveryTests(TestCase):
         self.assertNotIn("Mechanical or Industrial Engineering", params["q_organization_keyword_tags[]"])
         self.assertNotIn("q_keywords", params)
 
+    def test_apollo_company_search_uses_one_precise_city_location(self):
+        profile = next(item for item in load_icp_config() if item.search_profile_name == "Laser Equipment Manufacturers")
+        request = build_icp_search_request(
+            profile,
+            country="India",
+            state="Maharashtra",
+            city="Aurangabad",
+        )
+        provider = ApolloProvider.__new__(ApolloProvider)
+        localized_profile = replace(profile, country=["India"], states=["Maharashtra"], cities=["Aurangabad"])
+        params = provider._common_org_params(localized_profile, page=1, per_page=50)
+
+        self.assertEqual(request.organization_locations, ["Aurangabad, Maharashtra, India"])
+        self.assertEqual(params["organization_locations[]"], ["Aurangabad, Maharashtra, India"])
+
     def test_search_strategy_planner_creates_focused_industry_keyword_searches(self):
         strategies = plan_search_strategies(self._icp())
 

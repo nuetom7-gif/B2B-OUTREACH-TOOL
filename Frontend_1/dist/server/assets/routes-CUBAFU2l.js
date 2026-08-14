@@ -1,5 +1,5 @@
 import { c as useDashboardSummary, s as useDashboardStats, x as cn } from "./hooks-xnZ2zKrZ.js";
-import { d as Badge, f as Skeleton, h as Button, p as Separator } from "./router-CZcbm7f-.js";
+import { d as Badge, f as Skeleton, h as Button, p as Separator } from "./router-CjNjiVPZ.js";
 import { a as CardContent, i as Card, n as SectionCardTitle, o as CardHeader, r as StateCard, t as PageHeader } from "./page-header-B6w8wS7t.js";
 import { Link } from "@tanstack/react-router";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";

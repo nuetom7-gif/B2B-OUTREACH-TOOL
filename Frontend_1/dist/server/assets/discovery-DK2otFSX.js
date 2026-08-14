@@ -1,5 +1,5 @@
 import { d as useDiscoveryStaging, f as useDiscoveryStagingDetail, l as useDiscoveryProfiles, u as useDiscoveryRuns, v as apiPost, x as cn } from "./hooks-xnZ2zKrZ.js";
-import { d as Badge, h as Button, m as Input, p as Separator } from "./router-CZcbm7f-.js";
+import { d as Badge, h as Button, m as Input, p as Separator } from "./router-CjNjiVPZ.js";
 import { a as CardContent, i as Card, n as SectionCardTitle, o as CardHeader, r as StateCard, t as PageHeader } from "./page-header-B6w8wS7t.js";
 import { n as StatusBadge } from "./status-badge-Bg9EAcqh.js";
 import { a as SelectValue, i as SelectTrigger, n as SelectContent, r as SelectItem, t as Select } from "./select-CeKRNVBa.js";
@@ -31,6 +31,7 @@ function DiscoveryPage() {
 	const [profileName, setProfileName] = useState("");
 	const [country, setCountry] = useState("India");
 	const [state, setState] = useState("any");
+	const [city, setCity] = useState("");
 	const [companyLimit, setCompanyLimit] = useState("50");
 	const [contactsPerCompany, setContactsPerCompany] = useState("2");
 	const [submitting, setSubmitting] = useState(false);
@@ -57,6 +58,7 @@ function DiscoveryPage() {
 				profile_name: profileName,
 				country,
 				state: state === "any" ? null : state,
+				city: city.trim() || null,
 				company_limit: Number(companyLimit),
 				contacts_per_company: Number(contactsPerCompany)
 			});
@@ -153,6 +155,21 @@ function DiscoveryPage() {
 									placeholder: "Any state"
 								})]
 							})]
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "space-y-1.5",
+							children: [
+								/* @__PURE__ */ jsx(Label, { children: "City / district (optional)" }),
+								/* @__PURE__ */ jsx(Input, {
+									value: city,
+									onChange: (e) => setCity(e.target.value),
+									placeholder: "Aurangabad"
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-xs text-muted-foreground",
+									children: "Apollo will search company headquarters in this city, state and country."
+								})
+							]
 						}),
 						/* @__PURE__ */ jsxs("div", {
 							className: "grid grid-cols-2 gap-3",

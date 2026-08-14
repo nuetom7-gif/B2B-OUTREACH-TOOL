@@ -19,7 +19,7 @@ os.environ.setdefault("WRITE_API_KEY", "test-key")
 from app.api import routes
 from app.db import session as db_session
 from app.main import app
-from app.models.base import Base, Campaign, Company, Contact, Mailbox, Message
+from app.models.base import Base, Campaign, Company, CompanyProductFit, Contact, Mailbox, Message
 
 
 class OutreachRulesTest(TestCase):
@@ -177,3 +177,23 @@ class OutreachRulesTest(TestCase):
             )
             self.assertEqual(blocked_send.status_code, 400)
             self.assertIn("do not contact", blocked_send.text.lower())
+
+    def test_contacts_csv_includes_the_linked_company_product_fits(self):
+        company_id, _, _, _ = self._seed_contact()
+        with self.test_sessionmaker() as session:
+            session.add_all(
+                [
+                    CompanyProductFit(company_id=company_id, product="Industrial Vacuum Cleaning Systems"),
+                    CompanyProductFit(company_id=company_id, product="Warehouse & Storage Solutions"),
+                ]
+            )
+            session.commit()
+
+        with self._client() as client:
+            response = client.get("/contacts/export/csv")
+
+        self.assertEqual(response.status_code, 200)
+        rows = response.text.splitlines()
+        self.assertIn("product_fit", rows[0])
+        self.assertIn("Industrial Vacuum Cleaning Systems", rows[1])
+        self.assertIn("Warehouse & Storage Solutions", rows[1])

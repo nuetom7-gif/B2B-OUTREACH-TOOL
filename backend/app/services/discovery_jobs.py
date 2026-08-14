@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import datetime
 from threading import Event, Lock
 import json
@@ -90,7 +90,12 @@ def _build_icp(request: DiscoveryJobCreate) -> ICPProductLine:
         raise ValueError(f"Unknown product segment: {request.product_segment}")
 
     if request.profile_name:
-        return base
+        return replace(
+            base,
+            country=[request.country] if request.country else base.country,
+            states=[request.state] if request.state else base.states,
+            cities=[request.city] if request.city else base.cities,
+        )
     merged_keywords = list(dict.fromkeys(base.company_keywords + _parse_keywords(request.keywords) + [request.industry]))
     return ICPProductLine(
         product_name=base.product_name,
@@ -112,6 +117,8 @@ def _build_icp(request: DiscoveryJobCreate) -> ICPProductLine:
         lead_score_rules=dict(base.lead_score_rules),
         search_frequency="On Demand",
         priority=base.priority,
+        states=[request.state] if request.state else base.states,
+        cities=[request.city] if request.city else base.cities,
     )
 
 
@@ -151,6 +158,7 @@ def create_discovery_job(db: Session, payload: DiscoveryJobCreate) -> DiscoveryJ
         industry=payload.industry,
         country=payload.country,
         state=payload.state,
+        city=payload.city,
         keywords=payload.keywords or "",
         company_limit=payload.company_limit,
         contacts_per_company=payload.contacts_per_company,

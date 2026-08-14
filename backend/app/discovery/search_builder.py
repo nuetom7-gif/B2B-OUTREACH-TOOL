@@ -14,6 +14,7 @@ class ApolloSearchRequest:
     profile_name: str
     countries: list[str]
     states: list[str]
+    cities: list[str]
     employee_ranges: list[str]
     exact_industries: list[str]
     related_industries: list[str]
@@ -38,12 +39,22 @@ class ApolloSearchRequest:
     def apollo_keywords(self) -> list[str]:
         return list(dict.fromkeys(self.product_keywords))
 
+    @property
+    def organization_locations(self) -> list[str]:
+        """Build one precise Apollo headquarters-location filter when possible."""
+        if self.cities:
+            return [", ".join([self.cities[0], *self.states[:1], *self.countries[:1]])]
+        if self.states:
+            return [", ".join([self.states[0], *self.countries[:1]])]
+        return self.countries
+
 
 def build_icp_search_request(
     icp: ICPProductLine,
     *,
     country: str | None = None,
     state: str | None = None,
+    city: str | None = None,
     employee_min: int | None = None,
     employee_max: int | None = None,
 ) -> ApolloSearchRequest:
@@ -56,6 +67,7 @@ def build_icp_search_request(
         profile_name=icp.search_profile_name,
         countries=countries,
         states=[state.strip()] if state and state.strip() else icp.states,
+        cities=[city.strip()] if city and city.strip() else icp.cities,
         employee_ranges=ranges,
         exact_industries=icp.exact_industries or icp.target_industries,
         related_industries=icp.related_industries or icp.preferred_company_types,

@@ -85,8 +85,8 @@ class ApolloProvider(DiscoveryProvider):
             "page": page,
             "per_page": per_page,
         }
-        if search.countries or search.states:
-            params["organization_locations[]"] = search.countries + search.states
+        if search.organization_locations:
+            params["organization_locations[]"] = search.organization_locations
         if search.employee_ranges:
             params["organization_num_employees_ranges[]"] = search.employee_ranges
         # Apollo's documented company-keyword filter is the API equivalent of
@@ -197,7 +197,7 @@ class ApolloProvider(DiscoveryProvider):
             "q_organization_domains_list[]": [organization.domain] if organization.domain else [],
             "organization_ids[]": [organization.provider_organization_id],
             "organization_num_employees_ranges[]": search.employee_ranges,
-            "organization_locations[]": search.countries + search.states,
+            "organization_locations[]": search.organization_locations,
         }
         effective_titles = title_filters if title_filters is not None else icp.target_titles
         if effective_titles:

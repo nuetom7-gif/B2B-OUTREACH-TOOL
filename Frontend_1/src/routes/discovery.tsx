@@ -42,6 +42,7 @@ function DiscoveryPage() {
   const [profileName, setProfileName] = useState("");
   const [country, setCountry] = useState("India");
   const [state, setState] = useState<string>("any");
+  const [city, setCity] = useState("");
   const [companyLimit, setCompanyLimit] = useState("50");
   const [contactsPerCompany, setContactsPerCompany] = useState("2");
   const [submitting, setSubmitting] = useState(false);
@@ -68,6 +69,7 @@ function DiscoveryPage() {
         profile_name: profileName,
         country,
         state: state === "any" ? null : state,
+        city: city.trim() || null,
         company_limit: Number(companyLimit),
         contacts_per_company: Number(contactsPerCompany),
       });
@@ -153,6 +155,11 @@ function DiscoveryPage() {
                 <Label>State (optional)</Label>
                 <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="Any state" />
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>City / district (optional)</Label>
+              <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Aurangabad" />
+              <p className="text-xs text-muted-foreground">Apollo will search company headquarters in this city, state and country.</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
