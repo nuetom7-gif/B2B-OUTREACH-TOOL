@@ -108,6 +108,9 @@ def _parse_product_line(payload: dict[str, Any], *, base: dict[str, Any] | None 
         manufacturing_cluster_preference=str(payload.get("manufacturing_cluster_preference") or "").strip() or None,
         product_recommendations=_as_list(payload.get("product_recommendations")),
         email_template_mapping=_as_dict(payload.get("email_template_mapping")),
+        description=str(payload.get("description") or "").strip() or None,
+        products=_as_list(payload.get("products")),
+        portfolio_applications=_as_list(payload.get("portfolio_applications")),
     )
 
 

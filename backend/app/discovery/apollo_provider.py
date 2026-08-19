@@ -260,12 +260,25 @@ class ApolloProvider(DiscoveryProvider):
             self.last_people_diagnostic["contacts_returned"] = len(results)
         return results
 
-    def enrich_person(self, contact: DiscoveryContactCandidate) -> DiscoveryContactCandidate | None:
+    def enrich_person(
+        self,
+        contact: DiscoveryContactCandidate,
+        *,
+        reveal_phone_number: bool = True,
+    ) -> DiscoveryContactCandidate | None:
+        phone_reveal_enabled = bool(
+            reveal_phone_number
+            and self.settings.apollo_reveal_phone_numbers
+            and self.settings.apollo_phone_webhook_url.strip()
+            and self.settings.apollo_phone_webhook_secret.strip()
+        )
         request_params = {
             "person_id": contact.provider_person_id,
             "reveal_personal_emails": False,
-            "reveal_phone_number": False,
+            "reveal_phone_number": phone_reveal_enabled,
         }
+        if phone_reveal_enabled:
+            request_params["webhook_url"] = self.settings.apollo_phone_webhook_url.strip()
         payload = self._request("POST", "/people/match", params=request_params)
         self.last_enrichment_diagnostic = {
             "request": {"method": "POST", "path": "/people/match", "params": request_params},

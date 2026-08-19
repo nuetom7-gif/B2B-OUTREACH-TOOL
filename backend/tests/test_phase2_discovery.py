@@ -34,8 +34,9 @@ from app.discovery.types import DiscoveryCompanyCandidate, DiscoveryContactCandi
 from app.db import session as db_session
 from app.api import routes
 from app.main import app
-from app.models.base import Base, Company, Contact, DiscoveryRun, DiscoveryStagingRecord
-from app.services.discovery_merge import find_contact_for_discovery
+from app.models.base import Base, Company, Contact, DiscoveryJob, DiscoveryRun, DiscoveryStagingRecord
+from app.discovery.repository import todays_api_calls_used
+from app.services.discovery_merge import contact_discovery_profiles, find_contact_for_discovery, upsert_contact_from_discovery
 
 
 class FakeApolloProvider(DiscoveryProvider):
@@ -49,6 +50,7 @@ class FakeApolloProvider(DiscoveryProvider):
         self.organization_calls = 0
         self.people_calls = 0
         self.enrichment_calls = 0
+        self.phone_reveal_requests: list[bool] = []
         self.organization_enrichment_calls = 0
 
     def provider_name(self) -> str:
@@ -85,8 +87,14 @@ class FakeApolloProvider(DiscoveryProvider):
     def close(self) -> None:
         return None
 
-    def enrich_person(self, contact: DiscoveryContactCandidate) -> DiscoveryContactCandidate | None:
+    def enrich_person(
+        self,
+        contact: DiscoveryContactCandidate,
+        *,
+        reveal_phone_number: bool = True,
+    ) -> DiscoveryContactCandidate | None:
         self.enrichment_calls += 1
+        self.phone_reveal_requests.append(reveal_phone_number)
         return replace(contact, email="primary@example.com", email_status="verified")
 
     def enrich_organization(self, organization: DiscoveryCompanyCandidate) -> DiscoveryCompanyCandidate | None:
@@ -278,6 +286,63 @@ class Phase2DiscoveryTests(TestCase):
             self.assertEqual(rejected_record.sync_status, "rejected")
             self.assertIsNone(rejected_record.crm_company_id)
 
+    def test_contact_keeps_every_discovery_profile_that_found_it(self):
+        db = self.SessionLocal()
+        company = Company(name="Profile Company", industry="Machinery", source="Seed", notes="")
+        db.add(company)
+        db.flush()
+        payload = {
+            "name": "Profile Contact",
+            "title": "Procurement Manager",
+            "apollo_person_id": "apollo-person-1",
+            "source_record_id": "apollo-person-1",
+            "source": "apollo_auto",
+            "discovery_profile": "Laser Equipment Manufacturers",
+        }
+        contact, created, _ = upsert_contact_from_discovery(
+            db, company=company, contact_payload=payload, source_provider="apollo"
+        )
+        self.assertTrue(created)
+        payload["discovery_profile"] = "Metal Fabrication"
+        same_contact, created_again, _ = upsert_contact_from_discovery(
+            db, company=company, contact_payload=payload, source_provider="apollo"
+        )
+        self.assertFalse(created_again)
+        self.assertEqual(contact.id, same_contact.id)
+        self.assertEqual(
+            contact_discovery_profiles(same_contact),
+            ["Laser Equipment Manufacturers", "Metal Fabrication"],
+        )
+        db.close()
+
+    def test_daily_call_usage_does_not_double_count_profile_job_runs(self):
+        db = self.SessionLocal()
+        run = DiscoveryRun(product_name="Test Product", search_frequency="Daily", status="completed", api_calls_used=40)
+        started_at = datetime.now(timezone.utc)
+        profile_job = DiscoveryJob(
+            product_segment="Test Profile",
+            industry="Test",
+            country="India",
+            api_calls_used=40,
+            status="completed",
+            started_at=started_at,
+            result_json='{"run_id": 1, "api_calls_used": 40}',
+        )
+        custom_job = DiscoveryJob(
+            product_segment="Custom Search",
+            industry="Test",
+            country="India",
+            api_calls_used=15,
+            status="completed",
+            started_at=started_at,
+            result_json='{"api_calls_used": 15}',
+        )
+        db.add_all([run, profile_job, custom_job])
+        db.commit()
+
+        self.assertEqual(todays_api_calls_used(db), 55)
+        db.close()
+
     def test_micro_icp_profiles_build_categorized_search_intent(self):
         profiles = load_icp_config()
         profile = next(item for item in profiles if item.search_profile_name == "Laser Equipment Manufacturers")
@@ -291,6 +356,40 @@ class Phase2DiscoveryTests(TestCase):
         self.assertIn("Mechanical or Industrial Engineering", request.exact_industries)
         self.assertIn("laser cutting", request.product_keywords)
         self.assertIn("industrial vacuum supplier", request.negative_keywords)
+
+    def test_all_seven_enabled_business_divisions_load_from_configuration(self):
+        divisions = list(dict.fromkeys(profile.product_name for profile in load_icp_config() if profile.enabled))
+
+        self.assertEqual(
+            divisions,
+            [
+                "Machine Tool Manufacturing",
+                "Industrial Vacuum Cleaning Systems",
+                "Warehouse & Storage Solutions",
+                "Fabrication & Metal Pallets",
+                "GFRP Rebar",
+                "Multi-Machine Manufacturing",
+                "Cool Care Manufacturing",
+            ],
+        )
+
+    def test_portfolio_metadata_and_new_titles_remain_configuration_driven(self):
+        profiles = load_icp_config()
+        warehouse = next(item for item in profiles if item.search_profile_name == "Warehousing")
+        warehouse_automation = next(
+            item
+            for item in profiles
+            if item.search_profile_name == "Industrial Automation"
+            and item.product_name == "Warehouse & Storage Solutions"
+        )
+        cool_care = next(item for item in profiles if item.search_profile_name == "Manufacturing Plants" and item.product_name == "Cool Care Manufacturing")
+
+        self.assertIn("Industrial Goods Lifts", warehouse.products)
+        self.assertIn("warehouse automation", warehouse_automation.company_keywords)
+        self.assertIn("Warehouse Head", warehouse.target_titles)
+        self.assertIn("Air Handling Units", cool_care.products)
+        self.assertIn("AHU", cool_care.company_keywords)
+        self.assertIn("Facilities Head", cool_care.target_titles)
 
     def test_search_profiles_expose_backend_owned_apollo_criteria(self):
         response = self._client().get("/discovery/search-profiles")
@@ -632,6 +731,110 @@ class Phase2DiscoveryTests(TestCase):
             self.assertEqual(run.contacts_found, 1)
             self.assertEqual(len(staging_records), 2)
             self.assertEqual(staging_records[0].qualification_status, "qualified")
+        finally:
+            session.close()
+
+    def test_existing_crm_phone_skips_phone_reveal_but_keeps_contact_enrichment(self):
+        session = self.SessionLocal()
+        try:
+            company = Company(
+                name="Existing Phone Manufacturing",
+                industry="Automotive Manufacturers",
+                source="apollo_auto",
+                source_provider="apollo",
+                source_record_id="org-existing-phone",
+                apollo_organization_id="org-existing-phone",
+            )
+            session.add(company)
+            session.flush()
+            session.add(
+                Contact(
+                    name="Existing Phone Contact",
+                    title="Plant Head",
+                    company_id=company.id,
+                    phone="+911112223333",
+                    source="apollo_auto",
+                    source_provider="apollo",
+                    source_record_id="person-existing-phone",
+                    apollo_person_id="person-existing-phone",
+                )
+            )
+            session.commit()
+
+            org = DiscoveryCompanyCandidate(
+                source_provider="apollo",
+                source_record_id="org-existing-phone",
+                name="Existing Phone Manufacturing",
+                domain="existing-phone.example",
+                industry="Automotive Manufacturers",
+                country="India",
+                description="Automotive manufacturing company",
+            )
+            person = DiscoveryContactCandidate(
+                source_provider="apollo",
+                source_record_id="person-existing-phone",
+                organization_source_record_id="org-existing-phone",
+                name="Existing Phone Contact",
+                title="Plant Head",
+            )
+            provider = FakeApolloProvider([org], {"org-existing-phone": [person]})
+
+            DiscoveryEngine(session, provider=provider).run_product_line(self._icp())
+
+            self.assertEqual(provider.enrichment_calls, 1)
+            self.assertEqual(provider.phone_reveal_requests, [False])
+        finally:
+            session.close()
+
+    def test_blank_crm_phone_allows_phone_reveal(self):
+        session = self.SessionLocal()
+        try:
+            company = Company(
+                name="Blank Phone Manufacturing",
+                industry="Automotive Manufacturers",
+                source="apollo_auto",
+                source_provider="apollo",
+                source_record_id="org-blank-phone",
+                apollo_organization_id="org-blank-phone",
+            )
+            session.add(company)
+            session.flush()
+            session.add(
+                Contact(
+                    name="Blank Phone Contact",
+                    title="Plant Head",
+                    company_id=company.id,
+                    phone="   ",
+                    source="apollo_auto",
+                    source_provider="apollo",
+                    source_record_id="person-blank-phone",
+                    apollo_person_id="person-blank-phone",
+                )
+            )
+            session.commit()
+
+            org = DiscoveryCompanyCandidate(
+                source_provider="apollo",
+                source_record_id="org-blank-phone",
+                name="Blank Phone Manufacturing",
+                domain="blank-phone.example",
+                industry="Automotive Manufacturers",
+                country="India",
+                description="Automotive manufacturing company",
+            )
+            person = DiscoveryContactCandidate(
+                source_provider="apollo",
+                source_record_id="person-blank-phone",
+                organization_source_record_id="org-blank-phone",
+                name="Blank Phone Contact",
+                title="Plant Head",
+            )
+            provider = FakeApolloProvider([org], {"org-blank-phone": [person]})
+
+            DiscoveryEngine(session, provider=provider).run_product_line(self._icp())
+
+            self.assertEqual(provider.enrichment_calls, 1)
+            self.assertEqual(provider.phone_reveal_requests, [True])
         finally:
             session.close()
 

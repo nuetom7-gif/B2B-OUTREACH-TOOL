@@ -295,6 +295,12 @@ cd backend
 uvicorn app.main:app --reload
 ```
 
+If your terminal is already in the repository root, use this equivalent command instead:
+
+```bash
+uvicorn --app-dir backend app.main:app --reload
+```
+
 Backend default:
 - `http://localhost:8000`
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 import pandas as pd
-from fastapi import APIRouter, Depends, File, Header, HTTPException, Response, UploadFile
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, Response, UploadFile
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -35,7 +35,7 @@ from app.schemas import (
     WorkspaceProfileRead,
 )
 from app.services.csv_service import pick_field, read_csv_upload, split_list
-from app.services.discovery_merge import find_contact_for_discovery
+from app.services.discovery_merge import contact_discovery_profiles, find_contact_for_discovery
 from app.services.automation import (
     create_draft,
     dashboard_stats,
@@ -77,6 +77,75 @@ def get_contact_or_404(db: Session, contact_id: int) -> Contact:
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return contact
+
+
+def _apollo_phone_from_webhook(payload: dict) -> tuple[str | None, str | None]:
+    """Accept Apollo's native and waterfall phone payload shapes."""
+    person = payload.get("person") or payload.get("contact") or payload.get("data") or payload
+    if not isinstance(person, dict):
+        return None, None
+    person_id = person.get("person_id") or person.get("id") or person.get("apollo_person_id")
+    phones = person.get("phone_numbers") or person.get("phones") or []
+    if isinstance(phones, dict):
+        phones = [phones]
+    if isinstance(phones, list):
+        for phone in phones:
+            if isinstance(phone, dict):
+                value = phone.get("sanitized_number") or phone.get("raw_number") or phone.get("number") or phone.get("phone")
+            else:
+                value = phone
+            if str(value or "").strip():
+                return str(person_id or "").strip() or None, str(value).strip()
+    for key in ("phone", "mobile_phone", "direct_phone", "raw_number", "sanitized_number"):
+        value = person.get(key)
+        if str(value or "").strip():
+            return str(person_id or "").strip() or None, str(value).strip()
+    return str(person_id or "").strip() or None, None
+
+
+@router.post("/webhooks/apollo/phone")
+def receive_apollo_phone_webhook(
+    payload: dict,
+    token: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+):
+    if not settings.apollo_phone_webhook_secret:
+        raise HTTPException(status_code=503, detail="Apollo phone webhook is not configured")
+    if token != settings.apollo_phone_webhook_secret:
+        raise HTTPException(status_code=401, detail="Invalid webhook token")
+
+    person_id, phone = _apollo_phone_from_webhook(payload)
+    if not person_id:
+        raise HTTPException(status_code=400, detail="Apollo phone webhook did not include a person identifier")
+    if not phone:
+        return {"status": "ignored", "reason": "no_phone_returned", "person_id": person_id}
+
+    contact = db.execute(select(Contact).where(Contact.apollo_person_id == person_id)).scalar_one_or_none()
+    if contact is None:
+        return {"status": "ignored", "reason": "contact_not_found", "person_id": person_id}
+
+    if contact.phone == phone:
+        return {"status": "unchanged", "contact_id": contact.id}
+
+    # Apollo enrichment may fill an absent number, but must never replace a
+    # number already entered through the CRM, CSV import, or a prior source.
+    if (contact.phone or "").strip():
+        return {"status": "unchanged", "reason": "existing_phone_preserved", "contact_id": contact.id}
+
+    contact.phone = phone
+    contact.last_sync = now_utc()
+    add_audit(
+        db,
+        entity_type="contact",
+        entity_id=str(contact.id),
+        action="apollo_phone_enriched",
+        reason="Apollo phone enrichment webhook received",
+        metadata={"apollo_person_id": person_id},
+        contact_id=contact.id,
+        company_id=contact.company_id,
+    )
+    db.commit()
+    return {"status": "updated", "contact_id": contact.id}
 
 
 def get_message_or_404(db: Session, message_id: int) -> Message:
@@ -138,6 +207,7 @@ def contact_to_read(contact: Contact, latest_message: Message | None = None) -> 
         recommended_primary_contact=contact.recommended_primary_contact,
         fallback_contact_used=contact.fallback_contact_used,
         contact_selection_reason=contact.contact_selection_reason,
+        discovery_profiles=contact_discovery_profiles(contact),
     )
 
 
@@ -898,6 +968,7 @@ def export_contacts_csv(db: Session = Depends(get_db)):
             "title": contact.title,
             "company": contact.company.name,
             "product_fit": ", ".join(company_product_fits(contact.company)),
+            "discovery_profiles": ", ".join(contact_discovery_profiles(contact)),
             "source": contact.source,
             "email": contact.email,
             "phone": contact.phone,

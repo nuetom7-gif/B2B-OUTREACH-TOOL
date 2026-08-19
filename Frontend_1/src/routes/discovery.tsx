@@ -195,7 +195,9 @@ function DiscoveryPage() {
                   <div>
                     <div className="mb-1.5 flex items-center justify-between text-sm">
                       <span className="truncate text-muted-foreground">
-                        Started {new Date(latestRun.started_at).toLocaleString()}
+                        {latestRun.status === "running"
+                          ? "Live counts refresh every 2 seconds"
+                          : `Started ${new Date(latestRun.started_at).toLocaleString()}`}
                       </span>
                       <span className="text-numeric font-medium">{recordProgress}%</span>
                     </div>
@@ -229,6 +231,11 @@ function DiscoveryPage() {
                       </div>
                     ))}
                   </div>
+                  {latestRun.status === "failed" && latestRun.errors.length > 0 ? (
+                    <p className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                      Discovery failed: {latestRun.errors[0]}
+                    </p>
+                  ) : null}
                 </>
               ) : (
                 <div className="py-8 text-sm text-muted-foreground">No discovery runs found yet.</div>
@@ -266,6 +273,9 @@ function DiscoveryPage() {
                             {run.search_frequency} · {run.companies_found} companies · {run.contacts_found} contacts ·{" "}
                             {run.api_calls_used} API calls
                           </p>
+                          {run.status === "failed" && run.errors.length > 0 ? (
+                            <p className="truncate text-xs text-destructive">{run.errors[0]}</p>
+                          ) : null}
                         </div>
                         <StatusBadge status={run.status} />
                       </div>

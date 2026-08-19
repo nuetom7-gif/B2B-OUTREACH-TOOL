@@ -251,7 +251,9 @@ def run_targeted_discovery_job(
         per_page = max(10, min(100, companies_limit))
 
         def _before_search() -> None:
-            used = todays_api_calls_used(db) + (_provider_calls_used(provider_manager) - start_calls)
+            # The session flushes the job's completed calls before this query,
+            # so adding the provider delta here would count those calls twice.
+            used = todays_api_calls_used(db)
             if used >= settings.apollo_daily_call_limit:
                 raise RuntimeError("Apollo daily call limit reached")
 
@@ -261,7 +263,7 @@ def run_targeted_discovery_job(
             organizations = provider_manager.search_organizations(icp, page=page, per_page=per_page)
             job.companies_found += len(organizations)
             job.api_calls_used = _provider_calls_used(provider_manager) - start_calls
-            job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db) - job.api_calls_used)
+            job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db))
             if not organizations:
                 break
 
@@ -282,7 +284,7 @@ def run_targeted_discovery_job(
                 )
                 job.contacts_discovered += len(contact_batch.contacts)
                 job.api_calls_used = _provider_calls_used(provider_manager) - start_calls
-                job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db) - job.api_calls_used)
+                job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db))
                 people = contact_batch.contacts
 
                 org_score = score_organization(icp, organization, people)
@@ -378,6 +380,7 @@ def run_targeted_discovery_job(
                         "recommended_primary_contact": person.recommended_primary_contact,
                         "fallback_contact_used": person.fallback_contact_used,
                         "contact_selection_reason": person.contact_selection_reason,
+                        "discovery_profile": request.profile_name or request.product_segment,
                     }
                     contact, created_contact, merged_fields = upsert_contact_from_discovery(
                         db,
@@ -434,7 +437,7 @@ def run_targeted_discovery_job(
     finally:
         job.ended_at = now_utc()
         job.api_calls_used = max(job.api_calls_used, _provider_calls_used(provider_manager) - start_calls)
-        job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db) - job.api_calls_used)
+        job.quota_remaining = max(0, settings.apollo_daily_call_limit - todays_api_calls_used(db))
         if job.status == "running":
             job.status = "completed"
             job.progress_percent = 100

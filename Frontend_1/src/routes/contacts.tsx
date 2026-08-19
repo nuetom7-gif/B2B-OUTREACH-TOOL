@@ -171,6 +171,23 @@ function ContactsPage() {
       cell: ({ row }) => <span className="whitespace-nowrap text-sm">{row.original.source}</span>,
     },
     {
+      accessorKey: "discovery_profiles",
+      header: "Discovery profile",
+      cell: ({ row }) => (
+        <div className="flex max-w-[220px] flex-wrap gap-1">
+          {row.original.discovery_profiles.length > 0 ? (
+            row.original.discovery_profiles.map((profile) => (
+              <Badge key={profile} variant="secondary" className="text-[10px]">
+                {profile}
+              </Badge>
+            ))
+          ) : (
+            <span className="text-xs text-muted-foreground">not discovered</span>
+          )}
+        </div>
+      ),
+    },
+    {
       accessorKey: "contact_priority",
       header: "Priority",
       cell: ({ row }) => (

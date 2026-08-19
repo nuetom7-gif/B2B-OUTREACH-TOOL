@@ -22,11 +22,17 @@ import type {
 
 type QueryKey = readonly unknown[];
 
-export function useApiQuery<T>(key: QueryKey, path: string, params?: Record<string, unknown>) {
+export function useApiQuery<T>(
+  key: QueryKey,
+  path: string,
+  params?: Record<string, unknown>,
+  refetchInterval?: number,
+) {
   return useQuery({
     queryKey: [...key, params ?? null],
     queryFn: () => apiGet<T>(path, params),
     staleTime: 30_000,
+    refetchInterval,
   });
 }
 
@@ -57,10 +63,10 @@ export const useDashboardStats = () =>
   useApiQuery<BackendDashboardStats>(["dashboard-stats"], "/dashboard/stats");
 
 export const useDiscoveryRuns = () =>
-  useApiQuery<BackendDiscoveryRun[]>(["discovery-runs"], "/discovery/runs");
+  useApiQuery<BackendDiscoveryRun[]>(["discovery-runs"], "/discovery/runs", undefined, 2_000);
 
 export const useDiscoveryStaging = (offset = 0, limit = 50) =>
-  useApiQuery<BackendDiscoveryStagingPage>(["discovery-staging", offset, limit], "/discovery/staging", { offset, limit });
+  useApiQuery<BackendDiscoveryStagingPage>(["discovery-staging", offset, limit], "/discovery/staging", { offset, limit }, 2_000);
 
 export const useDiscoveryStagingDetail = (recordId: number | null) =>
   useQuery({

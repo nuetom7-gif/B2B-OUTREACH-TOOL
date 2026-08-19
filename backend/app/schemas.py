@@ -88,6 +88,7 @@ class ContactRead(BaseModel):
     recommended_primary_contact: bool = False
     fallback_contact_used: bool = False
     contact_selection_reason: str | None = None
+    discovery_profiles: list[str] = Field(default_factory=list)
 
 
 class CampaignCreate(BaseModel):

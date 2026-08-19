@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.discovery.config_loader import load_icp_config
 from app.discovery.repository import todays_api_calls_used
 from app.models.base import (
     Campaign,
@@ -35,13 +36,6 @@ from app.schemas import (
 from app.services.outreach import add_audit, daily_sent_count, ensure_opt_out_line, now_utc, recent_messages
 
 
-DEFAULT_SEGMENT_TARGETS = (
-    "Industrial Vacuum Cleaning Systems",
-    "Warehouse & Storage Solutions",
-    "GFRP Rebar",
-)
-
-
 def _today_start() -> datetime:
     return now_utc().replace(hour=0, minute=0, second=0, microsecond=0)
 
@@ -58,7 +52,12 @@ def _safe_int(value: Any, default: int = 0) -> int:
 def _ensure_daily_target_defaults(db: Session) -> list[DailyLeadTarget]:
     existing = {row.product_segment: row for row in db.execute(select(DailyLeadTarget)).scalars().all()}
     changed = False
-    for segment in DEFAULT_SEGMENT_TARGETS:
+    # Configuration is the only portfolio authority. Profiles can share a
+    # division, so retain first-seen order while creating one target per division.
+    enabled_segments = list(
+        dict.fromkeys(profile.product_name for profile in load_icp_config() if profile.enabled)
+    )
+    for segment in enabled_segments:
         if segment not in existing:
             db.add(
                 DailyLeadTarget(

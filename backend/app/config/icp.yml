@@ -24,11 +24,20 @@ business_divisions:
   - name: Machine Tool Manufacturing
     defaults:
       <<: *industry_pack_defaults
+      description: CNC turning and precision machine-tool solutions for component manufacturers.
+      products: [MGT-75, MGT-100, MGT-150, MXL-160, MXL-200, MXL-750, MXL-1000, MXL-1500, SLD-10, SLD-10 ESM, SLD-20, SLD-32]
+      portfolio_applications: [auto components, brass components, jewellery components, medical implants, precision engineering, CNC machining, high precision manufacturing]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Plant Head, Plant Manager, Factory Manager, Production Head, Production Manager, Manufacturing Head, Operations Head]
+        tier_3: [Maintenance Manager, Engineering Manager, Engineering Head, Projects Manager, Warehouse Manager, Facility Manager, Supply Chain Manager]
+        tier_4: [Owner, Founder, Managing Director, CEO, Director, General Manager]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [Machine Tool Manufacturing]
       email_template_mapping: {default: machine_tool_intro}
     industry_packs:
-      - {name: Automotive Components, apollo_industries: [Automotive Components], related_industries: [Precision Engineering, CNC Job Shops], broad_industries: [automotive, manufacturing, engineering], company_keywords: [CNC, machining, precision components, automotive components], process_keywords: [turning, grinding, machining], negative_keywords: [dealer, distributor]}
-      - {name: Precision Engineering, apollo_industries: [Precision Engineering], related_industries: [CNC Job Shops, Machine Builders], broad_industries: [precision, engineering, manufacturing], company_keywords: [precision engineering, CNC, precision components], process_keywords: [machining, grinding, polishing], negative_keywords: [supplier, distributor]}
+      - {name: Automotive Components, apollo_industries: [Automotive Components], related_industries: [Precision Engineering, CNC Job Shops], broad_industries: [automotive, manufacturing, engineering], company_keywords: [CNC, machining, precision components, automotive components, CNC turning, engineering components], process_keywords: [turning, grinding, machining], negative_keywords: [dealer, distributor]}
+      - {name: Precision Engineering, apollo_industries: [Precision Engineering], related_industries: [CNC Job Shops, Machine Builders], broad_industries: [precision, engineering, manufacturing], company_keywords: [precision engineering, CNC, precision components, precision machining, contract manufacturing], process_keywords: [machining, grinding, polishing], negative_keywords: [supplier, distributor]}
       - {name: Aerospace, apollo_industries: [Aerospace Manufacturers], related_industries: [Precision Engineering, CNC Job Shops], broad_industries: [aerospace, engineering, manufacturing], company_keywords: [aerospace, CNC, precision components], process_keywords: [precision machining, grinding, polishing], negative_keywords: [dealer, distributor]}
       - {name: Medical Device Manufacturing, apollo_industries: [Medical Device Manufacturers], related_industries: [Precision Engineering, Pharmaceutical Manufacturers], broad_industries: [medical, manufacturing, engineering], company_keywords: [medical device, medical implants, precision components], process_keywords: [CNC, polishing, cleanroom], negative_keywords: [supplier, distributor]}
       - {name: Jewellery Manufacturing, apollo_industries: [Jewellery Manufacturers], related_industries: [Precision Engineering, CNC Job Shops], broad_industries: [jewellery, manufacturing, precision], company_keywords: [jewellery, jewelry, CNC, precision], process_keywords: [polishing, engraving, machining], negative_keywords: [retailer, dealer]}
@@ -39,6 +48,9 @@ business_divisions:
   - name: Industrial Vacuum Cleaning Systems
     defaults:
       <<: *industry_pack_defaults
+      description: Industrial fume, dust, mist and wet/dry cleaning solutions for manufacturing facilities.
+      products: [YT-200, YT-300, HE Series, Model 50 CT, SC Series, Vacklin Wet & Dry Vacuum Cleaners, Dust Extractors, Welding Flux Recovery Units, Mobile Sump Cleaners, Mist Extractor ME-150]
+      portfolio_applications: [fume extraction, industrial cleaning, dust extraction, welding, manufacturing, shop-floor cleaning, oil and coolant sump cleaning]
       product_recommendations: [Industrial Vacuum Cleaning Systems]
       email_template_mapping: {default: industrial_vacuum_intro}
     industry_packs:
@@ -59,17 +71,26 @@ business_divisions:
   - name: Warehouse & Storage Solutions
     defaults:
       <<: *industry_pack_defaults
+      description: Godrej & Boyce warehouse, storage and material handling dealership solutions.
+      products: [Selective Pallet Racking, Double Deep Racking, Drive-In Racking, Mobile Racking, Shuttle Racking, Clad Rack Warehouses, Titan Heavy-Duty Shelving, Lite Boltless Shelving, Mobistack Neo, Mezzanine Systems, Boltless Rack Shelving, HDPE Stackable Pallets, Rackable Pallets, Industrial Plastic Crates, Industrial Goods Lifts, Scissor Lifts, Hand Pallet Trucks, Truck Loading Conveyors, Telescopic Conveyors, Mobile Belt Conveyors, Semi-Electric Stackers]
+      portfolio_applications: [pallet racking, shelving, warehouse storage, material handling, warehouse automation, pallet movement, industrial crates]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Warehouse Manager, Warehouse Head, Logistics Manager, Logistics Head, Supply Chain Manager, Supply Chain Head, Operations Manager, Operations Head, Plant Head, Factory Manager, Materials Manager, Stores Manager, Warehouse Operations Manager]
+        tier_3: [Maintenance Manager, Engineering Manager, Projects Manager, Facility Manager]
+        tier_4: [Owner, Founder, Managing Director, CEO, Director, General Manager]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [Warehouse & Storage Solutions]
       email_template_mapping: {default: warehouse_storage_intro}
     industry_packs:
       - {name: Retail, apollo_industries: [Retail], related_industries: [Distribution Centres, E-commerce], broad_industries: [retail, storage, inventory], company_keywords: [warehouse, inventory, storage, racking], process_keywords: [fulfillment, material handling], negative_keywords: [small shop, restaurant]}
       - {name: E-commerce, apollo_industries: [E-commerce], related_industries: [3PL Logistics, Distribution Centres], broad_industries: [ecommerce, fulfillment, logistics], company_keywords: [warehouse, fulfillment, inventory, distribution], process_keywords: [pick pack, dispatch, material handling], negative_keywords: [retailer, marketplace seller]}
       - {name: 3PL Logistics, apollo_industries: [3PL Logistics], related_industries: [Warehousing, Distribution Centres], broad_industries: [logistics, warehouse, supply chain], company_keywords: [3PL, logistics, warehouse, supply chain], process_keywords: [fulfillment, storage, material handling], negative_keywords: [courier franchise]}
-      - {name: Warehousing, apollo_industries: [Warehousing], related_industries: [Industrial Warehouses, Distribution Centres], broad_industries: [warehouse, storage, logistics], company_keywords: [warehouse, industrial warehouse, racking, storage], process_keywords: [inventory, material handling, fulfillment], negative_keywords: [residential storage]}
+      - {name: Warehousing, apollo_industries: [Warehousing], related_industries: [Industrial Warehouses, Distribution Centres], broad_industries: [warehouse, storage, logistics], company_keywords: [warehouse, industrial warehouse, racking, shelving, pallet, storage], process_keywords: [inventory, material handling, fulfillment], negative_keywords: [residential storage]}
       - {name: Cold Storage, apollo_industries: [Cold Storage], related_industries: [Pharmaceutical Manufacturing, FMCG], broad_industries: [cold chain, storage, logistics], company_keywords: [cold storage, warehouse, distribution], process_keywords: [storage, inventory, material handling], negative_keywords: [restaurant, retailer]}
       - {name: Manufacturing Plants, apollo_industries: [Manufacturing Plants], related_industries: [Industrial Warehouses, Automotive Manufacturing], broad_industries: [manufacturing, factory, warehouse], company_keywords: [factory, manufacturing, warehouse, inventory], process_keywords: [material handling, storage, racking], negative_keywords: [retailer]}
       - {name: Mechanical & Industrial Engineering, apollo_industries: [Mechanical Engineering, Industrial Engineering], related_industries: [Industrial Automation, Manufacturing Plants], broad_industries: [engineering, industrial, manufacturing], company_keywords: [industrial engineering, factory, material handling], process_keywords: [storage, production, inventory], negative_keywords: [supplier, distributor]}
-      - {name: Industrial Automation, apollo_industries: [Industrial Automation], related_industries: [Mechanical & Industrial Engineering, Manufacturing Plants], broad_industries: [automation, warehouse, industrial], company_keywords: [industrial automation, warehouse, racking], process_keywords: [material handling, inventory, storage], negative_keywords: [dealer, distributor]}
+      - {name: Industrial Automation, apollo_industries: [Industrial Automation], related_industries: [Mechanical & Industrial Engineering, Manufacturing Plants], broad_industries: [automation, warehouse, industrial], company_keywords: [industrial automation, warehouse automation, warehouse, racking], process_keywords: [material handling, inventory, storage], negative_keywords: [dealer, distributor]}
       - {name: Automotive Manufacturing, apollo_industries: [Automotive Manufacturing], related_industries: [Manufacturing Plants, Automotive Warehouses], broad_industries: [automotive, manufacturing, warehouse], company_keywords: [automotive, factory, warehouse, inventory], process_keywords: [material handling, storage, production], negative_keywords: [dealer, showroom]}
       - {name: Pharmaceutical Manufacturing, apollo_industries: [Pharmaceutical Manufacturing], related_industries: [Cold Storage, Medical Devices], broad_industries: [pharma, warehouse, logistics], company_keywords: [pharmaceutical, warehouse, inventory], process_keywords: [cold chain, storage, compliance], negative_keywords: [retailer, pharmacy]}
       - {name: FMCG, apollo_industries: [FMCG], related_industries: [Distribution Centres, Cold Storage], broad_industries: [FMCG, distribution, logistics], company_keywords: [FMCG, distribution, warehouse, inventory], process_keywords: [fulfillment, storage, dispatch], negative_keywords: [local shop, retailer]}
@@ -78,14 +99,23 @@ business_divisions:
   - name: Fabrication & Metal Pallets
     defaults:
       <<: *industry_pack_defaults
+      description: Heavy-duty metal pallets, industrial bins, steel crates and structural fabrication.
+      products: [Heavy-Duty Metal Pallets, Export Metal Pallets, Rackable Metal Pallets, Custom Metal Fabrication, Steel Bins, Steel Crates, Industrial Handling Bins, Structural Fabrication]
+      portfolio_applications: [industrial material handling, metal pallet storage, industrial bins, steel crates, structural fabrication]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Plant Head, Plant Manager, Production Manager, Production Head, Manufacturing Head, Operations Manager, Operations Head]
+        tier_3: [Engineering Head, Engineering Manager, Supply Chain Manager, Warehouse Manager, Facility Manager]
+        tier_4: [Owner, Founder, Managing Director, CEO, Director, General Manager]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [Fabrication & Metal Pallets]
       email_template_mapping: {default: metal_pallet_intro}
     industry_packs:
-      - {name: Automotive, apollo_industries: [Automotive], related_industries: [Automotive Components, Manufacturing], broad_industries: [automotive, manufacturing, logistics], company_keywords: [automotive, metal pallet, material handling], process_keywords: [fabrication, welding, storage], negative_keywords: [dealer, showroom]}
+      - {name: Automotive, apollo_industries: [Automotive], related_industries: [Automotive Components, Manufacturing], broad_industries: [automotive, manufacturing, logistics], company_keywords: [automotive, automotive manufacturing, auto components, metal pallet, material handling], process_keywords: [fabrication, welding, storage], negative_keywords: [dealer, showroom]}
       - {name: Heavy Engineering, apollo_industries: [Heavy Engineering], related_industries: [Steel Plants, Machine Builders], broad_industries: [heavy engineering, fabrication, industrial], company_keywords: [heavy engineering, heavy fabrication, steel fabrication], process_keywords: [welding, fabrication, material handling], negative_keywords: [supplier, distributor]}
-      - {name: Steel Plants, apollo_industries: [Steel Plants], related_industries: [Heavy Engineering, Fabrication], broad_industries: [steel, manufacturing, industrial], company_keywords: [steel plant, steel fabrication, industrial pallet], process_keywords: [fabrication, material handling, storage], negative_keywords: [retailer]}
+      - {name: Steel Plants, apollo_industries: [Steel Plants], related_industries: [Heavy Engineering, Fabrication], broad_industries: [steel, manufacturing, industrial], company_keywords: [steel plant, steel fabrication, steel products, industrial pallet, steel bins, industrial crates], process_keywords: [fabrication, material handling, storage], negative_keywords: [retailer]}
       - {name: Logistics, apollo_industries: [Logistics], related_industries: [Warehousing, Distribution Centres], broad_industries: [logistics, storage, material handling], company_keywords: [logistics, metal pallet, material handling], process_keywords: [storage, dispatch, warehouse], negative_keywords: [courier franchise]}
-      - {name: Manufacturing, apollo_industries: [Manufacturing], related_industries: [Industrial Warehouses, Heavy Engineering], broad_industries: [manufacturing, factory, industrial], company_keywords: [manufacturing, industrial pallet, factory], process_keywords: [material handling, storage, fabrication], negative_keywords: [retailer]}
+      - {name: Manufacturing, apollo_industries: [Manufacturing], related_industries: [Industrial Warehouses, Heavy Engineering], broad_industries: [manufacturing, factory, industrial], company_keywords: [manufacturing, industrial fabrication, sheet metal, industrial pallet, industrial bins, factory], process_keywords: [material handling, storage, fabrication], negative_keywords: [retailer]}
       - {name: Industrial Warehouses, apollo_industries: [Industrial Warehouses], related_industries: [Warehousing, Logistics], broad_industries: [warehouse, storage, industrial], company_keywords: [industrial warehouse, metal pallet, racking], process_keywords: [storage, material handling, inventory], negative_keywords: [residential storage]}
       - {name: EPC, apollo_industries: [EPC], related_industries: [Heavy Engineering, Machine Builders], broad_industries: [EPC, engineering, construction], company_keywords: [EPC, fabrication, material handling], process_keywords: [project execution, storage, fabrication], negative_keywords: [supplier, distributor]}
       - {name: Machine Builders, apollo_industries: [Machine Builders], related_industries: [Heavy Engineering, Industrial Automation], broad_industries: [machine builder, OEM, engineering], company_keywords: [machine builder, OEM, metal pallet], process_keywords: [fabrication, assembly, material handling], negative_keywords: [dealer, distributor]}
@@ -93,14 +123,23 @@ business_divisions:
   - name: GFRP Rebar
     defaults:
       <<: *industry_pack_defaults
+      description: Corrosion-resistant GFRP reinforcement solutions for civil and infrastructure projects.
+      products: [GFRP Rebar, Standard GFRP Rebar, Customised Bend Elements, GFRP Reinforcement Solutions, Multi-spindler Fourmatic Rebar Manufacturing Machines]
+      portfolio_applications: [roads, bridges, flyovers, infrastructure, concrete structures, marine structures, government infrastructure projects]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Project Director, Project Manager, Civil Engineering Head, Construction Head, Infrastructure Head, Operations Head, Contracts Manager]
+        tier_3: [Engineering Head, Engineering Manager, Maintenance Manager, Facility Manager]
+        tier_4: [Managing Director, Director, Owner, Founder, CEO, General Manager, Business Development Head]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [GFRP Rebar]
       email_template_mapping: {default: gfrp_rebar_intro}
     industry_packs:
       - {name: Government & Public Sector Contractors, apollo_industries: [Civil Engineering, Construction], related_industries: [EPC Contractors, Infrastructure Contractors], broad_industries: [government, public sector, construction], company_keywords: [government contractor, government contracting, public sector contracting, federal contractor, state contractor, municipal contractor], process_keywords: [procurement, tender, project execution, civil works], negative_keywords: [supplier, material distributor]}
-      - {name: EPC Contractors, apollo_industries: [EPC Contractors], related_industries: [Infrastructure Contractors, Industrial Construction], broad_industries: [EPC, infrastructure, construction], company_keywords: [EPC, civil engineering, construction], process_keywords: [reinforcement, procurement, project execution], negative_keywords: [supplier, material distributor]}
-      - {name: Infrastructure Contractors, apollo_industries: [Infrastructure Contractors], related_industries: [EPC Contractors, Highway Construction], broad_industries: [infrastructure, civil engineering, construction], company_keywords: [infrastructure, public infrastructure, government contractor], process_keywords: [reinforcement, civil works], negative_keywords: [supplier, material distributor]}
+      - {name: EPC Contractors, apollo_industries: [EPC Contractors], related_industries: [Infrastructure Contractors, Industrial Construction], broad_industries: [EPC, infrastructure, construction], company_keywords: [EPC, civil engineering, construction, precast concrete, concrete construction], process_keywords: [reinforcement, procurement, project execution], negative_keywords: [supplier, material distributor]}
+      - {name: Infrastructure Contractors, apollo_industries: [Infrastructure Contractors], related_industries: [EPC Contractors, Highway Construction], broad_industries: [infrastructure, civil engineering, construction], company_keywords: [infrastructure, infrastructure development, public infrastructure, government contractor, structural engineering], process_keywords: [reinforcement, civil works], negative_keywords: [supplier, material distributor]}
       - {name: Bridge Construction, apollo_industries: [Bridge Construction], related_industries: [Infrastructure Contractors, Highway Construction], broad_industries: [bridge, infrastructure, construction], company_keywords: [bridge construction, infrastructure, civil engineering], process_keywords: [reinforcement, concrete, civil works], negative_keywords: [supplier, material distributor]}
-      - {name: Highway Construction, apollo_industries: [Highway Construction], related_industries: [Infrastructure Contractors, Metro Rail], broad_industries: [highway, infrastructure, construction], company_keywords: [highway, NHAI, road construction], process_keywords: [reinforcement, civil works, concrete], negative_keywords: [supplier, material distributor]}
+      - {name: Highway Construction, apollo_industries: [Highway Construction], related_industries: [Infrastructure Contractors, Metro Rail], broad_industries: [highway, infrastructure, construction], company_keywords: [highway, NHAI, NHAI contractor, MSRDC contractor, road construction, road contractor], process_keywords: [reinforcement, civil works, concrete], negative_keywords: [supplier, material distributor]}
       - {name: Metro Rail, apollo_industries: [Metro Rail], related_industries: [Infrastructure Contractors, Tunnel Projects], broad_industries: [metro rail, infrastructure, construction], company_keywords: [metro rail, public infrastructure, civil engineering], process_keywords: [reinforcement, station construction], negative_keywords: [supplier, material distributor]}
       - {name: Tunnel Projects, apollo_industries: [Tunnel Projects], related_industries: [Metro Rail, Infrastructure Contractors], broad_industries: [tunnel, infrastructure, construction], company_keywords: [tunnel, civil engineering, construction], process_keywords: [reinforcement, excavation], negative_keywords: [supplier, material distributor]}
       - {name: Water Treatment, apollo_industries: [Water Treatment], related_industries: [EPC Contractors, Infrastructure Contractors], broad_industries: [water treatment, infrastructure, construction], company_keywords: [water treatment, civil engineering, construction], process_keywords: [reinforcement, treatment plant], negative_keywords: [supplier, material distributor]}
@@ -110,12 +149,21 @@ business_divisions:
   - name: Multi-Machine Manufacturing
     defaults:
       <<: *industry_pack_defaults
+      description: Manufacturing machinery for metal forming, food and agro processing, oil extraction and workshops.
+      products: [Hydraulic Press, Pulveriser Machine, Dry Red Chilli Grinder, Rotary Oil Mill, Radial Drill Machines, 25mm Radial Drill, 38mm All-Geared Auto-Feed Radial Drill, Wooden Ghani, Kachi Ghani, Stainless Steel Ghani]
+      portfolio_applications: [metal forming, spice processing, food processing, oil extraction, cold pressed oil, engineering workshops]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Plant Manager, Production Manager, Manufacturing Head, Operations Manager]
+        tier_3: [Engineering Head, Engineering Manager, Maintenance Manager]
+        tier_4: [Owner, Founder, Managing Director, CEO, Director, General Manager]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [Multi-Machine Manufacturing]
       email_template_mapping: {default: multi_machine_intro}
     industry_packs:
       - {name: Rice Mills, apollo_industries: [Rice Mills], related_industries: [Food Processing, Machine Shops], broad_industries: [rice mill, processing, manufacturing], company_keywords: [rice mill, processing, industrial machinery], process_keywords: [pulveriser, material handling], negative_keywords: [retailer]}
-      - {name: Oil Mills, apollo_industries: [Oil Mills], related_industries: [Food Processing, Machine Shops], broad_industries: [oil mill, processing, manufacturing], company_keywords: [oil mill, industrial machinery], process_keywords: [processing, hydraulic press], negative_keywords: [retailer]}
-      - {name: Pulveriser Plants, apollo_industries: [Pulveriser Plants], related_industries: [Machine Shops, Workshops], broad_industries: [pulveriser, processing, machinery], company_keywords: [pulveriser, industrial machinery, manufacturing], process_keywords: [grinding, processing, hydraulic press], negative_keywords: [dealer, distributor]}
+      - {name: Oil Mills, apollo_industries: [Oil Mills], related_industries: [Food Processing, Machine Shops], broad_industries: [oil mill, processing, manufacturing], company_keywords: [oil mill, oil extraction, cold pressed oil, kachi ghani, industrial machinery], process_keywords: [processing, hydraulic press], negative_keywords: [retailer]}
+      - {name: Pulveriser Plants, apollo_industries: [Pulveriser Plants], related_industries: [Machine Shops, Workshops], broad_industries: [pulveriser, processing, machinery], company_keywords: [pulveriser, spice processing, chilli grinder, food processing machinery, industrial machinery, manufacturing], process_keywords: [grinding, processing, hydraulic press], negative_keywords: [dealer, distributor]}
       - {name: Workshops, apollo_industries: [Workshops], related_industries: [Machine Shops, Fabricators], broad_industries: [workshop, engineering, manufacturing], company_keywords: [workshop, machine shop, manufacturing], process_keywords: [machining, welding, grinding], negative_keywords: [training, retailer]}
       - {name: Machine Shops, apollo_industries: [Machine Shops], related_industries: [CNC Job Shops, Workshops], broad_industries: [machine shop, machining, engineering], company_keywords: [machine shop, radial drill, CNC], process_keywords: [machining, turning, grinding], negative_keywords: [dealer, distributor]}
       - {name: Engineering Colleges, apollo_industries: [Engineering Colleges], related_industries: [Machine Shops, Workshops], broad_industries: [engineering, education, machinery], company_keywords: [engineering college, machine shop, workshop], process_keywords: [hydraulic press, machining, fabrication], negative_keywords: [school, coaching]}
@@ -126,12 +174,21 @@ business_divisions:
   - name: Cool Care Manufacturing
     defaults:
       <<: *industry_pack_defaults
+      description: Industrial HVAC, cooling, air handling and duct manufacturing solutions.
+      products: [Air Cooling Projects, Air Conditioning Systems, HVAC Systems, AHU Systems, Air Handling Units, HVAC Ductwork, Custom Duct Manufacturing]
+      portfolio_applications: [industrial HVAC, air cooling, air handling, duct manufacturing, ventilation, clean rooms, MEP projects]
+      decision_maker_titles:
+        tier_1: [Purchase Manager, Procurement Manager, Purchase Head, Procurement Head]
+        tier_2: [Facility Manager, Facilities Head, Engineering Manager, Engineering Head, Maintenance Manager, Maintenance Head, Project Manager, Project Head, Plant Head, Operations Head]
+        tier_3: [Projects Manager, Warehouse Manager, Supply Chain Manager]
+        tier_4: [Owner, Founder, Managing Director, CEO, Director, General Manager]
+        tier_5: [Manager, Executive, Administrator, Office Manager, HR Manager, Sales Manager, Business Development Manager, Customer Support, Reception, Executive Assistant]
       product_recommendations: [Cool Care Manufacturing]
       email_template_mapping: {default: cool_care_intro}
     industry_packs:
-      - {name: Manufacturing Plants, apollo_industries: [Manufacturing Plants], related_industries: [Mechanical or Industrial Engineering, Industrial Automation], broad_industries: [manufacturing, factory, industrial], company_keywords: [HVAC, industrial cooling, manufacturing plant], process_keywords: [ventilation, cooling system, facility management], negative_keywords: [residential installer]}
+      - {name: Manufacturing Plants, apollo_industries: [Manufacturing Plants], related_industries: [Mechanical or Industrial Engineering, Industrial Automation], broad_industries: [manufacturing, factory, industrial], company_keywords: [HVAC, air handling unit, AHU, industrial cooling, industrial ventilation, manufacturing plant], process_keywords: [ventilation, cooling system, facility management], negative_keywords: [residential installer]}
       - {name: Retail, apollo_industries: [Retail], related_industries: [Commercial Buildings, Property Management], broad_industries: [retail, commercial, facility management], company_keywords: [HVAC, air conditioning, retail], process_keywords: [ventilation, building services], negative_keywords: [small shop]}
-      - {name: Commercial Buildings, apollo_industries: [Commercial Real Estate], related_industries: [Property Management, Construction], broad_industries: [commercial, building, facility management], company_keywords: [commercial HVAC, building services, HVAC], process_keywords: [ventilation, MEP, facility management], negative_keywords: [residential]}
+      - {name: Commercial Buildings, apollo_industries: [Commercial Real Estate], related_industries: [Property Management, Construction], broad_industries: [commercial, building, facility management], company_keywords: [commercial HVAC, HVAC contractor, HVAC projects, building services, HVAC duct, duct manufacturing, HVAC], process_keywords: [ventilation, MEP, facility management], negative_keywords: [residential]}
       - {name: Hospitals & Healthcare, apollo_industries: [Hospitals], related_industries: [Healthcare, Construction], broad_industries: [hospital, healthcare, facility management], company_keywords: [HVAC, clean room, hospital], process_keywords: [ventilation, cooling system, MEP], negative_keywords: [residential]}
       - {name: Hotels & Hospitality, apollo_industries: [Hospitality], related_industries: [Commercial Buildings, Property Management], broad_industries: [hospitality, hotel, facility management], company_keywords: [HVAC, hotel, air conditioning], process_keywords: [ventilation, cooling system, facility management], negative_keywords: [residential]}
       - {name: Warehouses, apollo_industries: [Warehousing], related_industries: [Industrial Automation, Manufacturing Plants], broad_industries: [warehouse, industrial, logistics], company_keywords: [industrial HVAC, warehouse, ventilation], process_keywords: [cooling system, ventilation, facility management], negative_keywords: [residential]}

@@ -49,6 +49,9 @@ class ICPProductLine:
     manufacturing_cluster_preference: str | None = None
     product_recommendations: list[str] = field(default_factory=list)
     email_template_mapping: dict[str, Any] = field(default_factory=dict)
+    description: str | None = None
+    products: list[str] = field(default_factory=list)
+    portfolio_applications: list[str] = field(default_factory=list)
 
     @property
     def search_profile_name(self) -> str:

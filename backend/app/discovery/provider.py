@@ -29,6 +29,8 @@ class DiscoveryProvider(ABC):
     def enrich_person(
         self,
         contact: DiscoveryContactCandidate,
+        *,
+        reveal_phone_number: bool = True,
     ) -> DiscoveryContactCandidate | None:
         """Return enriched data for one selected contact, when supported."""
         return None

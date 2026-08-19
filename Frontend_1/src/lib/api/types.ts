@@ -222,6 +222,7 @@ export interface BackendContact {
   recommended_primary_contact: boolean;
   fallback_contact_used: boolean;
   contact_selection_reason: string | null;
+  discovery_profiles: string[];
 }
 
 export interface BackendContactDetail extends BackendContact {

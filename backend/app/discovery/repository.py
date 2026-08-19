@@ -244,7 +244,13 @@ def todays_api_calls_used(db: Session) -> int:
         select(func.coalesce(func.sum(DiscoveryRun.api_calls_used), 0)).where(DiscoveryRun.started_at >= start)
     ) or 0
     job_calls = db.scalar(
-        select(func.coalesce(func.sum(DiscoveryJob.api_calls_used), 0)).where(DiscoveryJob.started_at >= start)
+        # Profile jobs copy their usage from a DiscoveryRun after completion.
+        # Count only standalone custom jobs here so one Apollo call is never
+        # charged twice against the local daily safety limit.
+        select(func.coalesce(func.sum(DiscoveryJob.api_calls_used), 0)).where(
+            DiscoveryJob.started_at >= start,
+            DiscoveryJob.result_json.not_like('%"run_id"%'),
+        )
     ) or 0
     return run_calls + job_calls
 

@@ -4,6 +4,7 @@ from dataclasses import asdict
 import json
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -28,6 +29,7 @@ from app.discovery.repository import (
     todays_api_calls_used,
 )
 from app.discovery.types import DiscoveryContext, ICPProductLine, ProviderOrganization, ProviderPerson
+from app.models.base import Contact
 from app.services.discovery_merge import (
     find_blocked_contact_for_discovery,
     upsert_company_from_discovery,
@@ -52,6 +54,16 @@ def _has_company_identifier(organization: ProviderOrganization) -> bool:
         or raw.get("linkedin_url")
         or raw.get("linkedin_url_normalized")
     )
+
+
+def _crm_contact_has_phone(db: Session, apollo_person_id: str | None) -> bool:
+    """Avoid paying to reveal a phone number the CRM already has."""
+    if not str(apollo_person_id or "").strip():
+        return False
+    phone = db.execute(
+        select(Contact.phone).where(Contact.apollo_person_id == apollo_person_id)
+    ).scalar_one_or_none()
+    return bool(str(phone or "").strip())
 
 
 def _qualification_payload(
@@ -264,9 +276,17 @@ class DiscoveryEngine:
         used_today = todays_api_calls_used(self.db)
         context.quota_remaining = max(0, self.settings.apollo_daily_call_limit - used_today - context.api_calls_used)
 
+    def _publish_progress(self, run, context: DiscoveryContext) -> None:
+        """Make an active run visible to the monitoring UI between checkpoints."""
+        run.api_calls_used = context.api_calls_used
+        run.quota_remaining = context.quota_remaining
+        self.db.commit()
+
     def run_product_line(self, icp: ICPProductLine) -> dict:
         run = create_run(self.db, icp)
         context = DiscoveryContext(product_line=icp, run_id=run.id)
+        # The background worker needs this row committed before the browser can monitor it.
+        self._publish_progress(run, context)
         try:
             company_records: list[tuple[ProviderOrganization, object, ContactDiscoveryBatch, list[object]]] = []
             organization_scores = []
@@ -358,6 +378,7 @@ class DiscoveryEngine:
                             company_records.append(
                                 (organization, org_record, ContactDiscoveryBatch(organization=organization), [])
                             )
+                            self._publish_progress(run, context)
                             continue
                         if confidence_result["confidence_band"] == "Low Relevance":
                             strategy_metrics[strategy.name]["companies_filtered"] += 1
@@ -367,6 +388,7 @@ class DiscoveryEngine:
                             org_record.reason_category = "low_discovery_confidence"
                             org_record.sync_status = "rejected"
                             company_records.append((organization, org_record, ContactDiscoveryBatch(organization=organization), []))
+                            self._publish_progress(run, context)
                             continue
                         contact_batch, person_records = self._collect_people_for_org(icp, organization, run, context)
                         primary = contact_batch.primary_contact
@@ -376,7 +398,12 @@ class DiscoveryEngine:
                         ):
                             enrichment_attempted += 1
                             self._ensure_quota(context)
-                            enriched = self.provider_manager.enrich_person(primary)
+                            enriched = self.provider_manager.enrich_person(
+                                primary,
+                                reveal_phone_number=not _crm_contact_has_phone(
+                                    self.db, primary.provider_person_id
+                                ),
+                            )
                             self._increment_calls(context)
                             if enriched is None:
                                 enrichment_no_match += 1
@@ -394,6 +421,7 @@ class DiscoveryEngine:
                         )
                         org_record.warning_message = contact_batch.zero_contact_reason
                         company_records.append((organization, org_record, contact_batch, person_records))
+                        self._publish_progress(run, context)
                     if len(organizations) < per_page:
                         break
                     org_page += 1
@@ -401,6 +429,7 @@ class DiscoveryEngine:
             for organization, org_record, contact_batch, person_records in company_records:
                 if org_record.final_status == "filtered" or org_record.reason_category == "missing_company_identifier":
                     run.companies_skipped += 1
+                    self._publish_progress(run, context)
                     continue
                 people = contact_batch.contacts
                 org_record.qualification_input_json = _json_payload(
@@ -595,6 +624,7 @@ class DiscoveryEngine:
                         "recommended_primary_contact": person.recommended_primary_contact,
                         "fallback_contact_used": person.fallback_contact_used,
                         "contact_selection_reason": person.contact_selection_reason,
+                        "discovery_profile": icp.search_profile_name,
                     }
                     contact, created_contact, merged_contact_fields = upsert_contact_from_discovery(
                         self.db,
@@ -654,6 +684,8 @@ class DiscoveryEngine:
                         run.contacts_updated += 1
                     else:
                         run.contacts_skipped += 1
+
+                self._publish_progress(run, context)
 
             summary = summarize_qualification_results(
                 organization_scores,

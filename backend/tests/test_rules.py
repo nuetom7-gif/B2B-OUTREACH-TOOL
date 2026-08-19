@@ -19,7 +19,8 @@ os.environ.setdefault("WRITE_API_KEY", "test-key")
 from app.api import routes
 from app.db import session as db_session
 from app.main import app
-from app.models.base import Base, Campaign, Company, CompanyProductFit, Contact, Mailbox, Message
+from app.models.base import Base, Campaign, Company, CompanyProductFit, Contact, DailyLeadTarget, Mailbox, Message
+from app.services.automation import list_daily_targets
 
 
 class OutreachRulesTest(TestCase):
@@ -197,3 +198,84 @@ class OutreachRulesTest(TestCase):
         self.assertIn("product_fit", rows[0])
         self.assertIn("Industrial Vacuum Cleaning Systems", rows[1])
         self.assertIn("Warehouse & Storage Solutions", rows[1])
+
+    def test_apollo_phone_webhook_updates_the_matching_contact_idempotently(self):
+        _, contact_id, _, _ = self._seed_contact()
+        with self.test_sessionmaker() as session:
+            contact = session.get(Contact, contact_id)
+            contact.apollo_person_id = "apollo-phone-1"
+            session.commit()
+
+        original_secret = routes.settings.apollo_phone_webhook_secret
+        routes.settings.apollo_phone_webhook_secret = "webhook-test-secret"
+        try:
+            payload = {"person": {"id": "apollo-phone-1", "phone_numbers": [{"sanitized_number": "+919876543210"}]}}
+            with self._client() as client:
+                response = client.post("/webhooks/apollo/phone?token=webhook-test-secret", json=payload)
+                repeated = client.post("/webhooks/apollo/phone?token=webhook-test-secret", json=payload)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["status"], "updated")
+            self.assertEqual(repeated.status_code, 200)
+            self.assertEqual(repeated.json()["status"], "unchanged")
+            with self.test_sessionmaker() as session:
+                self.assertEqual(session.get(Contact, contact_id).phone, "+919876543210")
+        finally:
+            routes.settings.apollo_phone_webhook_secret = original_secret
+
+    def test_apollo_phone_webhook_preserves_an_existing_phone_number(self):
+        _, contact_id, _, _ = self._seed_contact()
+        with self.test_sessionmaker() as session:
+            contact = session.get(Contact, contact_id)
+            contact.apollo_person_id = "apollo-phone-existing"
+            contact.phone = "+911112223333"
+            session.commit()
+
+        original_secret = routes.settings.apollo_phone_webhook_secret
+        routes.settings.apollo_phone_webhook_secret = "webhook-test-secret"
+        try:
+            payload = {"person": {"id": "apollo-phone-existing", "phone_numbers": [{"sanitized_number": "+919876543210"}]}}
+            with self._client() as client:
+                response = client.post("/webhooks/apollo/phone?token=webhook-test-secret", json=payload)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["reason"], "existing_phone_preserved")
+            with self.test_sessionmaker() as session:
+                self.assertEqual(session.get(Contact, contact_id).phone, "+911112223333")
+        finally:
+            routes.settings.apollo_phone_webhook_secret = original_secret
+
+    def test_daily_targets_follow_enabled_configuration_without_replacing_existing_rows(self):
+        with self.test_sessionmaker() as session:
+            session.add(
+                DailyLeadTarget(
+                    product_segment="Industrial Vacuum Cleaning Systems",
+                    target_leads_per_day=17,
+                    companies_per_run=9,
+                    contacts_per_company=3,
+                    max_emails_per_batch=11,
+                    active=False,
+                )
+            )
+            session.commit()
+
+            targets = list_daily_targets(session)
+            repeated_targets = list_daily_targets(session)
+
+            self.assertEqual(len(targets), 7)
+            self.assertEqual(len(repeated_targets), 7)
+            self.assertEqual({target.product_segment for target in targets}, {
+                "Machine Tool Manufacturing",
+                "Industrial Vacuum Cleaning Systems",
+                "Warehouse & Storage Solutions",
+                "Fabrication & Metal Pallets",
+                "GFRP Rebar",
+                "Multi-Machine Manufacturing",
+                "Cool Care Manufacturing",
+            })
+            existing = next(target for target in repeated_targets if target.product_segment == "Industrial Vacuum Cleaning Systems")
+            self.assertEqual(existing.target_leads_per_day, 17)
+            self.assertEqual(existing.companies_per_run, 9)
+            self.assertEqual(existing.contacts_per_company, 3)
+            self.assertEqual(existing.max_emails_per_batch, 11)
+            self.assertFalse(existing.active)

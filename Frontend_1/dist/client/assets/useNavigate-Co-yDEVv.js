@@ -1,0 +1,1 @@
+import{V as e,W as t}from"./hooks-CHrHKyIN.js";import{t as n}from"./useRouter-BKLfhVJ5.js";var r=t(e(),1);function i(e){let t=n();return r.useCallback(n=>t.navigate({...n,from:n.from??e?.from}),[e?.from,t])}export{i as t};

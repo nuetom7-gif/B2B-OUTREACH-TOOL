@@ -79,6 +79,7 @@ class Contact(Base, TimestampMixin):
     recommended_primary_contact: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     fallback_contact_used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     contact_selection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    discovery_profiles_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
 
     company = relationship("Company", back_populates="contacts")
     messages = relationship("Message", back_populates="contact", cascade="all, delete-orphan")

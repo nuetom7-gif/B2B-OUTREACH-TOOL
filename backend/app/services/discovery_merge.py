@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -9,6 +11,25 @@ from app.services.outreach import add_audit
 
 def _is_missing(value) -> bool:
     return value is None or value == ""
+
+
+def contact_discovery_profiles(contact: Contact) -> list[str]:
+    try:
+        profiles = json.loads(contact.discovery_profiles_json or "[]")
+    except json.JSONDecodeError:
+        return []
+    return [str(profile).strip() for profile in profiles if str(profile).strip()] if isinstance(profiles, list) else []
+
+
+def _add_discovery_profile(contact: Contact, profile: str | None) -> bool:
+    profile = (profile or "").strip()
+    if not profile:
+        return False
+    profiles = contact_discovery_profiles(contact)
+    if profile in profiles:
+        return False
+    contact.discovery_profiles_json = json.dumps([*profiles, profile])
+    return True
 
 
 def _company_field_needs_update(company: Company, attr: str, value) -> bool:
@@ -307,6 +328,9 @@ def upsert_contact_from_discovery(
             recommended_primary_contact=bool(contact_payload.get("recommended_primary_contact", False)),
             fallback_contact_used=bool(contact_payload.get("fallback_contact_used", False)),
             contact_selection_reason=contact_payload.get("contact_selection_reason"),
+            discovery_profiles_json=json.dumps(
+                [contact_payload["discovery_profile"]] if contact_payload.get("discovery_profile") else []
+            ),
         )
         db.add(contact)
         db.flush()
@@ -331,6 +355,8 @@ def upsert_contact_from_discovery(
         if not contact.fallback_contact_used and contact_payload.get("fallback_contact_used"):
             contact.fallback_contact_used = True
             merged_fields.append("fallback_contact_used")
+        if _add_discovery_profile(contact, contact_payload.get("discovery_profile")):
+            merged_fields.append("discovery_profile")
         if _is_missing(contact.source):
             contact.source = source
             merged_fields.append("source")

@@ -50,6 +50,17 @@ def _review_details(record: DiscoveryStagingRecord, decision: str, note: str) ->
     return details
 
 
+def _staging_profile_name(record: DiscoveryStagingRecord) -> str:
+    try:
+        payload = json.loads(record.qualification_input_json or "{}")
+        profile = payload.get("icp", {}).get("profile_name")
+        if profile:
+            return str(profile)
+    except (json.JSONDecodeError, AttributeError):
+        pass
+    return record.product_name
+
+
 def _approve_staged_company(db: Session, record: DiscoveryStagingRecord) -> tuple[Company, int]:
     company = db.get(Company, record.crm_company_id) if record.crm_company_id else None
     if company is None:
@@ -119,6 +130,7 @@ def _approve_staged_company(db: Session, record: DiscoveryStagingRecord) -> tupl
                 "source_provider": person.provider_name,
                 "last_sync": _review_time(),
                 "lead_score": person.score or record.score,
+                "discovery_profile": _staging_profile_name(record),
             },
             source_provider=person.provider_name,
         )

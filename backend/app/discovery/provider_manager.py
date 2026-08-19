@@ -97,11 +97,16 @@ class DiscoveryProviderManager:
         self.last_search_diagnostic = getattr(provider, "last_people_diagnostic", None)
         return results
 
-    def enrich_person(self, contact: DiscoveryContactCandidate) -> DiscoveryContactCandidate | None:
+    def enrich_person(
+        self,
+        contact: DiscoveryContactCandidate,
+        *,
+        reveal_phone_number: bool = True,
+    ) -> DiscoveryContactCandidate | None:
         provider = self.provider_for_name(contact.source_provider)
         if provider is None:
             return None
-        return provider.enrich_person(contact)
+        return provider.enrich_person(contact, reveal_phone_number=reveal_phone_number)
 
     def enrich_organization(self, organization: DiscoveryCompanyCandidate) -> DiscoveryCompanyCandidate | None:
         provider = self.provider_for_name(organization.source_provider)
